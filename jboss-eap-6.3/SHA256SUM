@@ -1,0 +1,15 @@
+5b5372dc939f77d022a567209445d7dd9799da41dcb76b4ff561b45444f4b932  jboss-eap-6.3/modules/system/layers/base/org/jboss/as/web/main/lib/win-x86_64/libeay32.dll
+69f04c37a0567fdffd78938136eba961e506cb21fd3d42cdee1f882e02cc6d95  jboss-eap-6.3/modules/system/layers/base/org/jboss/as/web/main/lib/win-x86_64/ssleay32.dll
+8fe8cdea07b1e5f643fb46395303ea3adcdfb80136ca3fdc85a8563e35dfbc58  jboss-eap-6.3/modules/system/layers/base/org/jboss/as/web/main/lib/win-x86_64/libtcnative-1.dll
+b8dc07b65ff779e7170bccfacc03f8823fb0068ed8b23e939a77d0b088536dcd  jboss-eap-6.3/modules/system/layers/base/org/jboss/as/web/main/lib/win-x86_64/libapr-1.dll
+5b5372dc939f77d022a567209445d7dd9799da41dcb76b4ff561b45444f4b932  jboss-eap-6.3/modules/system/layers/base/native/bin/libeay32.dll
+69f04c37a0567fdffd78938136eba961e506cb21fd3d42cdee1f882e02cc6d95  jboss-eap-6.3/modules/system/layers/base/native/bin/ssleay32.dll
+ad48b9d7774201248e4cdb70db65f1140c6402479688bb8c22d41bf5bcdf0d7d  jboss-eap-6.3/modules/system/layers/base/native/bin/openssl.exe
+263e8aab7431560e6c9bc401b64aa6ac5d46356422c355af570717ccab4ab803  jboss-eap-6.3/modules/system/layers/base/native/bin/prunmgr.exe
+0fa47412765e1409fe51baf22eaa97038cebd79b7a4050e84462afb277b856f5  jboss-eap-6.3/modules/system/layers/base/native/sbin/prunsrv.exe
+25efebb7ed80ecda73cc9608a3e8723e4483afc9911af7cf934579a423a708a0  jboss-eap-6.3/modules/system/layers/base/native/lib64/httpd/modules/mod_jk.so
+c3bfbf70f0ecbc2000ae217d702e7a72af6a66c0fb2ff9215c6c6ea152632b2f  jboss-eap-6.3/modules/system/layers/base/native/lib64/httpd/modules/mod_slotmem.so
+e1bf6d1aa651e545b75c78310fe51ba1abb021694ea35e331d305ac4733578bd  jboss-eap-6.3/modules/system/layers/base/native/lib64/httpd/modules/mod_advertise.so
+dc78d82433164f7b3936b67874c62b1c0ea262ff6784558393f4c3816244f333  jboss-eap-6.3/modules/system/layers/base/native/lib64/httpd/modules/mod_manager.so
+9f076020a37cba41d2da4096fd0b056f2342229e6f05080747ffd329d5653c23  jboss-eap-6.3/modules/system/layers/base/native/lib64/httpd/modules/mod_proxy_cluster.so
+7abdd7c526d373f8dda85a7a9c08567240d987918f9c164a0132f843330fc27a  jboss-eap-6.3/modules/system/layers/base/native/sbin/isapi_redirect.dll

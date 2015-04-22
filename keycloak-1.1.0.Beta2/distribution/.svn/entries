@@ -1,0 +1,189 @@
+10
+
+dir
+0
+https://nvan@115.146.126.146:8443/svn/izeno-java-odc/nvan/keycloak-1.1.0.Beta2/distribution
+https://nvan@115.146.126.146:8443/svn/izeno-java-odc
+add
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+95954e6d-bbe3-0e4b-98ac-9ad7f37d9c01
+
+proxy
+dir
+
+
+
+add
+
+.project
+file
+
+
+
+add
+
+jetty81-adapter-zip
+dir
+
+
+
+add
+
+jetty91-adapter-zip
+dir
+
+
+
+add
+
+src-dist
+dir
+
+
+
+add
+
+jetty92-adapter-zip
+dir
+
+
+
+add
+
+wildfly-adapter-zip
+dir
+
+
+
+add
+
+war-zip
+dir
+
+
+
+add
+
+pom.xml
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+js-adapter-zip
+dir
+
+
+
+add
+
+war-dist
+dir
+
+
+
+add
+
+tomcat6-adapter-zip
+dir
+
+
+
+add
+
+tomcat7-adapter-zip
+dir
+
+
+
+add
+
+appliance-dist
+dir
+
+
+
+add
+
+tomcat8-adapter-zip
+dir
+
+
+
+add
+
+osgi
+dir
+
+
+
+add
+
+examples-docs-zip
+dir
+
+
+
+add
+
+modules
+dir
+
+
+
+add
+
+as7-adapter-zip
+dir
+
+
+
+add
+
+eap6-adapter-zip
+dir
+
+
+
+add
+
+theme-template-zip
+dir
+
+
+
+add
+
+.settings
+dir
+
+
+
+add
+

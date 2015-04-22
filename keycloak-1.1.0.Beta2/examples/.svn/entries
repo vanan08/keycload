@@ -1,0 +1,140 @@
+10
+
+dir
+0
+https://nvan@115.146.126.146:8443/svn/izeno-java-odc/nvan/keycloak-1.1.0.Beta2/examples
+https://nvan@115.146.126.146:8443/svn/izeno-java-odc
+add
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+95954e6d-bbe3-0e4b-98ac-9ad7f37d9c01
+
+basic-auth
+dir
+
+
+
+add
+
+multi-tenant
+dir
+
+
+
+add
+
+.project
+file
+
+
+
+add
+
+admin-client
+dir
+
+
+
+add
+
+themes
+dir
+
+
+
+add
+
+cors
+dir
+
+
+
+add
+
+pom.xml
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+js-console
+dir
+
+
+
+add
+
+README.md
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+saml
+dir
+
+
+
+add
+
+cordova
+dir
+
+
+
+add
+
+demo-template
+dir
+
+
+
+add
+
+providers
+dir
+
+
+
+add
+
+.settings
+dir
+
+
+
+add
+

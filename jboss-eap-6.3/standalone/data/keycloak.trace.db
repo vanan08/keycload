@@ -1,0 +1,6 @@
+03-26 17:32:48 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "DATABASECHANGELOG" not found; SQL statement:
+SELECT ID from DATABASECHANGELOG ORDER BY DATEEXECUTED DESC LIMIT 1 [42102-168]
+03-26 17:32:50 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "REALM" not found; SQL statement:
+SELECT id FROM REALM [42102-168]

@@ -1,0 +1,13 @@
+<jboss-deployment-structure>
+    <deployment>
+        <!-- You must configure the PicketLink dependency to your deployment. The dependency above is a reference to a static module
+        from JBoss EAP modules directory. -->
+        <dependencies>
+            	<module name="org.jboss.security.xacml" />
+     <module name="org.picketlink.federation"/>
+            <module name="org.picketlink.common"/>
+            <module name="org.picketlink.config"/>
+        </dependencies>
+    </deployment>
+</jboss-deployment-structure>
+

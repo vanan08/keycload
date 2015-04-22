@@ -1,0 +1,112 @@
+10
+
+dir
+0
+https://nvan@115.146.126.146:8443/svn/izeno-java-odc/nvan/keycloak-1.1.0.Beta2/testsuite/integration/src/test/resources/saml
+https://nvan@115.146.126.146:8443/svn/izeno-java-odc
+add
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+95954e6d-bbe3-0e4b-98ac-9ad7f37d9c01
+
+sp-metadata.xml
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+encrypted-post
+dir
+
+
+
+add
+
+testsaml.json
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+signed-get
+dir
+
+
+
+add
+
+simple-get
+dir
+
+
+
+add
+
+signed-metadata
+dir
+
+
+
+add
+
+bad-client-signed-post
+dir
+
+
+
+add
+
+signed-post
+dir
+
+
+
+add
+
+simple-post
+dir
+
+
+
+add
+
+bad-realm-signed-post
+dir
+
+
+
+add
+

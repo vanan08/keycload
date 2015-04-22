@@ -1,0 +1,154 @@
+10
+
+dir
+0
+https://nvan@115.146.126.146:8443/svn/izeno-java-odc/nvan/keycloak-1.1.0.Beta2/integration
+https://nvan@115.146.126.146:8443/svn/izeno-java-odc
+add
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+95954e6d-bbe3-0e4b-98ac-9ad7f37d9c01
+
+installed
+dir
+
+
+
+add
+
+jaxrs-oauth-client
+dir
+
+
+
+add
+
+as7-eap6
+dir
+
+
+
+add
+
+jboss-adapter-core
+dir
+
+
+
+add
+
+.project
+file
+
+
+
+add
+
+keycloak-as7-subsystem
+dir
+
+
+
+add
+
+tomcat
+dir
+
+
+
+add
+
+wildfly-adapter
+dir
+
+
+
+add
+
+pom.xml
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+keycloak-subsystem
+dir
+
+
+
+add
+
+jetty
+dir
+
+
+
+add
+
+admin-client
+dir
+
+
+
+add
+
+adapter-core
+dir
+
+
+
+add
+
+undertow
+dir
+
+
+
+add
+
+js
+dir
+
+
+
+add
+
+servlet-oauth-client
+dir
+
+
+
+add
+
+.settings
+dir
+
+
+
+add
+

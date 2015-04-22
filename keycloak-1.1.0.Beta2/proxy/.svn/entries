@@ -1,0 +1,70 @@
+10
+
+dir
+0
+https://nvan@115.146.126.146:8443/svn/izeno-java-odc/nvan/keycloak-1.1.0.Beta2/proxy
+https://nvan@115.146.126.146:8443/svn/izeno-java-odc
+add
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+95954e6d-bbe3-0e4b-98ac-9ad7f37d9c01
+
+launcher
+dir
+
+
+
+add
+
+.project
+file
+
+
+
+add
+
+proxy-server
+dir
+
+
+
+add
+
+pom.xml
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+
+.settings
+dir
+
+
+
+add
+

@@ -1,0 +1,2 @@
+org.keycloak.connections.jpa.JpaConnectionSpi
+org.keycloak.connections.jpa.updater.JpaUpdaterSpi
