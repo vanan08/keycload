@@ -377,6 +377,43 @@ module.config([ '$routeProvider', function($routeProvider) {
             },
             controller : 'ApplicationRoleDetailCtrl'
         })
+        
+        .when('/create/module/:realm/applications/:application', {//nvan
+            templateUrl : 'partials/application-module-role-detail.html',
+            resolve : {
+                realm : function(RealmLoader) {
+                    return RealmLoader();
+                },
+                application : function(ApplicationLoader) {
+                    return ApplicationLoader();
+                },
+                module : function() {
+                    return {};
+                },
+                applications : function(ApplicationListLoader) {
+                    return ApplicationListLoader();
+                }
+            },
+            controller : 'ApplicationRoleDetailCtrl'
+        })
+         .when('/realms/:realm/applications/:application/modules/:module', {//nvan
+            templateUrl : 'partials/application-module-role-detail.html',
+            resolve : {
+                realm : function(RealmLoader) {
+                    return RealmLoader();
+                },
+                application : function(ApplicationLoader) {
+                    return ApplicationLoader();
+                },
+                modules : function(ApplicationModuleLoader) {
+                    return ApplicationModuleLoader();
+                },
+                applications : function(ApplicationListLoader) {
+                    return ApplicationListLoader();
+                }
+            },
+            controller : 'ApplicationRoleDetailCtrl'
+        })
         .when('/realms/:realm/applications/:application/roles/:role', {
             templateUrl : 'partials/application-role-detail.html',
             resolve : {
@@ -602,6 +639,7 @@ module.config([ '$routeProvider', function($routeProvider) {
             },
             controller : 'ApplicationDetailCtrl'
         })
+        
         .when('/realms/:realm/applications', {
             templateUrl : 'partials/application-list.html',
             resolve : {

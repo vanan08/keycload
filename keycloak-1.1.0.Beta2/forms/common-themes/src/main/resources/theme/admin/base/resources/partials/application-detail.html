@@ -201,16 +201,20 @@
              	 <div class="form-group">
                     <label class="col-sm-2 control-label" for="name">Module listing</label>
                      <div class="col-sm-6">
-	                     <select id="modlue_listing" name="modlue_listing" class="form-control"  multiple size=5 ng-multiple="true">
+	                     <select id="modlue_listing" name="modlue_listing" class="form-control"  
+	                      size=5 
+	                     data-ng-model="selectedModels"
+                         data-ng-options="module as module for module in application.modules"
+	                     >
 	                     </select>
 	                     
                      </div>
                      <span tooltip-placement="right" tooltip="Module URL to use when client need access to module." class="fa fa-info-circle"></span>
                  </div>
                  <div class="pull-right form-actions" data-ng-show="!create && access.manageApplications">
-	                <button kc-save data-ng-hide="changed" data-ng-click="addmodule()">Create module</button>
-	                <button kc-save data-ng-hide="changed" data-ng-click="editmodule()">Edit module</button>
-	                <button kc-delete data-ng-hide="changed" data-ng-click="removemodule()" >Delete module</button>
+	                <button kc-cancel data-ng-hide="changed" data-ng-click="gotoModuleDetail()">Create module</button>
+	                <button kc-cancel data-ng-hide="changed" data-ng-click="editModule()">Edit module</button>
+	                <button kc-delete data-ng-hide="changed" data-ng-click="removeModule()" >Delete module</button>
 	            </div>
 			</fieldset>
            

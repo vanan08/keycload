@@ -164,6 +164,17 @@ module.factory('ApplicationRoleLoader', function(Loader, ApplicationRole, $route
     });
 });
 
+module.factory('ApplicationModuleLoader', function(Loader, ApplicationModule, $route, $q) {//nvan
+	 return Loader.get(ApplicationModule, function() {
+		 alert('Module: '+$route.current.params.module);
+        return {
+            realm : $route.current.params.realm,
+            application : $route.current.params.application,
+            module : $route.current.params.module
+        }
+     });
+});
+
 module.factory('ApplicationSessionStatsLoader', function(Loader, ApplicationSessionStats, $route, $q) {
     return Loader.get(ApplicationSessionStats, function() {
         return {
@@ -222,6 +233,8 @@ module.factory('ApplicationLoader', function(Loader, Application, $route, $q) {
     });
 });
 
+
+
 module.factory('ApplicationListLoader', function(Loader, Application, $route, $q) {
     return Loader.query(Application, function() {
         return {
@@ -229,6 +242,7 @@ module.factory('ApplicationListLoader', function(Loader, Application, $route, $q
         }
     });
 });
+
 
 
 module.factory('RoleMappingLoader', function(Loader, RoleMapping, $route, $q) {

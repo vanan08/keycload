@@ -483,7 +483,8 @@ module.controller('ApplicationDetailCtrl', function($scope, realm, application, 
         "RSA_SHA512",
         "DSA_SHA1"
     ];
-
+    
+    $scope.selectedModels = "";
     $scope.realm = realm;
     $scope.create = !application.name;
     $scope.samlAuthnStatement = false;
@@ -729,14 +730,16 @@ module.controller('ApplicationDetailCtrl', function($scope, realm, application, 
         });
     };
 
-    $scope.addmodule = function() {
-    	alert('add module');
-        $http.post(authUrl + '/realms/' + realm.realm + '/applications/' + application.id + '/modules',
-                $scope.selectedRealmRoles).success(function() {
-               
-                Notifications.success("Module is added.");
-
-            });
+    $scope.gotoModuleDetail = function() {
+    	 $location.url("/create/module/" + realm.realm + "/applications/" + $scope.application.id);
+    };
+    
+    $scope.editModule = function() {
+    	if(!$scope.selectedModels || $scope.selectedModels == ''){
+    		Notifications.error("Please select a module for edit.");
+    		return;
+    	}
+   	 	$location.url("/realms/" + realm.realm + "/applications/" + $scope.application.id + "/modules/"+$scope.selectedModels);
     };
 
 });

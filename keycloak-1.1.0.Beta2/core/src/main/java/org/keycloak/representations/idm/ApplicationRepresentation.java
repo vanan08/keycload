@@ -27,6 +27,8 @@ public class ApplicationRepresentation {
     protected Boolean fullScopeAllowed;
     protected Integer nodeReRegistrationTimeout;
     protected Map<String, Integer> registeredNodes;
+    protected String[] modules = {"Cheese","Pepperoni"};
+    
 
     public String getId() {
         return id;
@@ -179,4 +181,12 @@ public class ApplicationRepresentation {
     public void setRegisteredNodes(Map<String, Integer> registeredNodes) {
         this.registeredNodes = registeredNodes;
     }
+
+	public String[] getModules() {
+		return modules;
+	}
+
+	public void setModules(String[] modules) {
+		this.modules = modules;
+	}
 }

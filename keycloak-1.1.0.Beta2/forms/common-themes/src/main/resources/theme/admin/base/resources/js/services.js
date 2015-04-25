@@ -628,6 +628,19 @@ module.factory('ApplicationRole', function($resource) {
     });
 });
 
+module.factory('ApplicationModule', function($resource) {//nvan
+    return $resource(authUrl + '/admin/realms/:realm/applications-by-id/:application/modules/:module', {
+        realm : '@realm',
+        application : "@application",
+        module : '@module'
+    },  {
+        update : {
+            method : 'PUT'
+        }
+    });
+    
+});
+
 module.factory('ApplicationClaims', function($resource) {
     return $resource(authUrl + '/admin/realms/:realm/applications-by-id/:application/claims', {
         realm : '@realm',
