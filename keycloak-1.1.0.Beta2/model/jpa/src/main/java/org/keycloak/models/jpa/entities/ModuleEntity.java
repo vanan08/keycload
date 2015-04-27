@@ -85,5 +85,4 @@ public class ModuleEntity {
 	public void setRoles(Collection<RoleEntity> roles) {
 		this.roles = roles;
 	}
-	
 }
