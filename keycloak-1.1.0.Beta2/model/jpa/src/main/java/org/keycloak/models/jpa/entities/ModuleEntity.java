@@ -23,6 +23,7 @@ public class ModuleEntity {
 	@Id
     @Column(name="ID", length = 36)
 	private String id;
+	
 	@Column(name = "NAME")
 	private String name;
 	
