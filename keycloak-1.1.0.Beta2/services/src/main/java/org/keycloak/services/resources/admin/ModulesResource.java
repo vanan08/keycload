@@ -57,10 +57,9 @@ public class ModulesResource {
         
         ApplicationModel application = realm.getApplicationByName(name);
         List<ModuleRepresentation> rep = new ArrayList<ModuleRepresentation>();
-        List<ModuleModel> moduleModels = new ArrayList<ModuleModel>(application.getModules());
 
         boolean view = auth.hasView();
-        for (ModuleModel moduleModel : moduleModels) {
+        for (ModuleModel moduleModel : application.getModules()) {
             if (view) {
                 rep.add(ModelToRepresentation.toRepresentation(moduleModel));
             } else {

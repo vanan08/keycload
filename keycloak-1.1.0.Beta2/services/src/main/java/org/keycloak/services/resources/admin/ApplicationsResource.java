@@ -107,6 +107,8 @@ public class ApplicationsResource {
     @Path("{app-name}")
     public ApplicationResource getApplication(final @PathParam("app-name") String name) {
         ApplicationModel applicationModel = getApplicationByPathParam(name);
+        logger.info(applicationModel);
+        
         if (applicationModel == null) {
             throw new NotFoundException("Could not find application: " + name);
         }

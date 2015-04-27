@@ -34,12 +34,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
  * @version $Revision: 1 $
  */
 public class ModelToRepresentation {
+	private final static Logger logger = Logger.getLogger(ModelToRepresentation.class.getName());
+	
     public static UserRepresentation toRepresentation(UserModel user) {
         UserRepresentation rep = new UserRepresentation();
         rep.setId(user.getId());
@@ -246,14 +249,14 @@ public class ModelToRepresentation {
             rep.setRegisteredNodes(new HashMap<String, Integer>(applicationModel.getRegisteredNodes()));
         }
 
-        if (!applicationModel.getModules().isEmpty()) {
-        	List<String> modnames = new ArrayList<String>(0);
-        	for (ModuleModel model : applicationModel.getModules()) {
-        		modnames.add(model.getName());
-        	}
-        	
-        	rep.setModules(modnames.toArray(new String[0]));
-        }
+//        if (applicationModel.getModules().size() > 0) {
+//        	List<String> modnames = new ArrayList<String>(0);
+//        	for (ModuleModel model : applicationModel.getModules()) {
+//        		modnames.add(model.getName());
+//        	}
+//        	
+//        	rep.setModules(modnames.toArray(new String[0]));
+//        }
         
         return rep;
     }

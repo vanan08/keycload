@@ -282,6 +282,7 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
     	ModuleEntity moduleData = new ModuleEntity();
     	moduleData.setId(id);
     	moduleData.setName(name);
+    	moduleData.setApplication(applicationEntity);
     	
     	applicationEntity.getModules().add(moduleData);
     	em.persist(moduleData);
@@ -310,10 +311,11 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
     }
     
     @Override
-    public Collection<ModuleModel> getModules() {
+    public List<ModuleModel> getModules() {
     	List<ModuleModel> modules = new ArrayList<ModuleModel>();
-    	for (ModuleEntity me : applicationEntity.getModules()) {
-    		modules.add(new ModuleAdapter(realm, em, me, this));
+    	Iterator<ModuleEntity> itr = applicationEntity.getModules().iterator();
+    	while (itr.hasNext()) {
+    		modules.add(new ModuleAdapter(realm, em, itr.next(), this));
     	}
     	return modules;
     }

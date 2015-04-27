@@ -10,10 +10,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -37,8 +40,8 @@ public class ApplicationEntity extends ClientEntity {
     @Column(name="NODE_REREG_TIMEOUT")
     private int nodeReRegistrationTimeout;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade ={CascadeType.REMOVE}, orphanRemoval = true, mappedBy = "application")
-    Collection<ModuleEntity> modules = new ArrayList<ModuleEntity>();
+    @OneToMany(fetch = FetchType.LAZY, cascade ={CascadeType.REMOVE}, orphanRemoval = true, mappedBy = "application")
+    Set<ModuleEntity> modules = new HashSet<ModuleEntity>();
     
     @OneToMany(fetch = FetchType.EAGER, cascade ={CascadeType.REMOVE}, orphanRemoval = true, mappedBy = "application")
     Collection<RoleEntity> roles = new ArrayList<RoleEntity>();
@@ -93,11 +96,11 @@ public class ApplicationEntity extends ClientEntity {
         this.defaultRoles = defaultRoles;
     }
 
-    public Collection<ModuleEntity> getModules() {
+    public Set<ModuleEntity> getModules() {
 		return modules;
 	}
     
-    public void setModules(Collection<ModuleEntity> modules) {
+    public void setModules(Set<ModuleEntity> modules) {
 		this.modules = modules;
 	}
     

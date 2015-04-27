@@ -7,17 +7,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@Table(name="MODULE")
 public class ModuleEntity {
 
 	@Id
@@ -33,9 +28,9 @@ public class ModuleEntity {
 	@Column(name = "URL")
 	private String url;
 	
-	@ManyToOne(fetch= FetchType.LAZY)
-	@JoinColumn(name="APPLICATION_ID")
-	private ApplicationEntity application;
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "APPLICATION_ID")
+    private ApplicationEntity application;
 	
     @OneToMany(fetch = FetchType.LAZY, cascade ={})
     @JoinTable(name="MODULE_ROLE", joinColumns = { @JoinColumn(name="MODULE_ID")}, inverseJoinColumns = { @JoinColumn(name="ROLE_ID")})

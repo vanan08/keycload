@@ -1,6 +1,6 @@
 package org.keycloak.models;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public interface ModuleContainerModel {
@@ -15,7 +15,7 @@ public interface ModuleContainerModel {
 
     boolean removeModule(ModuleModel module);
 
-    Collection<ModuleModel> getModules();
+    List<ModuleModel> getModules();
     
     Map<String, ModuleModel> getModuleNameMap();
 	
