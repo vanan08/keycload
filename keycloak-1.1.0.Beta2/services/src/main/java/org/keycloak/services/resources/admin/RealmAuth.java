@@ -13,7 +13,7 @@ public class RealmAuth {
     private Resource resource;
 
     public enum Resource {
-        APPLICATION, CLIENT, USER, REALM, EVENTS
+        APPLICATION, CLIENT, USER, REALM, EVENTS, MODULE
     }
 
     private AdminAuth auth;

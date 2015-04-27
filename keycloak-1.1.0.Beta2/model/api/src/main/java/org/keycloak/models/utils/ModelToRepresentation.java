@@ -246,6 +246,15 @@ public class ModelToRepresentation {
             rep.setRegisteredNodes(new HashMap<String, Integer>(applicationModel.getRegisteredNodes()));
         }
 
+        if (!applicationModel.getModules().isEmpty()) {
+        	List<String> modnames = new ArrayList<String>(0);
+        	for (ModuleModel model : applicationModel.getModules()) {
+        		modnames.add(model.getName());
+        	}
+        	
+        	rep.setModules(modnames.toArray(new String[0]));
+        }
+        
         return rep;
     }
 
