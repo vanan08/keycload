@@ -38,6 +38,9 @@ public class ApplicationEntity extends ClientEntity {
     private int nodeReRegistrationTimeout;
 
     @OneToMany(fetch = FetchType.EAGER, cascade ={CascadeType.REMOVE}, orphanRemoval = true, mappedBy = "application")
+    Collection<ModuleEntity> modules = new ArrayList<ModuleEntity>();
+    
+    @OneToMany(fetch = FetchType.EAGER, cascade ={CascadeType.REMOVE}, orphanRemoval = true, mappedBy = "application")
     Collection<RoleEntity> roles = new ArrayList<RoleEntity>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade ={CascadeType.REMOVE}, orphanRemoval = true)
@@ -90,6 +93,14 @@ public class ApplicationEntity extends ClientEntity {
         this.defaultRoles = defaultRoles;
     }
 
+    public Collection<ModuleEntity> getModules() {
+		return modules;
+	}
+    
+    public void setModules(Collection<ModuleEntity> modules) {
+		this.modules = modules;
+	}
+    
     public boolean isBearerOnly() {
         return bearerOnly;
     }

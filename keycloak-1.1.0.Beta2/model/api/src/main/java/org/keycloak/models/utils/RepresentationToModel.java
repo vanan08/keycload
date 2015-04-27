@@ -1,6 +1,7 @@
 package org.keycloak.models.utils;
 
 import net.iharder.Base64;
+
 import org.jboss.logging.Logger;
 import org.keycloak.enums.SslRequired;
 import org.keycloak.models.ApplicationModel;
@@ -8,6 +9,7 @@ import org.keycloak.models.BrowserSecurityHeaders;
 import org.keycloak.models.ClaimMask;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.OAuthClientModel;
 import org.keycloak.models.PasswordPolicy;
 import org.keycloak.models.RealmModel;
@@ -20,6 +22,7 @@ import org.keycloak.models.UserModel;
 import org.keycloak.representations.idm.ApplicationRepresentation;
 import org.keycloak.representations.idm.ClaimRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.ModuleRepresentation;
 import org.keycloak.representations.idm.OAuthClientRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
@@ -568,6 +571,40 @@ public class RepresentationToModel {
         model.setAllowedClaimsMask(mask);
     }
 
+    // MODULES
+    
+    public static ModuleModel createModule(RealmModel realm, ApplicationModel appModel, ModuleRepresentation moduleRep) {
+    	ModuleModel module = moduleRep.getId() != null ? 
+    			appModel.addModule(moduleRep.getId(), moduleRep.getName()) : appModel.addModule(moduleRep.getName());
+    	module.setUrl(moduleRep.getUrl());
+    	module.setDescription(moduleRep.getDescription());
+    	
+    	// mapping roles to module
+    	if (moduleRep.getRoles() != null && moduleRep.getRoles().length > 0) {
+			module.setRoles(moduleRep.getRoles());
+    	}
+    	
+    	module.updateModule();
+    	
+    	return module;
+    }
+    
+    
+    public static ModuleModel updateModule(RealmModel realm, ModuleRepresentation moduleRep, ModuleModel resource) {
+    	if (moduleRep.getName() != null) resource.setName(moduleRep.getName());
+    	if (moduleRep.getDescription() != null) resource.setDescription(moduleRep.getDescription());
+    	if (moduleRep.getUrl() != null) resource.setDescription(moduleRep.getUrl());
+    	
+    	// mapping roles to module
+    	if (moduleRep.getRoles() != null && moduleRep.getRoles().length > 0) {
+    		resource.setRoles(moduleRep.getRoles());
+    	}
+    	
+    	resource.updateModule();
+    	
+    	return resource;
+    }
+    
     // OAuth clients
 
     private static void createOAuthClients(RealmRepresentation realmRep, RealmModel realm) {

@@ -11,8 +11,7 @@ public class ApplicationMappingsRepresentation {
     protected String application;
 
     protected List<RoleRepresentation> mappings;
-    
-    protected List<ModuleMappingsRepresentation> moduleMappings;
+    protected List<ModuleRepresentation> modules;
 
     public String getApplicationId() {
         return applicationId;
@@ -38,13 +37,12 @@ public class ApplicationMappingsRepresentation {
         this.mappings = mappings;
     }
 
-	public List<ModuleMappingsRepresentation> getModuleMappings() {
-		return moduleMappings;
+    public List<ModuleRepresentation> getModules() {
+		return modules;
 	}
 
-	public void setModuleMappings(List<ModuleMappingsRepresentation> moduleMappings) {
-		this.moduleMappings = moduleMappings;
+	public void setModuleMappings(List<ModuleRepresentation> modules) {
+		this.modules = modules;
 	}
-    
     
 }

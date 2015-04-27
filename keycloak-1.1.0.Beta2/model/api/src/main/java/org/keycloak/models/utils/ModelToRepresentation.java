@@ -4,7 +4,7 @@ import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.ClaimMask;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.ClientSessionModel;
-import org.keycloak.models.Constants;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.OAuthClientModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RequiredCredentialModel;
@@ -17,6 +17,7 @@ import org.keycloak.models.UserSessionModel;
 import org.keycloak.representations.idm.ApplicationRepresentation;
 import org.keycloak.representations.idm.ClaimRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.ModuleRepresentation;
 import org.keycloak.representations.idm.OAuthClientRepresentation;
 import org.keycloak.representations.idm.RealmEventsConfigRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
@@ -283,4 +284,18 @@ public class ModelToRepresentation {
         rep.setLastSync(model.getLastSync());
         return rep;
     }
+    
+    // 2015-04-25
+    public static ModuleRepresentation toRepresentation(ModuleModel model) {
+    	ModuleRepresentation req = new ModuleRepresentation();
+    	req.setId(model.getId());
+    	req.setName(model.getName());
+    	req.setUrl(model.getUrl());
+    	req.setDescription(model.getDescription());
+    	if (!model.getListRoles().isEmpty()) {
+    		req.setRoles(model.getListRoles().toArray(new String[0]));
+    	}
+    	return req;
+    }
+    
 }

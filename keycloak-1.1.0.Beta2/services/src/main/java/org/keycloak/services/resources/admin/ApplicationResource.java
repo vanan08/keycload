@@ -4,10 +4,13 @@ import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.spi.BadRequestException;
 import org.jboss.resteasy.spi.NotFoundException;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.ModelDuplicateException;
 import org.keycloak.models.RealmModel;
+import org.keycloak.models.RoleContainerModel;
+import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserCredentialModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.UserSessionModel;
@@ -15,9 +18,11 @@ import org.keycloak.models.utils.KeycloakModelUtils;
 import org.keycloak.models.utils.ModelToRepresentation;
 import org.keycloak.models.utils.RepresentationToModel;
 import org.keycloak.representations.adapters.action.GlobalRequestResult;
+import org.keycloak.representations.idm.ApplicationMappingsRepresentation;
 import org.keycloak.representations.idm.ApplicationRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.MappingsRepresentation;
+import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserSessionRepresentation;
 import org.keycloak.services.managers.ApplicationManager;
 import org.keycloak.services.managers.RealmManager;
@@ -44,6 +49,7 @@ import javax.ws.rs.core.UriInfo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -427,11 +433,72 @@ public class ApplicationResource {
      */
     @Path("{application_id}/modules")
     @GET
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     @NoCache
     public MappingsRepresentation getRoleMappings(@PathParam("application_id") String application_id) {
-        auth.requireView();
+    	auth.requireView();
+        
+        MappingsRepresentation all = new MappingsRepresentation();
+        Set<RoleModel> realmMappings = application.getRealmScopeMappings();
+        if (realmMappings.size() > 0) {
+            List<RoleRepresentation> realmRep = new ArrayList<RoleRepresentation>();
+            for (RoleModel roleModel : realmMappings) {
+                realmRep.add(ModelToRepresentation.toRepresentation(roleModel));
+            }
+            all.setRealmMappings(realmRep);
+        }
+        
+        Map<String, ApplicationMappingsRepresentation> appMappings = new HashMap<String, ApplicationMappingsRepresentation>();
+        Set<RoleModel> roleMappings = getApplicationRoleMappings();
+        if (roleMappings.size() > 0) {
+            ApplicationMappingsRepresentation mappings = new ApplicationMappingsRepresentation();
+            mappings.setApplicationId(application.getId());
+            mappings.setApplication(application.getName());
+            List<RoleRepresentation> roles = new ArrayList<RoleRepresentation>();
+            mappings.setMappings(roles);
+            for (RoleModel role : roleMappings) {
+                roles.add(ModelToRepresentation.toRepresentation(role));
+            }
+            appMappings.put(application.getName(), mappings);
+            all.setApplicationMappings(appMappings);
+        }
+        
+        return all;
+    }
+    
+    /**
+     * Base path for managing modules under this application.
+     *
+     * @return
+     */
+    @Path("modules")
+    public ModulesResource getModules() {
+    	ModulesResource moduleResource = new ModulesResource(realm, auth);
+    	ResteasyProviderFactory.getInstance().injectProperties(moduleResource);
+    	//resourceContext.initResource(moduleResource);
+    	return moduleResource;
+    }
+    
+    protected Set<RoleModel> getApplicationRoleMappings() {
+    	Set<RoleModel> roleMappings = application.getScopeMappings();
 
+        Set<RoleModel> appRoles = new HashSet<RoleModel>();
+        for (RoleModel role : roleMappings) {
+            RoleContainerModel container = role.getContainer();
+            if (container instanceof RealmModel) {
+            } else {
+                ApplicationModel app = (ApplicationModel)container;
+                if (app.getId().equals(getApplicationId())) {
+                    appRoles.add(role);
+                }
+            }
+        }
+
+        return appRoles;
+    }
+    
+    protected String getApplicationId() {
+    	return application.getId();
     }
 
 }

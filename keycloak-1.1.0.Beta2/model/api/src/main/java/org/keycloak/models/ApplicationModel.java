@@ -8,7 +8,7 @@ import java.util.Set;
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
  * @version $Revision: 1 $
  */
-public interface ApplicationModel extends RoleContainerModel, ClientModel {
+public interface ApplicationModel extends RoleContainerModel, ModuleContainerModel, ClientModel {
     void updateApplication();
 
     String getName();

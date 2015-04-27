@@ -3,19 +3,23 @@ package org.keycloak.models.jpa;
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleContainerModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.jpa.entities.ApplicationEntity;
+import org.keycloak.models.jpa.entities.ModuleEntity;
 import org.keycloak.models.jpa.entities.RoleEntity;
 import org.keycloak.models.utils.KeycloakModelUtils;
-import org.keycloak.util.Time;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -200,9 +204,6 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
         return appRoles;
     }
 
-
-
-
     @Override
     public List<String> getDefaultRoles() {
         Collection<RoleEntity> entities = applicationEntity.getDefaultRoles();
@@ -262,6 +263,76 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
         em.flush();
     }
 
+    @Override
+    public Map<String, ModuleModel> getModuleNameMap() {
+    	Map<String, ModuleModel> map = new HashMap<String, ModuleModel>();
+        for (ModuleModel app : getModules()) {
+            map.put(app.getName(), app);
+        }
+        return map;
+    }
+    
+    @Override
+    public ModuleModel addModule(String name) {
+    	return addModule(KeycloakModelUtils.generateId(), name);
+    }
+    
+    @Override
+    public ModuleModel addModule(String id, String name) {
+    	ModuleEntity moduleData = new ModuleEntity();
+    	moduleData.setId(id);
+    	moduleData.setName(name);
+    	
+    	applicationEntity.getModules().add(moduleData);
+    	em.persist(moduleData);
+        em.flush();
+        ModuleModel resource = new ModuleAdapter(realm, em, moduleData, this);
+        em.flush();
+        return resource;
+    }
+    
+    @Override
+    public boolean removeModule(ModuleModel module) {
+    	if (module == null) return false;
+    	
+    	ModuleEntity moduleEntity = null;
+    	Iterator<ModuleEntity> modules = applicationEntity.getModules().iterator();
+    	while (modules.hasNext()) {
+    		ModuleEntity me = modules.next();
+    		if (me.getId().equals(module.getId())) {
+    			moduleEntity = me;
+    			break;
+    		}
+    	}
+    	em.remove(moduleEntity);
+    	em.flush();
+    	return true;
+    }
+    
+    @Override
+    public Collection<ModuleModel> getModules() {
+    	List<ModuleModel> modules = new ArrayList<ModuleModel>();
+    	for (ModuleEntity me : applicationEntity.getModules()) {
+    		modules.add(new ModuleAdapter(realm, em, me, this));
+    	}
+    	return modules;
+    }
+    
+    @Override
+    public ModuleModel getModuleById(String id) {
+    	for (ModuleEntity me : applicationEntity.getModules()) {
+    		if (me.getId().equals(id)) {
+    			return new ModuleAdapter(realm, em, me, this);
+    		}
+    	}
+    	return null;
+    }
+    
+    @Override
+    public ModuleModel getModuleByName(String name) {
+    	return getModuleNameMap().get(name);
+    }
+    
     @Override
     public int getNodeReRegistrationTimeout() {
         return applicationEntity.getNodeReRegistrationTimeout();
