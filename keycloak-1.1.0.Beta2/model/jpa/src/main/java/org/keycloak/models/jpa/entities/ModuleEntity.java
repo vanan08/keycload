@@ -27,6 +27,7 @@ public class ModuleEntity {
 	private String name;
 	@Column(name = "DESCRIPTION")
 	private String description;
+	
 	@Column(name = "URL")
 	private String url;
 	
