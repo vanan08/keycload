@@ -638,12 +638,11 @@ module.factory('ApplicationModule', function($resource) {//nvan
 				method : 'PUT'
 			}
 	});
-	
-	var module = data.get({realm: 'master', application: '4eac0a53-f921-4f95-826f-57145fc376eb', module:'test1'}, function() {
-		  alert('get ok');
+	/*
+	var module = data.get({realm: 'master', application: '4eac0a53-f921-4f95-826f-57145fc376eb', module:'test1'}, function(data) {
+		  alert('get ok: '+ JSON.stringify(data));
 	});
-	
-	alert(module.name);
+*/
     return data;
     
 });

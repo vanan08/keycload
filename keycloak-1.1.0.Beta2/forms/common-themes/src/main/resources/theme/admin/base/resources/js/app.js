@@ -417,7 +417,7 @@ module.config([ '$routeProvider', function($routeProvider) {
                 //    return ApplicationListLoader();
                 //}
             },
-            controller : 'ModuleRoleDetailCtrl'
+            controller : 'ModuleDetailCtrl'
         })
          .when('/realms/:realm/applications/:application/modules/:module', {//nvan
             templateUrl : 'partials/application-module-role-detail.html',
@@ -429,6 +429,7 @@ module.config([ '$routeProvider', function($routeProvider) {
                     return ApplicationLoader();
                 },
                 module : function(ApplicationModuleLoader) {
+         
                     return ApplicationModuleLoader();
                 }
                 //modules : function(ModuleListLoader) {

@@ -373,9 +373,19 @@ module.controller('ModuleDetailCtrl', function($scope, realm, application, modul
 	
 	$scope.realm = realm;
 	$scope.application = application;
-	$scope.module = angular.copy(module);
-	$scope.create = !module.name;
+	$scope.create = false;
+	
+	if(!module.name){
+		$scope.module = angular.copy(module.module);
+	}else{
+		$scope.module = angular.copy(module);
+	}
+	
+	$scope.create = !module.module.name;
 	$scope.changed = $scope.create;
+	
+	alert(module.module.name);
+	alert($scope.create);
 	
 	$scope.save = function() {
 		if ($scope.create) {

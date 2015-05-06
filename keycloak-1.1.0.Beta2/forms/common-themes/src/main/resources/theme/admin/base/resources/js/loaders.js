@@ -175,7 +175,6 @@ module.factory('ApplicationRoleLoader', function(Loader, ApplicationRole, $route
 
 module.factory('ApplicationModuleLoader', function(Loader, ApplicationModule, $route, $q) {//nvan
 	 return Loader.get(ApplicationModule, function() {
-		console.log('module loader****');
         return {
             realm : $route.current.params.realm,
             application : $route.current.params.application,
