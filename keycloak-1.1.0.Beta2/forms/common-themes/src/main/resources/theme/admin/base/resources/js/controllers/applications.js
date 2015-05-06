@@ -405,8 +405,9 @@ module.controller('ModuleDetailCtrl', function($scope, realm, application, modul
 			application : application.id,
 			module: $scope.module.name
         }, $scope.module, function () {
-            $scope.changed = false;
+            $scope.changed = true;
             module = angular.copy($scope.module);
+            $location.url("/realms/" + realm.realm + "/applications/" + application.id + "/modules/" + $scope.module.name);
             Notifications.success("Your changes have been saved to the role.");
         });
     };
