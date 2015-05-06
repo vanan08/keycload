@@ -418,7 +418,7 @@ module.controller('ModuleDetailCtrl', function($scope, realm, application, modul
 				application : application.id,
 				module : $scope.module.name
 			}, function() {
-				$location.url("/realms/" + realm.realm + "/applications/" + application.id + "/modules");
+				$location.url("/realms/" + realm.realm + "/applications/" + application.id);
 				Notifications.success("The module has been deleted.");
 			});
 		});
