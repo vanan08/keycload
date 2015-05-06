@@ -375,14 +375,10 @@ module.controller('ModuleDetailCtrl', function($scope, realm, application, modul
 	$scope.application = application;
 	$scope.create = false;
 	
-	if(!module.name){
-		$scope.changed = true;
-		$scope.module = angular.copy(module.module);
-	}else{
-		$scope.module = angular.copy(module);
-	}
+	$scope.module = angular.copy(module);
 	
-	$scope.create = !module.module.name;
+	$scope.create = !module.name;
+	$scope.changed = !$scope.create;
 	
 	$scope.save = function() {
 		if ($scope.create) {
