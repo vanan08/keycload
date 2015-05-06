@@ -197,7 +197,7 @@
                 <button kc-delete data-ng-click="remove()" data-ng-hide="changed">Delete Application</button>
             </div>
             </fieldset>
-             <fieldset class="border-top" data-ng-hide="changed">
+             <fieldset class="border-top" >
              	 <div class="form-group">
                     <label class="col-sm-2 control-label" for="name">Module listing</label>
                      <div class="col-sm-6">
@@ -212,8 +212,8 @@
                      <span tooltip-placement="right" tooltip="Module URL to use when client need access to module." class="fa fa-info-circle"></span>
                  </div>
                  <div class="pull-right form-actions" data-ng-show="!create && access.manageApplications">
-	                <button kc-cancel data-ng-hide="changed" data-ng-click="gotoModuleDetail()">Create module</button>
-	                <button kc-cancel data-ng-hide="changed" data-ng-click="editModule()">Edit module</button>
+	                <button kc-cancel data-ng-click="gotoModuleDetail()">Create module</button>
+	                <button kc-cancel data-ng-click="editModule()">Edit module</button>
 	            </div>
 			</fieldset>
            

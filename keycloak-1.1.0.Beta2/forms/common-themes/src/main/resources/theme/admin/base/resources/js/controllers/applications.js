@@ -378,7 +378,7 @@ module.controller('ModuleDetailCtrl', function($scope, realm, application, modul
 	$scope.module = angular.copy(module);
 	
 	$scope.create = !module.name;
-	$scope.changed = !$scope.create;
+	$scope.changed = $scope.create;
 	
 	$scope.save = function() {
 		if ($scope.create) {
@@ -405,11 +405,16 @@ module.controller('ModuleDetailCtrl', function($scope, realm, application, modul
 			application : application.id,
 			module: $scope.module.name
         }, $scope.module, function () {
-            $scope.changed = true;
+        	$scope.changed = false;
             module = angular.copy($scope.module);
             $location.url("/realms/" + realm.realm + "/applications/" + application.id + "/modules/" + $scope.module.name);
             Notifications.success("Your changes have been saved to the role.");
         });
+    };
+    
+    $scope.reset = function () {
+    	$scope.module = angular.copy(module);
+        $scope.changed = false;
     };
 	
 	$scope.remove = function() {
