@@ -45,7 +45,7 @@ public class ModulesResource {
         this.auth = auth;
         this.applicationModel = applicationModel;
 
-        auth.init(RealmAuth.Resource.MODULE);
+        auth.init(RealmAuth.Resource.APPLICATION);
     }
     
     @GET
@@ -100,9 +100,6 @@ public class ModulesResource {
      * @return
      */
     @Path("{mod-name}")
-    @GET
-    @NoCache
-    @Produces(MediaType.APPLICATION_JSON)
     public ModuleResource getModule(final @PathParam("mod-name") String modName) {
     	//logger.info("module - number of modules: "+applicationModel.getModules().size());
     	ModuleModel module = applicationModel.getModuleByName(modName);
