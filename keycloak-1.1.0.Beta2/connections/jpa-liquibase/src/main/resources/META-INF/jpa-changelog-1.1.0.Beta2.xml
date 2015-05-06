@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.2.xsd">
+	<changeSet author="sthorger@redhat.com" id="1.0.0.Final">
+		<createTable tableName="MODULE">
+            <column name="ID" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="APPLICATION_ID" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="URL" type="VARCHAR(36)"/>
+        </createTable>
+        <createTable tableName="MODULE_ROLE">
+            <column name="MODULE_ID" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ROLE_ID" type="VARCHAR(36)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <!-- PRIMARY KEY -->
+        <addPrimaryKey columnNames="ID" constraintName="CONSTRAINT_10" tableName="MODULE"/>
+        <addPrimaryKey columnNames="MODULE_ID,ROLE_ID" constraintName="CONSTRAINT_11" tableName="MODULE_ROLE"/>
+        
+        <!-- UNIQUE CONSTRAINT -->
+        <addUniqueConstraint columnNames="NAME" constraintName="UK_MODULENAME" tableName="MODULE"/>
+        
+        <!-- FOREIGN KEY -->
+        <!-- <addForeignKeyConstraint baseColumnNames="APPLICATION_ID" baseTableName="MODULE" constraintName="FK_APPLICATION_MODULE" referencedColumnNames="ID" referencedTableName="APPLICATION"/>
+        <addForeignKeyConstraint baseColumnNames="MODULE_ID" baseTableName="MODULE_ROLE" constraintName="FK_MODULE_ID_ROLE" referencedColumnNames="ID" referencedTableName="MODULE"/>
+  		<addForeignKeyConstraint baseColumnNames="ROLE_ID" baseTableName="MODULE_ROLE" constraintName="FK_ROLE_ID_MODULE_" referencedColumnNames="ID" referencedTableName="KEYCLOAK_ROLE"/> -->
+  
+   </changeSet>
+</databaseChangeLog>

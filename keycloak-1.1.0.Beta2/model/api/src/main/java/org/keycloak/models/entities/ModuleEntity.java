@@ -9,6 +9,7 @@ public class ModuleEntity extends AbstractIdentifiableEntity {
 	private String description;
 	private String url;
 	private List<String> roleNames = new ArrayList<String>();
+	private String applicationId;
 	
 	public String getName() {
 		return name;
@@ -40,6 +41,14 @@ public class ModuleEntity extends AbstractIdentifiableEntity {
 	
 	public void setRoleNames(List<String> roleNames) {
 		this.roleNames = roleNames;
+	}
+	
+	public String getApplicationId() {
+		return applicationId;
+	}
+	
+	public void setApplicationId(String applicationId) {
+		this.applicationId = applicationId;
 	}
 	
 }

@@ -2,7 +2,6 @@ package org.keycloak.services.resources.admin;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -17,7 +16,6 @@ import javax.ws.rs.core.UriInfo;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.spi.NotFoundException;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.ModelDuplicateException;
@@ -35,38 +33,39 @@ import org.keycloak.services.resources.flows.Flows;
 public class ModulesResource {
 	
 	protected static final Logger logger = Logger.getLogger(ModulesResource.class);
+	protected ApplicationModel applicationModel;
     protected RealmModel realm;
     private RealmAuth auth;
 
     @Context
     protected KeycloakSession session;
     
-    public ModulesResource(RealmModel realm, RealmAuth auth) {
+    public ModulesResource(RealmModel realm, RealmAuth auth, ApplicationModel applicationModel) {
         this.realm = realm;
         this.auth = auth;
+        this.applicationModel = applicationModel;
 
         auth.init(RealmAuth.Resource.MODULE);
     }
     
-    @Path("{app-name}/application/modules")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @NoCache
-    public List<ModuleRepresentation> getModules(final @PathParam("app-name") String name) {
-        auth.requireAny();
+    public List<ModuleRepresentation> getModules() {
+//        auth.requireAny();
         
-        ApplicationModel application = realm.getApplicationByName(name);
+//        ApplicationModel application = realm.getApplicationById(appId);
         List<ModuleRepresentation> rep = new ArrayList<ModuleRepresentation>();
 
-        boolean view = auth.hasView();
-        for (ModuleModel moduleModel : application.getModules()) {
-            if (view) {
+//        boolean view = auth.hasView();
+        for (ModuleModel moduleModel : applicationModel.getModules()) {
+//            if (view) {
                 rep.add(ModelToRepresentation.toRepresentation(moduleModel));
-            } else {
-                ModuleRepresentation module = new ModuleRepresentation();
-                module.setName(moduleModel.getName());
-                rep.add(module);
-            }
+//            } else {
+//                ModuleRepresentation module = new ModuleRepresentation();
+//                module.setName(moduleModel.getName());
+//                rep.add(module);
+//            }
         }
         return rep;
     }
@@ -74,19 +73,17 @@ public class ModulesResource {
     /**
      * Create a new module
      * @param uriInfo
-     * @param appId
      * @param rep
      * @return
      */
-    @Path("applications/{app-id}/module")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createModule(final @Context UriInfo uriInfo, final @PathParam("app-id") String appId, final ModuleRepresentation rep) {
-    	auth.requireManage();
+    public Response createModule(final @Context UriInfo uriInfo, final ModuleRepresentation rep) {
+//    	auth.requireManage();
     	
     	try {
-    		ApplicationModel application = realm.getApplicationById(appId);
-    		ModuleModel moduleModel = RepresentationToModel.createModule(realm, application, rep);
+//    		ApplicationModel application = realm.getApplicationById(appId);
+    		ModuleModel moduleModel = RepresentationToModel.createModule(realm, applicationModel, rep);
     		return Response.created(uriInfo.getAbsolutePathBuilder().path(getModulePath(moduleModel)).build()).build();
     	} catch (ModelDuplicateException e) {
             return Flows.errors().exists("Module " + rep.getName() + " already exists");
@@ -99,24 +96,22 @@ public class ModulesResource {
     
     /**
      * Base path for managing a specific module
-     * @param appId Id's application
      * @param modId Id's module
      * @return
      */
-    @Path("applications/{app-id}/modules/{mod-id}")
-    public ModuleResource getModule(final @PathParam("app-id") String appId, final @PathParam("mod-id") String modId) {
-        ApplicationModel application = getApplicationByPathParam(appId);
-        if (application == null) {
-        	throw new NotFoundException("Could not find application: " + appId);
-        }
-        
-    	ModuleModel module = application.getModuleById(modId);
+    @Path("{mod-name}")
+    @GET
+    @NoCache
+    @Produces(MediaType.APPLICATION_JSON)
+    public ModuleResource getModule(final @PathParam("mod-name") String modName) {
+    	//logger.info("module - number of modules: "+applicationModel.getModules().size());
+    	ModuleModel module = applicationModel.getModuleByName(modName);
         if (module == null) {
-            throw new NotFoundException("Could not find module: " + modId);
+            throw new NotFoundException("Could not find module: " + modName);
         }
         
         ModuleResource moduleResource = new ModuleResource(realm, auth, module);
-        ResteasyProviderFactory.getInstance().injectProperties(moduleResource);
+        //ResteasyProviderFactory.getInstance().injectProperties(moduleResource);
         //resourceContext.initResource(moduleResource);
         return moduleResource;
     }

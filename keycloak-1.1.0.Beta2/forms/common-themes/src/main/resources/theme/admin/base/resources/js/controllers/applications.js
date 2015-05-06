@@ -362,10 +362,57 @@ module.controller('ApplicationRoleDetailCtrl', function($scope, realm, applicati
     };
 
 
-    roleControl($scope, realm, role, roles, applications,
-        ApplicationRole, RoleById, RoleRealmComposites, RoleApplicationComposites,
-        $http, $location, Notifications, Dialog);
+    //roleControl($scope, realm, role, roles, applications,
+    //    ApplicationRole, RoleById, RoleRealmComposites, RoleApplicationComposites,
+    //    $http, $location, Notifications, Dialog);
 
+});
+
+module.controller('ModuleDetailCtrl', function($scope, realm, application, module,
+		ApplicationModule, $http, $location, Dialog, Notifications) {
+	
+	$scope.realm = realm;
+	$scope.application = application;
+	$scope.module = angular.copy(module);
+	$scope.create = !module.name;
+	$scope.changed = $scope.create;
+	
+	$scope.save = function() {
+		if ($scope.create) {
+			ApplicationModule.save({
+					realm: realm.realm,
+					application : application.id
+			}, $scope.module, function (data, headers) {
+				$scope.changed = false;
+				module = angular.copy($scope.module);
+		
+				var l = headers().location;
+				var id = l.substring(l.lastIndexOf("/") + 1);
+				$location.url("/realms/" + realm.realm + "/applications/" + application.id + "/modules/" + id);
+				Notifications.success("The module has been created.");
+			});
+		} else {
+			$scope.update();
+		}
+	};
+	
+	$scope.remove = function() {
+		Dialog.confirmDelete($scope.module.name, 'module', function() {
+			$scope.module.$remove({
+				realm : realm.realm,
+				application : application.id,
+				module : $scope.module.name
+			}, function() {
+				$location.url("/realms/" + realm.realm + "/applications/" + application.id + "/modules");
+				Notifications.success("The module has been deleted.");
+			});
+		});
+	};
+	
+	$scope.cancel = function () {
+		$location.url("/realms/" + realm.realm + "/applications/" + application.id + "/modules");
+	};
+	
 });
 
 module.controller('ApplicationImportCtrl', function($scope, $location, $upload, realm, serverInfo, Notifications) {
@@ -999,4 +1046,3 @@ module.controller('ApplicationClusteringNodeCtrl', function($scope, application,
         }
     }
 });
-

@@ -16,7 +16,7 @@
 
         <p class="subtitle" data-ng-show="create"><span class="required">*</span> Required fields</p>
 
-        <form class="form-horizontal" name="realmForm" novalidate kc-read-only="!access.manageApplications">
+        <form class="form-horizontal" name="realmForm" novalidate>
             
             <fieldset class="border-top">
                 <div class="form-group">
@@ -47,7 +47,7 @@
                 
             </fieldset>
 
-            <fieldset data-ng-show="!create && (compositeSwitch || role.composite)">
+            <!-- <fieldset data-ng-show="!create && (compositeSwitch || role.composite)">
                 <legend uncollapsed><span class="text">Composite Realm Roles</span> </legend>
                 <div class="form-group col-sm-10">
                     <div class="controls changing-selectors">
@@ -122,7 +122,7 @@
                         </div>
                     </div>
                 </div>
-            </fieldset>
+            </fieldset> -->
 
             <div class="pull-right form-actions" data-ng-show="create && access.manageApplications">
                 <button kc-cancel data-ng-click="cancel()">Cancel</button>

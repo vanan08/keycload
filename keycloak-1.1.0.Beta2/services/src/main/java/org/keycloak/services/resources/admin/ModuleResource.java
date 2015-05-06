@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.keycloak.models.ModelDuplicateException;
 import org.keycloak.models.ModuleModel;
@@ -26,6 +27,8 @@ public class ModuleResource {
 	protected ModuleModel module;
 	protected RealmModel realm;
     private RealmAuth auth;
+    
+    private final static Logger log = Logger.getLogger(ModuleResource.class);
 	
 	public ModuleResource(RealmModel realm, RealmAuth auth, ModuleModel module) {
 		this.realm = realm;
@@ -43,7 +46,7 @@ public class ModuleResource {
 	@PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateModule(final ModuleRepresentation rep) {
-        auth.requireManage();
+        //auth.requireManage();
 
         try {
             RepresentationToModel.updateModule(realm, rep, module);
@@ -60,7 +63,7 @@ public class ModuleResource {
 	@DELETE
     @NoCache
     public void deleteModule() {
-        auth.requireManage();
+        //auth.requireManage();
         // remove module
     }
 	
@@ -72,9 +75,12 @@ public class ModuleResource {
     @NoCache
     @Produces(MediaType.APPLICATION_JSON)
     public ModuleRepresentation getModule() {
-        auth.requireView();
-
-        return ModelToRepresentation.toRepresentation(module);
+//        auth.requireView();
+		ModuleRepresentation repModule = ModelToRepresentation.toRepresentation(module);
+		
+		log.info(repModule.toString());
+		
+        return repModule;
     }
 	
 }

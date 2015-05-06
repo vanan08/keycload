@@ -46,4 +46,9 @@ public class ModuleRepresentation {
 	public void setRoles(String[] roles) {
 		this.roles = roles;
 	}
+	
+	@Override
+	public String toString() {
+		return "[id="+id+",name="+name+",url="+url+",description="+description+"]";
+	}
 }

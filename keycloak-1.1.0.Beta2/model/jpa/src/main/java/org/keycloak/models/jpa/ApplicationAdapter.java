@@ -33,7 +33,7 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
     protected EntityManager em;
     protected KeycloakSession session;
     protected ApplicationEntity applicationEntity;
-
+    
     public ApplicationAdapter(RealmModel realm, EntityManager em, KeycloakSession session, ApplicationEntity applicationEntity) {
         super(realm, applicationEntity, em);
         this.session = session;
@@ -46,7 +46,7 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
     public void updateApplication() {
         em.flush();
     }
-
+    
     @Override
     public String getName() {
         return entity.getName();

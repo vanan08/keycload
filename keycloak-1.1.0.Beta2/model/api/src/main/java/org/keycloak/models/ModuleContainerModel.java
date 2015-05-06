@@ -9,9 +9,9 @@ public interface ModuleContainerModel {
 	
 	ModuleModel getModuleByName(String name);
 
-	ModuleModel addModule(String name);
+	public ModuleModel addModule(String name);
 
-	ModuleModel addModule(String id, String name);
+	public ModuleModel addModule(String id, String name);
 
     boolean removeModule(ModuleModel module);
 

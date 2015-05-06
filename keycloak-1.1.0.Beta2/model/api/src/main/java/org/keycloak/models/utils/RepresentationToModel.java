@@ -574,8 +574,13 @@ public class RepresentationToModel {
     // MODULES
     
     public static ModuleModel createModule(RealmModel realm, ApplicationModel appModel, ModuleRepresentation moduleRep) {
-    	ModuleModel module = moduleRep.getId() != null ? 
-    			appModel.addModule(moduleRep.getId(), moduleRep.getName()) : appModel.addModule(moduleRep.getName());
+    	ModuleModel module = null;
+    	logger.info("ModuleName="+moduleRep.getName());
+    	if (moduleRep.getId() != null) {
+    		module = appModel.addModule(moduleRep.getId(), moduleRep.getName());
+    	} else {
+    		module = appModel.addModule(moduleRep.getName());
+    	}
     	module.setUrl(moduleRep.getUrl());
     	module.setDescription(moduleRep.getDescription());
     	

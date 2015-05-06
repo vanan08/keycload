@@ -107,11 +107,12 @@ public class ApplicationsResource {
     @Path("{app-name}")
     public ApplicationResource getApplication(final @PathParam("app-name") String name) {
         ApplicationModel applicationModel = getApplicationByPathParam(name);
-        logger.info(applicationModel);
-        
         if (applicationModel == null) {
             throw new NotFoundException("Could not find application: " + name);
         }
+        
+        //logger.info("application - number of module="+applicationModel.getModules().size());
+        
         ApplicationResource applicationResource = new ApplicationResource(realm, auth, applicationModel, session);
         ResteasyProviderFactory.getInstance().injectProperties(applicationResource);
         //resourceContext.initResource(applicationResource);

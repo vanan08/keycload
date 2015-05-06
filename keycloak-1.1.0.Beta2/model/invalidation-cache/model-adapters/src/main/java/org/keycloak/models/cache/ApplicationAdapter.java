@@ -2,10 +2,12 @@ package org.keycloak.models.cache;
 
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.ClientModel;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleContainerModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.cache.entities.CachedApplication;
+import org.keycloak.models.utils.KeycloakModelUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -243,5 +245,46 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
     public int hashCode() {
         return getId().hashCode();
     }
+
+	@Override
+	public ModuleModel getModuleById(String id) {
+		getDelegateForUpdate();
+		return updated.getModuleById(id);
+	}
+
+	@Override
+	public ModuleModel getModuleByName(String name) {
+		getDelegateForUpdate();
+		return updated.getModuleByName(name);
+	}
+
+	@Override
+	public ModuleModel addModule(String name) {
+		return addModule(KeycloakModelUtils.generateId(), name);
+	}
+
+	@Override
+	public ModuleModel addModule(String id, String name) {
+		getDelegateForUpdate();
+		return updated.addModule(id, name);
+	}
+
+	@Override
+	public boolean removeModule(ModuleModel module) {
+		getDelegateForUpdate();
+		return updated.removeModule(module);
+	}
+
+	@Override
+	public List<ModuleModel> getModules() {
+		getDelegateForUpdate();
+		return updated.getModules();
+	}
+
+	@Override
+	public Map<String, ModuleModel> getModuleNameMap() {
+		getDelegateForUpdate();
+		return updated.getModuleNameMap();
+	}
 
 }

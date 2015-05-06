@@ -27,7 +27,7 @@ public class ApplicationRepresentation {
     protected Boolean fullScopeAllowed;
     protected Integer nodeReRegistrationTimeout;
     protected Map<String, Integer> registeredNodes;
-    protected String[] modules = {"Cheese","Pepperoni"};
+    protected String[] modules;
     
 
     public String getId() {

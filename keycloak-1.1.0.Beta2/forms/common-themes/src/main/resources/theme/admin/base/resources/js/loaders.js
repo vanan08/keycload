@@ -154,6 +154,15 @@ module.factory('RoleListLoader', function(Loader, Role, $route, $q) {
     });
 });
 
+module.factory('ModuleListLoader', function(Loader, ApplicationModule, $route, $q) {
+    return Loader.query(ApplicationModule, function() {
+        return {
+            realm : $route.current.params.realm,
+            application : $route.current.params.application
+        }
+    });
+});
+
 module.factory('ApplicationRoleLoader', function(Loader, ApplicationRole, $route, $q) {
     return Loader.get(ApplicationRole, function() {
         return {
@@ -166,7 +175,7 @@ module.factory('ApplicationRoleLoader', function(Loader, ApplicationRole, $route
 
 module.factory('ApplicationModuleLoader', function(Loader, ApplicationModule, $route, $q) {//nvan
 	 return Loader.get(ApplicationModule, function() {
-		 alert('Module: '+$route.current.params.module);
+		console.log('module loader****');
         return {
             realm : $route.current.params.realm,
             application : $route.current.params.application,

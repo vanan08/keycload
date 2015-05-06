@@ -2,16 +2,18 @@ package org.keycloak.models.mongo.keycloak.adapters;
 
 import com.mongodb.DBObject;
 import com.mongodb.QueryBuilder;
+
 import org.keycloak.connections.mongo.api.context.MongoStoreInvocationContext;
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.mongo.keycloak.entities.MongoApplicationEntity;
+import org.keycloak.models.mongo.keycloak.entities.MongoModuleEntity;
 import org.keycloak.models.mongo.keycloak.entities.MongoRoleEntity;
 import org.keycloak.models.mongo.utils.MongoModelUtils;
-import org.keycloak.util.Time;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -272,5 +274,50 @@ public class ApplicationAdapter extends ClientAdapter<MongoApplicationEntity> im
         return getId().hashCode();
     }
 
+	@Override
+	public ModuleModel getModuleById(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ModuleModel getModuleByName(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ModuleModel addModule(String name) {
+		return null;
+	}
+
+	@Override
+	public ModuleModel addModule(String id, String name) {
+		MongoModuleEntity module = new MongoModuleEntity();
+		module.setId(id);
+		module.setName(name);
+		module.setApplicationId(getId());
+		
+		getMongoStore().insertEntity(module, invocationContext);
+		
+		return null;
+	}
+
+	@Override
+	public boolean removeModule(ModuleModel module) {
+		return false;
+	}
+
+	@Override
+	public List<ModuleModel> getModules() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, ModuleModel> getModuleNameMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

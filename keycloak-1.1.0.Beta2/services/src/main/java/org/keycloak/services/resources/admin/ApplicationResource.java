@@ -4,7 +4,6 @@ import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.spi.BadRequestException;
 import org.jboss.resteasy.spi.NotFoundException;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.ModelDuplicateException;
@@ -125,6 +124,8 @@ public class ApplicationResource {
     public ApplicationRepresentation getApplication() {
         auth.requireView();
 
+        //logger.info("number of modules="+application.getModules().size());
+        
         return ModelToRepresentation.toRepresentation(application);
     }
 
@@ -424,19 +425,18 @@ public class ApplicationResource {
         return new ResourceAdminManager().testNodesAvailability(uriInfo.getRequestUri(), realm, application);
     }
     
-    
     /**
      * Get module listing
      *
      * @param username username (not id!)
      * @return
      */
-    @Path("{application_id}/modules")
+    @Path("getModules")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @NoCache
-    public MappingsRepresentation getRoleMappings(@PathParam("application_id") String application_id) {
-    	auth.requireView();
+    public MappingsRepresentation getRoleMappings() {
+//    	auth.requireView();
         
         MappingsRepresentation all = new MappingsRepresentation();
         Set<RoleModel> realmMappings = application.getRealmScopeMappings();
@@ -466,19 +466,6 @@ public class ApplicationResource {
         return all;
     }
     
-    /**
-     * Base path for managing modules under this application.
-     *
-     * @return
-     */
-    @Path("modules")
-    public ModulesResource getModules() {
-    	ModulesResource moduleResource = new ModulesResource(realm, auth);
-    	ResteasyProviderFactory.getInstance().injectProperties(moduleResource);
-    	//resourceContext.initResource(moduleResource);
-    	return moduleResource;
-    }
-    
     protected Set<RoleModel> getApplicationRoleMappings() {
     	Set<RoleModel> roleMappings = application.getScopeMappings();
 
@@ -488,7 +475,7 @@ public class ApplicationResource {
             if (container instanceof RealmModel) {
             } else {
                 ApplicationModel app = (ApplicationModel)container;
-                if (app.getId().equals(getApplicationId())) {
+                if (app.getId().equals(application.getId())) {
                     appRoles.add(role);
                 }
             }
@@ -497,8 +484,17 @@ public class ApplicationResource {
         return appRoles;
     }
     
-    protected String getApplicationId() {
-    	return application.getId();
+    /**
+     * Base path for managing modules under this application.
+     *
+     * @return
+     */
+    @Path("modules")
+    public ModulesResource getModules() {
+    	ModulesResource moduleResource = new ModulesResource(realm, auth, application);
+    	//ResteasyProviderFactory.getInstance().injectProperties(moduleResource);
+    	//resourceContext.initResource(moduleResource);
+    	return moduleResource;
     }
 
 }

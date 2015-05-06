@@ -377,43 +377,6 @@ module.config([ '$routeProvider', function($routeProvider) {
             },
             controller : 'ApplicationRoleDetailCtrl'
         })
-        
-        .when('/create/module/:realm/applications/:application', {//nvan
-            templateUrl : 'partials/application-module-role-detail.html',
-            resolve : {
-                realm : function(RealmLoader) {
-                    return RealmLoader();
-                },
-                application : function(ApplicationLoader) {
-                    return ApplicationLoader();
-                },
-                module : function() {
-                    return {};
-                },
-                applications : function(ApplicationListLoader) {
-                    return ApplicationListLoader();
-                }
-            },
-            controller : 'ApplicationRoleDetailCtrl'
-        })
-         .when('/realms/:realm/applications/:application/modules/:module', {//nvan
-            templateUrl : 'partials/application-module-role-detail.html',
-            resolve : {
-                realm : function(RealmLoader) {
-                    return RealmLoader();
-                },
-                application : function(ApplicationLoader) {
-                    return ApplicationLoader();
-                },
-                modules : function(ApplicationModuleLoader) {
-                    return ApplicationModuleLoader();
-                },
-                applications : function(ApplicationListLoader) {
-                    return ApplicationListLoader();
-                }
-            },
-            controller : 'ApplicationRoleDetailCtrl'
-        })
         .when('/realms/:realm/applications/:application/roles/:role', {
             templateUrl : 'partials/application-role-detail.html',
             resolve : {
@@ -435,6 +398,49 @@ module.config([ '$routeProvider', function($routeProvider) {
             },
             controller : 'ApplicationRoleDetailCtrl'
         })
+        .when('/create/module/:realm/applications/:application', {//nvan
+            templateUrl : 'partials/application-module-role-detail.html',
+            resolve : {
+                realm : function(RealmLoader) {
+                    return RealmLoader();
+                },
+                application : function(ApplicationLoader) {
+                    return ApplicationLoader();
+                },
+                module : function() {
+                   return {};
+                }
+                //modules : function(ModuleListLoader) {
+                //   return ModuleListLoader();
+                //},
+                //applications : function(ApplicationListLoader) {
+                //    return ApplicationListLoader();
+                //}
+            },
+            controller : 'ModuleRoleDetailCtrl'
+        })
+         .when('/realms/:realm/applications/:application/modules/:module', {//nvan
+            templateUrl : 'partials/application-module-role-detail.html',
+            resolve : {
+                realm : function(RealmLoader) {
+                    return RealmLoader();
+                },
+                application : function(ApplicationLoader) {
+                    return ApplicationLoader();
+                },
+                module : function(ApplicationModuleLoader) {
+                    return ApplicationModuleLoader();
+                }
+                //modules : function(ModuleListLoader) {
+                //    return ModuleListLoader();
+                //},
+                //applications : function(ApplicationListLoader) {
+                //    return ApplicationListLoader();
+                //}
+            },
+            controller : 'ModuleDetailCtrl'
+        })
+        
         .when('/realms/:realm/applications/:application/claims', {
             templateUrl : 'partials/application-claims.html',
             resolve : {
@@ -448,7 +454,7 @@ module.config([ '$routeProvider', function($routeProvider) {
                     return ApplicationClaimsLoader();
                 }
             },
-            controller : 'ApplicationClaimsCtrl'
+            controller : 'ModuleDetailCtrl'
         })
         .when('/realms/:realm/applications/:application/sessions', {
             templateUrl : 'partials/application-sessions.html',
