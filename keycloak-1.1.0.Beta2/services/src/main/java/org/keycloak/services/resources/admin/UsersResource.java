@@ -52,13 +52,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -616,8 +616,25 @@ public class UsersResource {
         }
 
         return new UserApplicationRoleMappingsResource(realm, auth, user, application);
-
     }
+    
+    // updated
+    @Path("{username}/role-mappings/applications-by-id/{appId}/modules")
+    public UserModuleRoleMappingsResource getUserModuleRoleMappingsResourceById(@PathParam("username") String username, @PathParam("appId") String appId) {
+        UserModel user = session.users().getUserByUsername(username, realm);
+        if (user == null) {
+            throw new NotFoundException("User not found");
+        }
+
+        ApplicationModel application = realm.getApplicationById(appId);
+
+        if (application == null) {
+            throw new NotFoundException("Application not found");
+        }
+
+        return new UserModuleRoleMappingsResource(realm, auth, user, application);
+    }
+    
     /**
      *  Set up a temporary password for this user.  User will have to reset this temporary password when they log
      *  in next.

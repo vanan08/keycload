@@ -3,25 +3,23 @@ package org.keycloak.services.resources.admin;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.spi.NotFoundException;
-import org.keycloak.ClientConnection;
 import org.keycloak.models.ApplicationModel;
-import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.utils.ModelToRepresentation;
-import org.keycloak.protocol.oidc.TokenManager;
 import org.keycloak.representations.idm.RoleRepresentation;
+import org.keycloak.services.resources.flows.Flows;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -149,7 +147,7 @@ public class UserApplicationRoleMappingsResource {
      */
     @DELETE
     @Consumes("application/json")
-    public void deleteApplicationRoleMapping(List<RoleRepresentation> roles) {
+    public Response deleteApplicationRoleMapping(List<RoleRepresentation> roles) {
         auth.requireManage();
 
         if (roles == null) {
@@ -159,7 +157,11 @@ public class UserApplicationRoleMappingsResource {
                     ApplicationModel app = (ApplicationModel) roleModel.getContainer();
                     if (!app.getId().equals(application.getId())) continue;
                 }
-                user.deleteRoleMapping(roleModel);
+                if (!roleIsUsed(application, roleModel.getId())) {
+                	user.deleteRoleMapping(roleModel);
+                } else {
+                	return Flows.errors().exists(" Role '"+roleModel.getName()+"' is used already in modules");
+                }
             }
 
         } else {
@@ -168,8 +170,26 @@ public class UserApplicationRoleMappingsResource {
                 if (roleModel == null || !roleModel.getId().equals(role.getId())) {
                     throw new NotFoundException("Role not found");
                 }
-                user.deleteRoleMapping(roleModel);
+                if (!roleIsUsed(application, roleModel.getId())) {
+                	user.deleteRoleMapping(roleModel);
+                } else {
+                	return Flows.errors().exists(" Role '"+roleModel.getName()+"' is used already in modules");
+                }
             }
         }
+        
+        return null;
+    }
+    
+    protected boolean roleIsUsed(ApplicationModel application, String roleId) {
+    	List<ModuleModel> modules = application.getModules();
+    	for (ModuleModel module : modules) {
+    		if (!module.hasRole(roleId)) {
+    			continue;
+    		}
+    		return true;
+    	}
+    	
+    	return false;
     }
 }

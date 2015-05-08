@@ -183,10 +183,15 @@ public class ApplicationResource {
      */
     @DELETE
     @NoCache
-    public void deleteApplication() {
+    public Response deleteApplication() {
         auth.requireManage();
-
-        new ApplicationManager(new RealmManager(session)).removeApplication(realm, application);
+        try {
+        	new ApplicationManager(new RealmManager(session)).removeApplication(realm, application);
+        } catch(Exception ex) {
+        	return Flows.errors().exists(" Application '"+application.getName()+"' is already used");
+        }
+        
+        return null;
     }
 
 
