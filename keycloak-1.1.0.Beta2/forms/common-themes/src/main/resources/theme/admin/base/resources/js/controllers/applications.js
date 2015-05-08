@@ -373,12 +373,9 @@ module.controller('ModuleDetailCtrl', function($scope, realm, application, modul
 	
 	$scope.realm = realm;
 	$scope.application = application;
-	$scope.create = false;
-	
 	$scope.module = angular.copy(module);
-	
 	$scope.create = !module.name;
-	$scope.changed = !$scope.create;
+	$scope.changed = $scope.create;
 	
 	$scope.save = function() {
 		if ($scope.create) {
@@ -399,18 +396,6 @@ module.controller('ModuleDetailCtrl', function($scope, realm, application, modul
 		}
 	};
 	
-	$scope.update = function () {
-		ApplicationModule.update({
-			realm: realm.realm,
-			application : application.id,
-			module: $scope.module.name
-        }, $scope.module, function () {
-            $scope.changed = false;
-            module = angular.copy($scope.module);
-            Notifications.success("Your changes have been saved to the role.");
-        });
-    };
-	
 	$scope.remove = function() {
 		Dialog.confirmDelete($scope.module.name, 'module', function() {
 			$scope.module.$remove({
@@ -418,7 +403,7 @@ module.controller('ModuleDetailCtrl', function($scope, realm, application, modul
 				application : application.id,
 				module : $scope.module.name
 			}, function() {
-				$location.url("/realms/" + realm.realm + "/applications/" + application.id);
+				$location.url("/realms/" + realm.realm + "/applications/" + application.id + "/modules");
 				Notifications.success("The module has been deleted.");
 			});
 		});
