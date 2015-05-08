@@ -1,11 +1,12 @@
 package org.keycloak.models;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ModuleModel {
 
 	void updateModule();
-
+	
 	String getId();
 	
     String getName();
@@ -16,11 +17,15 @@ public interface ModuleModel {
     
 	String getUrl();
 	void setUrl(String url);
-	
-	boolean hasScope(RoleModel role);
     
-    void addRole(String rolename);
-    void setRoles(String [] roles);
-    List<String> getListRoles();
+    List<String> getListRoles(String userId);
+    boolean hasRole(String roleId);
+    
+    RoleModel getRoleByName(String userId, String name);
+    Set<RoleModel> getRoles(String userId);
+    RoleModel addRole(String userId, String rolename);
+    boolean removeRole(String userId, RoleModel role);
+    
+    boolean container(String userId, RoleModel role);
     
 }

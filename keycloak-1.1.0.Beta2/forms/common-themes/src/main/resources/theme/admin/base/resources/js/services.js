@@ -334,6 +334,38 @@ module.factory('CompositeApplicationRoleMapping', function($resource) {
     });
 });
 
+// updated 2015-05-06
+module.factory('AvailableApplicationModules', function($resource) {
+    return $resource(authUrl + '/admin/realms/:realm/applications-by-id/:application/modules', {
+        realm : '@realm',
+        application : '@application'
+    });
+});
+module.factory('AvailableModuleRoleMapping', function($resource) {
+    return $resource(authUrl + '/admin/realms/:realm/users/:userId/role-mappings/applications-by-id/:application/modules/:module/available', {
+        realm : '@realm',
+        userId : '@userId',
+        application : "@application",
+        module : "@module"
+    });
+});
+module.factory('ModuleRoleMapping', function($resource) {
+    return $resource(authUrl + '/admin/realms/:realm/users/:userId/role-mappings/applications-by-id/:application/modules/:module', {
+        realm : '@realm',
+        userId : '@userId',
+        application : "@application",
+        module : "@module"
+    });
+});
+module.factory('CompositeModuleRoleMapping', function($resource) {
+    return $resource(authUrl + '/admin/realms/:realm/users/:userId/role-mappings/applications-by-id/:application/modules/:module/composite', {
+    	realm : '@realm',
+        userId : '@userId',
+        application : "@application",
+        module : "@module"
+    });
+});
+
 module.factory('ApplicationRealmScopeMapping', function($resource) {
     return $resource(authUrl + '/admin/realms/:realm/applications-by-id/:application/scope-mappings/realm', {
         realm : '@realm',

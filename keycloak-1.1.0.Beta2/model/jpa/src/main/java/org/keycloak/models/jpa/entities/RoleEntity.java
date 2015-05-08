@@ -25,6 +25,7 @@ import java.util.Collection;
 })
 @NamedQueries({
         @NamedQuery(name="getAppRoleByName", query="select role from RoleEntity role where role.name = :name and role.application = :application"),
+        @NamedQuery(name="getAppRoleById", query="select role from RoleEntity role where role.id = :id and role.application = :application"),
         @NamedQuery(name="getRealmRoleByName", query="select role from RoleEntity role where role.applicationRole = false and role.name = :name and role.realm = :realm")
 })
 

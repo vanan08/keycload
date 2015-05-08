@@ -118,6 +118,62 @@
                     </div>
                 </div>
             </fieldset>
+            
+            <!-- module roles -->
+            <fieldset ng-show="modules.length > 0">
+                <legend><span class="text">Module Roles</span> </legend>
+                <div class="form-group input-select"> <!-- start div "select a module" -->
+                    <label class="col-sm-2 control-label" for="modules">Module <span tooltip-placement="right" tooltip="Select an module to view or modify additional roles to map." class="fa fa-info-circle"></span></label>
+                    <div class="col-sm-4">
+                        <div class="input-group">
+                            <div class="select-kc">
+                                <select id="modules" name="modules" ng-change="changeModule()" ng-model="module" ng-options="a.name for a in modules" ng-disabled="false">
+                                    <option value="" selected> Select an Module...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- end div "select a module" -->
+                <div class="form-group" ng-show="module"> 
+                    <div class="controls changing-selectors col-sm-10">
+                        <div class="select-title">
+                            <label class="control-label" for="availablemod">Available Roles <span tooltip-placement="right" tooltip="Assignable roles from this module" class="fa fa-info-circle"></span></label>
+                            <select id="availablemod" class="form-control" multiple size="5"
+                                    ng-multiple="true"
+                                    ng-model="selectedModuleRoles"
+                                    ng-options="r.name for r in moduleRoles">
+                            </select>
+                        </div>
+                        <div class="middle-buttons">
+                            <button class="btn btn-default" type="submit" ng-click="addModuleRole()" tooltip="Assign role" tooltip-placement="right">
+                                <span class="kc-icon-arrow-right">Move right</span>
+                            </button>
+                            <button class="btn btn-default" type="submit" ng-click="deleteModuleRole()" tooltip="Unassign role" tooltip-placement="left">
+                                <span class="kc-icon-arrow-left">Move left</span>
+                            </button>
+                        </div>
+                        <div class="select-title">
+                            <label class="control-label" for="assigned-mod">Assigned Roles <span tooltip-placement="right" tooltip="Role mappings for this module." class="fa fa-info-circle"></span></label>
+                            <select id="assigned-mod" class="form-control" multiple size=5
+                                    ng-multiple="true"
+                                    ng-model="selectedModuleMappings"
+                                    ng-options="r.name for r in moduleMappings">
+                            </select>
+                        </div>
+                        <div class="middle-buttons">
+                            -
+                        </div>
+                        <div class="select-title">
+                            <label class="control-label" for="mod-composite">Effective Roles <span tooltip-placement="right" tooltip="Role mappings for this module  Some roles here might be inherited from a mapped composite role." class="fa fa-info-circle"></span></label>
+                            <select id="mod-composite" class="form-control" multiple size=5
+                                    ng-disabled="true"
+                                    ng-model="dummymodel"
+                                    ng-options="r.name for r in moduleComposite">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </fieldset> <!-- end module roles -->
         </form>
     </div>
 </div>

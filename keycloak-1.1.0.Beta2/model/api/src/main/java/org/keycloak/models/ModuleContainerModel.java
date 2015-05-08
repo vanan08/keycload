@@ -14,6 +14,8 @@ public interface ModuleContainerModel {
 	public ModuleModel addModule(String id, String name);
 
     boolean removeModule(ModuleModel module);
+    
+    boolean container(ModuleModel module);
 
     List<ModuleModel> getModules();
     

@@ -286,5 +286,17 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
 		getDelegateForUpdate();
 		return updated.getModuleNameMap();
 	}
+	
+	@Override
+	public boolean container(ModuleModel module) {
+		getDelegateForUpdate();
+		return updated.container(module);
+	}
+
+	@Override
+	public RoleModel getRoleById(String id) {
+		getDelegateForUpdate();
+		return updated.getRoleById(id);
+	}
 
 }

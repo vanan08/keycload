@@ -302,9 +302,9 @@ public class ModelToRepresentation {
     	req.setName(model.getName());
     	req.setUrl(model.getUrl());
     	req.setDescription(model.getDescription());
-    	if (!model.getListRoles().isEmpty()) {
-    		req.setRoles(model.getListRoles().toArray(new String[0]));
-    	}
+//    	if (!model.getListRoles().isEmpty()) {
+//    		req.setRoles(model.getListRoles().toArray(new String[0]));
+//    	}
     	return req;
     }
     

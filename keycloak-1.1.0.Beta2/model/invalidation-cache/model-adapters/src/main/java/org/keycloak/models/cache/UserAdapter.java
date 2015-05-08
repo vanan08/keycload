@@ -2,6 +2,7 @@ package org.keycloak.models.cache;
 
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleContainerModel;
 import org.keycloak.models.RoleModel;
@@ -232,6 +233,19 @@ public class UserAdapter implements UserModel {
             }
         }
         return appMappings;
+    }
+    
+    @Override
+    public Set<RoleModel> getModuleRoleMappings(ModuleModel module) {
+    	if (updated != null) return updated.getModuleRoleMappings(module);
+    	Set<RoleModel> modMappings = new HashSet<RoleModel>();
+        Set<RoleModel> rolesModule = module.getRoles(cached.getId());
+        for (RoleModel role : rolesModule) {
+        	if (hasRole(role)) {
+        		modMappings.add(role);
+        	}
+        }
+        return modMappings;
     }
 
     @Override

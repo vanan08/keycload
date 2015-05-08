@@ -1,6 +1,7 @@
 package org.keycloak.models.utils;
 
 import org.keycloak.models.ApplicationModel;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserCredentialModel;
 import org.keycloak.models.UserCredentialValueModel;
@@ -185,4 +186,9 @@ public class UserModelDelegate implements UserModel {
     public void setFederationLink(String link) {
         delegate.setFederationLink(link);
     }
+
+	@Override
+	public Set<RoleModel> getModuleRoleMappings(ModuleModel module) {
+		return delegate.getModuleRoleMappings(module);
+	}
 }

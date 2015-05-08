@@ -1,6 +1,8 @@
 package org.keycloak.models.cache;
 
 import java.util.List;
+import java.util.Set;
+
 import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.cache.entities.CachedModule;
@@ -59,26 +61,71 @@ public class CacheModuleAdapter implements ModuleModel {
 		if (updated != null) updated.setUrl(url);
 	}
 
-	@Override
-	public boolean hasScope(RoleModel role) {
-		if (updated != null) return updated.hasScope(role);
-		return false;
-	}
+//	@Override
+//	public boolean hasScope(RoleModel role) {
+//		if (updated != null) return updated.hasScope(role);
+//		return false;
+//	}
+
+//	@Override
+//	public RoleModel addRole(String rolename) {
+//		return updated.addRole(rolename);
+//	}
+
+//	@Override
+//	public void setRoles(String[] roles) {
+//		if (updated != null) updated.setRoles(roles);
+//	}
 
 	@Override
-	public void addRole(String rolename) {
-		if (updated != null) updated.addRole(rolename);
-	}
-
-	@Override
-	public void setRoles(String[] roles) {
-		if (updated != null) updated.setRoles(roles);
-	}
-
-	@Override
-	public List<String> getListRoles() {
-		if (updated != null) return updated.getListRoles();
+	public List<String> getListRoles(String userId) {
+		if (updated != null) return updated.getListRoles(userId);
         return cached.getRoles();
+	}
+	
+	@Override
+	public Set<RoleModel> getRoles(String userId) {
+		return updated.getRoles(userId);
+	}
+	
+//	@Override
+//	public boolean container(RoleModel role) {
+//		return updated.container(role);
+//	}
+	
+//	@Override
+//	public RoleModel getRole(String name) {
+//		return updated.getRole(name);
+//	}
+
+//	@Override
+//	public RoleModel addRole(String id, String name) {
+//		return updated.addRole(id, name);
+//	}
+
+	@Override
+	public boolean removeRole(String userId, RoleModel role) {
+		return updated.removeRole(userId, role);
+	}
+
+	@Override
+	public RoleModel addRole(String userId, String rolename) {
+		return updated.addRole(userId, rolename);
+	}
+
+	@Override
+	public boolean container(String userId, RoleModel role) {
+		return updated.container(userId, role);
+	}
+
+	@Override
+	public RoleModel getRoleByName(String userId, String name) {
+		return updated.getRoleByName(userId, name);
+	}
+
+	@Override
+	public boolean hasRole(String roleId) {
+		return updated.hasRole(roleId);
 	}
 
 }

@@ -1,18 +1,18 @@
 package org.keycloak.models.jpa;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.jpa.entities.ModuleEntity;
-import org.keycloak.models.jpa.entities.RoleEntity;
+import org.keycloak.models.jpa.entities.ModuleRoleMappingEntity;
 
 public class ModuleAdapter implements ModuleModel {
 
@@ -68,71 +68,116 @@ public class ModuleAdapter implements ModuleModel {
 	}
 	
 	@Override
-	public List<String> getListRoles() {
-		Collection<RoleEntity> entities = moduleEntity.getRoles();
+	public List<String> getListRoles(String userId) {
+		Set<RoleModel> entities = getRoles(userId);
         List<String> roles = new ArrayList<String>();
         if (entities == null) return roles;
-        for (RoleEntity entity : entities) {
+        for (RoleModel entity : entities) {
             roles.add(entity.getName());
         }
         return roles;
 	}
 	
 	@Override
-	public void addRole(String rolename) {
+	public RoleModel addRole(String userId, String rolename) {
 		RoleModel role = applicationAdapter.getRole(rolename);
         
-        Collection<RoleEntity> entities = moduleEntity.getRoles();
-        for (RoleEntity entity : entities) {
-            if (entity.getId().equals(role.getId())) {
-                return;
+        Set<RoleModel> roles = getRoles(userId);
+        for (RoleModel rm : roles) {
+            if (rm.getId().equals(role.getId())) {
+                return role;
             }
         }
-        RoleEntity roleEntity = RoleAdapter.toRoleEntity(role, em);
-        entities.add(roleEntity);
+        
+        ModuleRoleMappingEntity moduleRoleMappingEntity = new ModuleRoleMappingEntity();
+        moduleRoleMappingEntity.setModule(moduleEntity);
+        moduleRoleMappingEntity.setRoleId(role.getId());
+        moduleRoleMappingEntity.setUserId(userId);
+        em.persist(moduleRoleMappingEntity);
         em.flush();
+        
+        return role;
 	}
 	
 	@Override
-	public void setRoles(String[] rolenames) {
-		Collection<RoleEntity> entities = moduleEntity.getRoles();
-        Set<String> already = new HashSet<String>();
-        List<RoleEntity> remove = new ArrayList<RoleEntity>();
-        for (RoleEntity rel : entities) {
-            if (!ApplicationAdapter.contains(rel.getName(), rolenames)) {
-                remove.add(rel);
-            } else {
-                already.add(rel.getName());
-            }
+	public boolean removeRole(String userId, RoleModel role) {
+		if (role == null) {
+            return false;
         }
-        for (RoleEntity entity : remove) {
-            entities.remove(entity);
-        }
-        em.flush();
-        for (String roleName : rolenames) {
-            if (!already.contains(roleName)) {
-                addRole(roleName);
-            }
-        }
-        em.flush();
-	}
-	
-	@Override
-	public boolean hasScope(RoleModel role) {
-		if (applicationAdapter.hasScope(role)) {
-            return true;
-        }
-        Set<RoleModel> roles = applicationAdapter.getRoles();
-        if (roles.contains(role)) return true;
-
-        for (RoleModel mapping : roles) {
-            if (mapping.hasRole(role)) return true;
-        }
-        return false;
+		
+		em.createNamedQuery("deleteModuleRoleMappingByUser")
+			.setParameter("module", moduleEntity)
+			.setParameter("roleId", role.getId())
+			.setParameter("userId", userId)
+			.executeUpdate();
+		em.flush();
+		return true;
 	}
 	
 	@Override
 	public void updateModule() {
 		em.flush();
+	}
+
+	@Override
+	public Set<RoleModel> getRoles(String userId) {
+		Set<RoleModel> roles = new HashSet<RoleModel>();
+		
+		TypedQuery<ModuleRoleMappingEntity> query = em.createNamedQuery("selectRolesByUserModule", ModuleRoleMappingEntity.class);
+		query.setParameter("module", moduleEntity);
+	    query.setParameter("userId", userId);
+	    
+	    List<ModuleRoleMappingEntity> ls = query.getResultList();
+	    
+	    for (ModuleRoleMappingEntity entity : ls) {
+	    	roles.add(applicationAdapter.getRoleById(entity.getRoleId()));
+	    }
+		
+		return roles;
+	}
+	
+	@Override
+	public boolean container(String userId, RoleModel role) {
+		Set<RoleModel> roles = getRoles(userId);
+		if (roles.size() == 0) return false;
+		
+		for (RoleModel rm : roles) {
+			if (rm.getId().equals(role.getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public RoleModel getRoleByName(String userId, String name) {
+	    RoleModel role = applicationAdapter.getRole(name);
+	    if (role == null) return null;
+	    
+	    TypedQuery<ModuleRoleMappingEntity> query = em.createNamedQuery("selectRolesByRoleId", ModuleRoleMappingEntity.class);
+		query.setParameter("module", moduleEntity);
+	    query.setParameter("userId", userId);
+	    query.setParameter("roleId", role.getId());
+	    
+	    List<ModuleRoleMappingEntity> ls = query.getResultList();
+	    
+	    if (ls.size() == 0) {
+	    	return null;
+	    }
+	    
+		return role;
+	}
+
+	@Override
+	public boolean hasRole(String roleId) {
+		TypedQuery<ModuleRoleMappingEntity> query = em.createNamedQuery("moduleHasRole", ModuleRoleMappingEntity.class);
+	    query.setParameter("roleId", roleId);
+	    
+	    List<ModuleRoleMappingEntity> ls = query.getResultList();
+	    if (ls.size() == 0) {
+	    	return false;
+	    }
+	    
+		return true;
 	}
 }

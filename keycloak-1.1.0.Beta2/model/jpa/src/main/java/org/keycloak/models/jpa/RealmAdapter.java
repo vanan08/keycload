@@ -662,9 +662,6 @@ public class RealmAdapter implements RealmModel {
                 applicationEntity = a;
             }
         }
-        if (application == null) {
-            return false;
-        }
         em.remove(applicationEntity);
         em.createNamedQuery("deleteScopeMappingByClient").setParameter("client", applicationEntity).executeUpdate();
         em.flush();

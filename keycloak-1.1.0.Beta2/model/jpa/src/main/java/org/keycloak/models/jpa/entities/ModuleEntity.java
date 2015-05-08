@@ -1,16 +1,11 @@
 package org.keycloak.models.jpa.entities;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -36,9 +31,9 @@ public class ModuleEntity {
     @JoinColumn(name = "APPLICATION_ID")
     private ApplicationEntity application;
 	
-    @OneToMany(fetch = FetchType.LAZY, cascade ={})
-    @JoinTable(name="MODULE_ROLE", joinColumns = { @JoinColumn(name="MODULE_ID")}, inverseJoinColumns = { @JoinColumn(name="ROLE_ID")})
-    Collection<RoleEntity> roles = new ArrayList<RoleEntity>();
+//    @OneToMany(fetch = FetchType.LAZY, cascade ={})
+//    @JoinTable(name="MODULE_ROLE", joinColumns = { @JoinColumn(name="MODULE_ID")}, inverseJoinColumns = { @JoinColumn(name="ROLE_ID")})
+//    Collection<RoleEntity> roles = new ArrayList<RoleEntity>();
 
 	public String getId() {
 		return id;
@@ -80,13 +75,13 @@ public class ModuleEntity {
 		this.application = application;
 	}
 	
-	public Collection<RoleEntity> getRoles() {
-		return roles;
-	}
-	
-	public void setRoles(Collection<RoleEntity> roles) {
-		this.roles = roles;
-	}
+//	public Collection<RoleEntity> getRoles() {
+//		return roles;
+//	}
+//	
+//	public void setRoles(Collection<RoleEntity> roles) {
+//		this.roles = roles;
+//	}
 	
 	
 }

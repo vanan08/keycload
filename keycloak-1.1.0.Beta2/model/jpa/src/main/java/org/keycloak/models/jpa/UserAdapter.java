@@ -1,6 +1,7 @@
 package org.keycloak.models.jpa;
 
 import org.keycloak.models.ApplicationModel;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.PasswordPolicy;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleContainerModel;
@@ -18,6 +19,7 @@ import org.keycloak.models.utils.Pbkdf2PasswordEncoder;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -375,6 +377,18 @@ public class UserAdapter implements UserModel {
                    roles.add(role);
                 }
             }
+        }
+        return roles;
+    }
+    
+    @Override
+    public Set<RoleModel> getModuleRoleMappings(ModuleModel module) {
+        Set<RoleModel> roles = new HashSet<RoleModel>();
+        Set<RoleModel> rolesModule = module.getRoles(user.getId());
+        for (RoleModel role : rolesModule) {
+        	if (hasRole(role)) {
+        		roles.add(role);
+        	}
         }
         return roles;
     }

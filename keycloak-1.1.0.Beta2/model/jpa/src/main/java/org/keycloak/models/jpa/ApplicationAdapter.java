@@ -106,6 +106,15 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
     public void setDirectGrantsOnly(boolean flag) {
         // applications can't be grant only
     }
+    
+	public RoleModel getRoleById(String id) {
+		TypedQuery<RoleEntity> query = em.createNamedQuery("getAppRoleById", RoleEntity.class);
+        query.setParameter("id", id);
+        query.setParameter("application", entity);
+        List<RoleEntity> roles = query.getResultList();
+        if (roles.size() == 0) return null;
+        return new RoleAdapter(realm, em, roles.get(0));
+	}
 
     @Override
     public RoleModel getRole(String name) {
@@ -306,6 +315,9 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
     		}
     	}
     	em.remove(moduleEntity);
+    	em.createNamedQuery("deleteModuleRoleMappingByModule")
+    		.setParameter("module", moduleEntity)
+    		.executeUpdate();
     	em.flush();
     	return true;
     }
@@ -333,6 +345,11 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
     @Override
     public ModuleModel getModuleByName(String name) {
     	return getModuleNameMap().get(name);
+    }
+    
+    @Override
+    public boolean container(ModuleModel module) {
+    	return getModuleById(module.getId()) != null ? true : false;
     }
     
     @Override

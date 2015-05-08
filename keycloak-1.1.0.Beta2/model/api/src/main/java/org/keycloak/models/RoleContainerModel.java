@@ -8,6 +8,8 @@ import java.util.Set;
  */
 public interface RoleContainerModel {
     RoleModel getRole(String name);
+    
+    RoleModel getRoleById(String id);
 
     RoleModel addRole(String name);
 

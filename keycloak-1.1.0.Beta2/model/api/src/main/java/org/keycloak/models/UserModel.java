@@ -66,6 +66,7 @@ public interface UserModel {
 
     Set<RoleModel> getRealmRoleMappings();
     Set<RoleModel> getApplicationRoleMappings(ApplicationModel app);
+    Set<RoleModel> getModuleRoleMappings(ModuleModel module); // updated
     boolean hasRole(RoleModel role);
     void grantRole(RoleModel role);
     Set<RoleModel> getRoleMappings();

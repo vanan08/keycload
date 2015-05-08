@@ -585,9 +585,9 @@ public class RepresentationToModel {
     	module.setDescription(moduleRep.getDescription());
     	
     	// mapping roles to module
-    	if (moduleRep.getRoles() != null && moduleRep.getRoles().length > 0) {
-			module.setRoles(moduleRep.getRoles());
-    	}
+    	//if (moduleRep.getRoles() != null && moduleRep.getRoles().length > 0) {
+		//	module.setRoles(moduleRep.getRoles());
+    	//}
     	
     	module.updateModule();
     	
@@ -601,9 +601,9 @@ public class RepresentationToModel {
     	if (moduleRep.getUrl() != null) resource.setDescription(moduleRep.getUrl());
     	
     	// mapping roles to module
-    	if (moduleRep.getRoles() != null && moduleRep.getRoles().length > 0) {
-    		resource.setRoles(moduleRep.getRoles());
-    	}
+    	//if (moduleRep.getRoles() != null && moduleRep.getRoles().length > 0) {
+    	//	resource.setRoles(moduleRep.getRoles());
+    	//}
     	
     	resource.updateModule();
     	
