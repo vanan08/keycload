@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.cache.NoCache;
+import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.ModelDuplicateException;
 import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
@@ -25,15 +26,17 @@ import org.keycloak.services.resources.flows.Flows;
 public class ModuleResource {
 
 	protected ModuleModel module;
+	protected ApplicationModel application;
 	protected RealmModel realm;
     private RealmAuth auth;
     
     private final static Logger log = Logger.getLogger(ModuleResource.class);
 	
-	public ModuleResource(RealmModel realm, RealmAuth auth, ModuleModel module) {
+	public ModuleResource(RealmModel realm, RealmAuth auth, ModuleModel module, ApplicationModel application) {
 		this.realm = realm;
 		this.auth = auth;
 		this.module = module;
+		this.application = application;
 		
 		auth.init(RealmAuth.Resource.APPLICATION);
 	}
@@ -64,7 +67,9 @@ public class ModuleResource {
     @NoCache
     public void deleteModule() {
         //auth.requireManage();
+		
         // remove module
+		application.removeModule(module);
     }
 	
 	/**

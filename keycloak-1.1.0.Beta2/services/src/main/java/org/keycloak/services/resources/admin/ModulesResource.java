@@ -107,7 +107,7 @@ public class ModulesResource {
             throw new NotFoundException("Could not find module: " + modName);
         }
         
-        ModuleResource moduleResource = new ModuleResource(realm, auth, module);
+        ModuleResource moduleResource = new ModuleResource(realm, auth, module, applicationModel);
         //ResteasyProviderFactory.getInstance().injectProperties(moduleResource);
         //resourceContext.initResource(moduleResource);
         return moduleResource;
