@@ -1,7 +1,6 @@
 package org.keycloak.representations.idm;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>

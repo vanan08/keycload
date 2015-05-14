@@ -1,10 +1,12 @@
 {
-  "realm" : "demo",
-  "resource" : "product-portal",
-  "realm-public-key" : "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrVrCuTtArbgaZzL1hvh0xtL5mc7o0NqPVnYXkLvgcwiC3BjLGw1tGEGoJaXDuSaRllobm53JBhjx33UNv+5z/UMG4kytBWxheNVKnL6GgqlNabMaFfPLPCF8kAgKnsi79NMo+n6KnSY8YeUmec/p2vjO2NjsSAVcWEQMVhJ31LwIDAQAB",
-  "auth-server-url" : "/auth",
-  "ssl-required" : "external",
-  "credentials" : {
-      "secret": "password"
-  }
+  "realm": "demo",
+  "realm-public-key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCV7mPCkal5s6OEkcypVUvLXgm2baZhdm8LjYHh3qU72W0D+l046LXovYH7xM3huKfEoTR07s2DGkhmEoIfnsMvyy6mZwFskNGcvOwL6t8s0x+b2JLGJMCJa1NSl9BQPPQlDU9Y5PxT8kVl0C+1qkFMcido9kVnSxTgm5pQHU3sZQIDAQAB",
+  "auth-server-url": "https://localhost:8443/auth",
+  "ssl-required": "external",
+  "resource": "product-portal",
+  "credentials": {
+    "secret": "3251ce95-6808-4748-a705-4872e6b859de"
+  },
+  "use-resource-role-mappings": true,
+  "disable-trust-manager": true
 }

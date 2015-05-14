@@ -598,7 +598,7 @@ public class RepresentationToModel {
     public static ModuleModel updateModule(RealmModel realm, ModuleRepresentation moduleRep, ModuleModel resource) {
     	if (moduleRep.getName() != null) resource.setName(moduleRep.getName());
     	if (moduleRep.getDescription() != null) resource.setDescription(moduleRep.getDescription());
-    	if (moduleRep.getUrl() != null) resource.setDescription(moduleRep.getUrl());
+    	if (moduleRep.getUrl() != null) resource.setUrl(moduleRep.getUrl());
     	
     	// mapping roles to module
     	//if (moduleRep.getRoles() != null && moduleRep.getRoles().length > 0) {

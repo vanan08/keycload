@@ -1,7 +1,12 @@
 {
-  "realm" : "demo",
-  "resource" : "database-service",
-  "realm-public-key" : "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrVrCuTtArbgaZzL1hvh0xtL5mc7o0NqPVnYXkLvgcwiC3BjLGw1tGEGoJaXDuSaRllobm53JBhjx33UNv+5z/UMG4kytBWxheNVKnL6GgqlNabMaFfPLPCF8kAgKnsi79NMo+n6KnSY8YeUmec/p2vjO2NjsSAVcWEQMVhJ31LwIDAQAB",
-  "bearer-only" : true,
-  "ssl-required" : "external"
+  "realm": "demo",
+  "realm-public-key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCV7mPCkal5s6OEkcypVUvLXgm2baZhdm8LjYHh3qU72W0D+l046LXovYH7xM3huKfEoTR07s2DGkhmEoIfnsMvyy6mZwFskNGcvOwL6t8s0x+b2JLGJMCJa1NSl9BQPPQlDU9Y5PxT8kVl0C+1qkFMcido9kVnSxTgm5pQHU3sZQIDAQAB",
+  "auth-server-url": "https://localhost:8443/auth",
+  "ssl-required": "external",
+  "resource": "database-service",
+  "credentials": {
+    "secret": "1b0e93f8-2bf9-4009-b02d-15e1345b2bf0"
+  },
+  "use-resource-role-mappings": true,
+  "disable-trust-manager": true
 }

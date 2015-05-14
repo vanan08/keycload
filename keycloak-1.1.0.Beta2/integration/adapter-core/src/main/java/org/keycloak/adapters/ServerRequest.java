@@ -91,7 +91,7 @@ public class ServerRequest {
         String client_id = deployment.getResourceName();
         Map<String, String> credentials = deployment.getResourceCredentials();
         HttpClient client = deployment.getClient();
-
+        
         return invokeAccessCodeToToken(client, deployment.isPublicClient(), code, codeUrl, redirectUri, client_id, credentials, sessionId);
     }
 

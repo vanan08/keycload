@@ -3,6 +3,7 @@ package org.keycloak.models.mongo.keycloak.adapters;
 import org.keycloak.connections.mongo.api.context.MongoStoreInvocationContext;
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.PasswordPolicy;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleModel;
@@ -346,10 +347,5 @@ public class UserAdapter extends AbstractMongoAdapter<MongoUserEntity> implement
 
         UserModel that = (UserModel) o;
         return that.getId().equals(getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getId().hashCode();
     }
 }

@@ -14,7 +14,7 @@
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>  -->
         <auth-constraint>
-            <role-name>user</role-name>
+            <role-name>database-user</role-name>
         </auth-constraint>
     </security-constraint>
 
@@ -24,6 +24,6 @@
     </login-config>
 
     <security-role>
-        <role-name>user</role-name>
+        <role-name>database-user</role-name>
     </security-role>
 </web-app>

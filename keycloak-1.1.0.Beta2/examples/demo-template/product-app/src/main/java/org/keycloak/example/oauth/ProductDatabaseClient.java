@@ -61,5 +61,32 @@ public class ProductDatabaseClient
             client.getConnectionManager().shutdown();
         }
     }
+    
+    public static List<String> getModules(HttpServletRequest req) throws Failure {
+        KeycloakSecurityContext session = (KeycloakSecurityContext)req.getAttribute(KeycloakSecurityContext.class.getName());
+        HttpClient client = new HttpClientBuilder()
+                .disableTrustManager().build();
+        try {
+            HttpGet get = new HttpGet(AdapterUtils.getOrigin(req.getRequestURL().toString(), session) + "/database/products");
+            get.addHeader("Authorization", "Bearer " + session.getTokenString());
+            try {
+                HttpResponse response = client.execute(get);
+                if (response.getStatusLine().getStatusCode() != 200) {
+                    throw new Failure(response.getStatusLine().getStatusCode());
+                }
+                HttpEntity entity = response.getEntity();
+                InputStream is = entity.getContent();
+                try {
+                    return JsonSerialization.readValue(is, TypedList.class);
+                } finally {
+                    is.close();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } finally {
+            client.getConnectionManager().shutdown();
+        }
+    }
 
 }

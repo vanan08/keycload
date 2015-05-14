@@ -1,5 +1,7 @@
 package org.keycloak.representations.idm;
 
+import java.util.Arrays;
+
 public class ModuleRepresentation {
 	protected String id;
     protected String name;
@@ -16,6 +18,9 @@ public class ModuleRepresentation {
 	}
 
 	public String getName() {
+		if (name == null) {
+			return "";
+		}
 		return name;
 	}
 
@@ -24,6 +29,9 @@ public class ModuleRepresentation {
 	}
 	
 	public String getUrl() {
+		if (url == null) {
+			return "";
+		}
 		return url;
 	}
 	
@@ -32,6 +40,9 @@ public class ModuleRepresentation {
 	}
 
 	public String getDescription() {
+		if (description == null) {
+			return "";
+		}
 		return description;
 	}
 
@@ -40,6 +51,9 @@ public class ModuleRepresentation {
 	}
 	
 	public String[] getRoles() {
+		if (roles == null) {
+			return new String[]{};
+		}
 		return roles;
 	}
 	
@@ -49,6 +63,6 @@ public class ModuleRepresentation {
 	
 	@Override
 	public String toString() {
-		return "[id="+id+",name="+name+",url="+url+",description="+description+"]";
+		return "{id="+id+",name="+name+",url="+url+",description="+description+",role="+Arrays.toString(roles)+"}";
 	}
 }

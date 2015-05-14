@@ -18,6 +18,7 @@
         <class>org.keycloak.models.jpa.entities.UserRoleMappingEntity</class>
         <class>org.keycloak.models.jpa.entities.ScopeMappingEntity</class>
         <class>org.keycloak.models.jpa.entities.ModuleEntity</class>
+        <class>org.keycloak.models.jpa.entities.ModuleRoleMappingEntity</class>
 
         <!-- JpaUserSessionProvider -->
         <class>org.keycloak.models.sessions.jpa.entities.ClientSessionEntity</class>

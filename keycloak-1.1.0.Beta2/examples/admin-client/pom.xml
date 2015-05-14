@@ -22,6 +22,7 @@
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-admin-client</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
