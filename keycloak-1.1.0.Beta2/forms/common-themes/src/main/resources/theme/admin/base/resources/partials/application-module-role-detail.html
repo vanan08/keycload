@@ -31,7 +31,7 @@
                     <label class="col-sm-2 control-label" for="name">Module Url <span class="required" data-ng-show="create">*</span></label>
 
                     <div class="col-sm-4">
-                        <input class="form-control" type="text" id="url" name="url" data-ng-model="module.url" autofocus
+                        <input ng-change="changed = true" class="form-control" type="text" id="url" name="url" data-ng-model="module.url" autofocus
                                required >
                     </div>
                 </div>
@@ -39,7 +39,7 @@
                     <label class="col-sm-2 control-label" for="description">Description </label>
 
                     <div class="col-sm-4">
-                        <textarea  class="form-control" rows="5" cols="50" id="description" name="description" data-ng-model="module.description"></textarea>
+                        <textarea  ng-change="changed = true" class="form-control" rows="5" cols="50" id="description" name="description" data-ng-model="module.description"></textarea>
                         <!-- Replaced by the textarea above <input type="text" id="description" name="description" data-ng-model="role.description" autofocus
                                                                required> -->
                     </div>
@@ -126,12 +126,12 @@
 
             <div class="pull-right form-actions" data-ng-show="create && access.manageApplications">
                 <button kc-cancel data-ng-click="cancel()">Cancel</button>
-                <button kc-save data-ng-show="changed">Save</button>
+                <button kc-save data-ng-show="create">Save</button>
             </div>
             <div class="pull-right form-actions" data-ng-show="!create && access.manageApplications">
                 <button kc-reset data-ng-show="changed">Clear changes</button>
-                <button kc-save  data-ng-show="changed">Save</button>
-                <button kc-delete data-ng-click="remove()" data-ng-show="changed">Delete</button>
+                <button kc-save  data-ng-show="changed" >Save</button>
+                <button kc-delete data-ng-click="remove()" data-ng-hide="changed">Delete</button>
             </div>
 
         </form>
