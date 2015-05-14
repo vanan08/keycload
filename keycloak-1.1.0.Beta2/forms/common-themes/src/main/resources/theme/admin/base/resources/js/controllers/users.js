@@ -74,7 +74,10 @@ module.controller('UserRoleMappingCtrl', function($scope, $http, realm, user, ap
                 $scope.applicationMappings = ApplicationRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id});
                 $scope.applicationRoles = AvailableApplicationRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id});
                 $scope.applicationComposite = CompositeApplicationRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id});
-                $scope.moduleRoles = AvailableModuleRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id, module : $scope.module.id});
+                if ($scope.module) {
+                	$scope.moduleRoles = AvailableModuleRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id, module : $scope.module.id});
+                }
+                
                 $scope.selectedApplicationRoles = [];
                 $scope.selectedApplicationMappings = [];
                 Notifications.success("Role mappings updated.");
@@ -87,7 +90,9 @@ module.controller('UserRoleMappingCtrl', function($scope, $http, realm, user, ap
                 $scope.applicationMappings = ApplicationRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id});
                 $scope.applicationRoles = AvailableApplicationRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id});
                 $scope.applicationComposite = CompositeApplicationRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id});
-                $scope.moduleRoles = AvailableModuleRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id, module : $scope.module.id});
+                if ($scope.module) {
+                	$scope.moduleRoles = AvailableModuleRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id, module : $scope.module.id});
+                }
                 $scope.selectedApplicationRoles = [];
                 $scope.selectedApplicationMappings = [];
                 Notifications.success("Role mappings updated.");

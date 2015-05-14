@@ -151,6 +151,7 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
             return false;
         }
         if (!roleModel.getContainer().equals(this)) return false;
+        if (moduleHasRole(roleModel)) return false;
 
         session.users().preRemove(getRealm(), roleModel);
         RoleEntity role = RoleAdapter.toRoleEntity(roleModel, em);
@@ -167,6 +168,15 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
         em.flush();
 
         return true;
+    }
+    
+    protected boolean moduleHasRole(RoleModel roleModel) {
+    	for (ModuleModel mod : getModules()) {
+    		if (mod.hasRole(roleModel.getId())) {
+    			return true;
+    		}
+    	}
+    	return false;
     }
 
     @Override

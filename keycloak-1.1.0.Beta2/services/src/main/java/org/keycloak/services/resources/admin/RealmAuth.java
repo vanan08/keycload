@@ -67,6 +67,9 @@ public class RealmAuth {
                 return AdminRoles.VIEW_REALM;
             case EVENTS:
                 return AdminRoles.VIEW_EVENTS;
+            // update 2015-05-13
+            case MODULE:
+            	return AdminRoles.VIEW_MODULES;
             default:
                 throw new IllegalStateException();
         }
@@ -84,6 +87,9 @@ public class RealmAuth {
                 return AdminRoles.MANAGE_REALM;
             case EVENTS:
                 return AdminRoles.MANAGE_EVENTS;
+            // update 2015-05-13
+            case MODULE:
+            	return AdminRoles.MANAGE_MODULES;
             default:
                 throw new IllegalStateException();
         }

@@ -17,11 +17,8 @@ import org.keycloak.models.utils.KeycloakModelUtils;
 import org.keycloak.models.utils.ModelToRepresentation;
 import org.keycloak.models.utils.RepresentationToModel;
 import org.keycloak.representations.adapters.action.GlobalRequestResult;
-import org.keycloak.representations.idm.ApplicationMappingsRepresentation;
 import org.keycloak.representations.idm.ApplicationRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
-import org.keycloak.representations.idm.MappingsRepresentation;
-import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserSessionRepresentation;
 import org.keycloak.services.managers.ApplicationManager;
 import org.keycloak.services.managers.RealmManager;
@@ -428,47 +425,6 @@ public class ApplicationResource {
         logger.debug("Test availability of cluster nodes");
 
         return new ResourceAdminManager().testNodesAvailability(uriInfo.getRequestUri(), realm, application);
-    }
-    
-    /**
-     * Get module listing
-     *
-     * @param username username (not id!)
-     * @return
-     */
-    @Path("getModules")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @NoCache
-    public MappingsRepresentation getRoleMappings() {
-//    	auth.requireView();
-        
-        MappingsRepresentation all = new MappingsRepresentation();
-        Set<RoleModel> realmMappings = application.getRealmScopeMappings();
-        if (realmMappings.size() > 0) {
-            List<RoleRepresentation> realmRep = new ArrayList<RoleRepresentation>();
-            for (RoleModel roleModel : realmMappings) {
-                realmRep.add(ModelToRepresentation.toRepresentation(roleModel));
-            }
-            all.setRealmMappings(realmRep);
-        }
-        
-        Map<String, ApplicationMappingsRepresentation> appMappings = new HashMap<String, ApplicationMappingsRepresentation>();
-        Set<RoleModel> roleMappings = getApplicationRoleMappings();
-        if (roleMappings.size() > 0) {
-            ApplicationMappingsRepresentation mappings = new ApplicationMappingsRepresentation();
-            mappings.setApplicationId(application.getId());
-            mappings.setApplication(application.getName());
-            List<RoleRepresentation> roles = new ArrayList<RoleRepresentation>();
-            mappings.setMappings(roles);
-            for (RoleModel role : roleMappings) {
-                roles.add(ModelToRepresentation.toRepresentation(role));
-            }
-            appMappings.put(application.getName(), mappings);
-            all.setApplicationMappings(appMappings);
-        }
-        
-        return all;
     }
     
     protected Set<RoleModel> getApplicationRoleMappings() {

@@ -38,7 +38,7 @@ public class ModuleResource {
 		this.module = module;
 		this.application = application;
 		
-		auth.init(RealmAuth.Resource.APPLICATION);
+		auth.init(RealmAuth.Resource.MODULE);
 	}
 	
 	/**

@@ -19,13 +19,17 @@ public class AdminRoles {
     public static String VIEW_APPLICATIONS = "view-applications";
     public static String VIEW_CLIENTS = "view-clients";
     public static String VIEW_EVENTS = "view-events";
+    // updated 2015-05-13
+    public static String VIEW_MODULES = "view-modules";
 
     public static String MANAGE_REALM = "manage-realm";
     public static String MANAGE_USERS = "manage-users";
     public static String MANAGE_APPLICATIONS = "manage-applications";
     public static String MANAGE_CLIENTS = "manage-clients";
     public static String MANAGE_EVENTS = "manage-events";
+    // updated 2015-05-13
+    public static String MANAGE_MODULES = "manage-modules";
 
-    public static String[] ALL_REALM_ROLES = {VIEW_REALM, VIEW_USERS, VIEW_APPLICATIONS, VIEW_CLIENTS, VIEW_EVENTS, MANAGE_REALM, MANAGE_USERS, MANAGE_APPLICATIONS, MANAGE_CLIENTS, MANAGE_EVENTS};
+    public static String[] ALL_REALM_ROLES = {VIEW_REALM, VIEW_USERS, VIEW_APPLICATIONS, VIEW_MODULES, VIEW_CLIENTS, VIEW_EVENTS, MANAGE_REALM, MANAGE_USERS, MANAGE_APPLICATIONS, MANAGE_MODULES, MANAGE_CLIENTS, MANAGE_EVENTS};
 
 }

@@ -455,7 +455,7 @@ module.config([ '$routeProvider', function($routeProvider) {
                     return ApplicationClaimsLoader();
                 }
             },
-            controller : 'ModuleDetailCtrl'
+            controller : 'ApplicationClaimsCtrl'
         })
         .when('/realms/:realm/applications/:application/sessions', {
             templateUrl : 'partials/application-sessions.html',
