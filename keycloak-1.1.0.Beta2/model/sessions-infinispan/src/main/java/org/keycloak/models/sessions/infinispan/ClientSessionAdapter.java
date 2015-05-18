@@ -4,6 +4,7 @@ import org.infinispan.Cache;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.ClientSessionModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserSessionModel;
 import org.keycloak.models.sessions.infinispan.entities.ClientSessionEntity;
@@ -147,5 +148,17 @@ public class ClientSessionAdapter implements ClientSessionModel {
     void update() {
         provider.getTx().replace(cache, entity.getId(), entity);
     }
+
+	@Override
+	public void setAccessModule(ModuleModel moduleModel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ModuleModel getAccessModule() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

@@ -157,7 +157,7 @@ public class UserApplicationRoleMappingsResource {
                     ApplicationModel app = (ApplicationModel) roleModel.getContainer();
                     if (!app.getId().equals(application.getId())) continue;
                 }
-                if (!roleIsUsed(application, roleModel.getId())) {
+                if (!roleIsUsed(application, roleModel)) {
                 	user.deleteRoleMapping(roleModel);
                 } else {
                 	return Flows.errors().exists(" Role '"+roleModel.getName()+"' is used already in modules");
@@ -170,7 +170,7 @@ public class UserApplicationRoleMappingsResource {
                 if (roleModel == null || !roleModel.getId().equals(role.getId())) {
                     throw new NotFoundException("Role not found");
                 }
-                if (!roleIsUsed(application, roleModel.getId())) {
+                if (!roleIsUsed(application, roleModel)) {
                 	user.deleteRoleMapping(roleModel);
                 } else {
                 	return Flows.errors().exists(" Role '"+roleModel.getName()+"' is used already in modules");
@@ -181,10 +181,10 @@ public class UserApplicationRoleMappingsResource {
         return null;
     }
     
-    protected boolean roleIsUsed(ApplicationModel application, String roleId) {
+    protected boolean roleIsUsed(ApplicationModel application, RoleModel roleModel) {
     	List<ModuleModel> modules = application.getModules();
     	for (ModuleModel module : modules) {
-    		if (!module.hasRole(roleId)) {
+    		if (!module.container(user.getId(), roleModel)) {
     			continue;
     		}
     		return true;

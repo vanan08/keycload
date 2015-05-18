@@ -9,6 +9,8 @@ public interface ModuleContainerModel {
 	
 	ModuleModel getModuleByName(String name);
 
+	ModuleModel getModuleByRedirectUrl(String url);
+	
 	public ModuleModel addModule(String name);
 
 	public ModuleModel addModule(String id, String name);

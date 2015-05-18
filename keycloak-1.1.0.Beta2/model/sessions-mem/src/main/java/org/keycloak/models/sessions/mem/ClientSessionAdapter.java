@@ -3,6 +3,7 @@ package org.keycloak.models.sessions.mem;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.ClientSessionModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserSessionModel;
 import org.keycloak.models.sessions.mem.entities.ClientSessionEntity;
@@ -124,4 +125,16 @@ public class ClientSessionAdapter implements ClientSessionModel {
     public void setAuthMethod(String method) {
         entity.setAuthMethod(method);
     }
+
+	@Override
+	public void setAccessModule(ModuleModel moduleModel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ModuleModel getAccessModule() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

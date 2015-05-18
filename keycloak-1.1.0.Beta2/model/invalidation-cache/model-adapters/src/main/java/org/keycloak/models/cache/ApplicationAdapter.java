@@ -299,4 +299,16 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
 		return updated.getRoleById(id);
 	}
 
+	@Override
+	public boolean removeRole(String userId, RoleModel role) {
+		getDelegateForUpdate();
+		return updated.removeRole(userId, role);
+	}
+
+	@Override
+	public ModuleModel getModuleByRedirectUrl(String url) {
+		getDelegateForUpdate();
+		return updated.getModuleByRedirectUrl(url);
+	}
+
 }

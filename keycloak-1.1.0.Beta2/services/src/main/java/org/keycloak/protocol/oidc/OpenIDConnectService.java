@@ -823,6 +823,7 @@ public class OpenIDConnectService {
                               @QueryParam(OpenIDConnect.STATE_PARAM) String state,
                               @QueryParam(OpenIDConnect.PROMPT_PARAM) String prompt,
                               @QueryParam(OpenIDConnect.LOGIN_HINT_PARAM) String loginHint) {
+    	logger.info("clientId: "+clientId);
         event.event(EventType.LOGIN);
         FrontPageInitializer pageInitializer = new FrontPageInitializer();
         pageInitializer.responseType = responseType;

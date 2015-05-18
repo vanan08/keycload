@@ -28,7 +28,8 @@ public interface ApplicationModel extends RoleContainerModel, ModuleContainerMod
     void setBaseUrl(String url);
 
     List<String> getDefaultRoles();
-
+    
+    boolean removeRole(String userId, RoleModel role);    
     void addDefaultRole(String name);
 
     void updateDefaultRoles(String[] defaultRoles);

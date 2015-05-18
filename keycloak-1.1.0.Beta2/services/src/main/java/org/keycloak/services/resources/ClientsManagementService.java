@@ -169,7 +169,7 @@ public class ClientsManagementService {
             error.put(OAuth2Constants.ERROR, "invalid_client");
             error.put(OAuth2Constants.ERROR_DESCRIPTION, "Just applications are allowed");
             event.error(Errors.INVALID_CLIENT);
-            throw new BadRequestException("ust applications are allowed", javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.BAD_REQUEST).entity(error).type("application/json").build());
+            throw new BadRequestException("Just applications are allowed", javax.ws.rs.core.Response.status(javax.ws.rs.core.Response.Status.BAD_REQUEST).entity(error).type("application/json").build());
         }
 
         return (ApplicationModel)client;

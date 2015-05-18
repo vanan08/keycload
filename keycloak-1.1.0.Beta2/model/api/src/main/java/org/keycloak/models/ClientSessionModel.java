@@ -10,6 +10,9 @@ public interface ClientSessionModel {
     public String getId();
     public RealmModel getRealm();
     public ClientModel getClient();
+    
+    public void setAccessModule(ModuleModel moduleModel);
+    public ModuleModel getAccessModule();
 
     public UserSessionModel getUserSession();
     public void setUserSession(UserSessionModel userSession);

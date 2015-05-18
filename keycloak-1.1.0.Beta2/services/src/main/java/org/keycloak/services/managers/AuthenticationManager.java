@@ -42,7 +42,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Stateless object that manages authentication
@@ -277,9 +276,13 @@ public class AuthenticationManager {
         ClientSessionCode accessCode = new ClientSessionCode(realm, clientSession);
 
 
-        logger.debugv("processAccessCode: isResource: {0}", isResource);
-        logger.debugv("processAccessCode: go to oauth page?: {0}",
-                !isResource);
+//        logger.debugv("processAccessCode: isResource: {0}", isResource);
+//        logger.debugv("processAccessCode: go to oauth page?: {0}",
+//                !isResource);
+        
+        logger.info("processAccessCode: isResource: "+ isResource);
+        logger.info("processAccessCode: go to oauth page?: "+
+                (!isResource));
 
         event.detail(Details.CODE_ID, clientSession.getId());
 

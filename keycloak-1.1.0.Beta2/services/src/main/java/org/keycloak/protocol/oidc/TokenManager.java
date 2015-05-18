@@ -13,6 +13,7 @@ import org.keycloak.models.ClaimMask;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.ClientSessionModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserModel;
@@ -26,6 +27,7 @@ import org.keycloak.services.managers.AuthenticationManager;
 import org.keycloak.util.Time;
 
 import javax.ws.rs.core.UriInfo;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
@@ -127,32 +129,56 @@ public class TokenManager {
         if (clientSession.getUserSession() != null) {
             return;
         }
-
+        
         UserModel user = session.getUser();
         clientSession.setUserSession(session);
+        ClientModel client = clientSession.getClient();
         Set<String> requestedRoles = new HashSet<String>();
         // todo scope param protocol independent
-        for (RoleModel r : TokenManager.getAccess(null, clientSession.getClient(), user)) {
-            requestedRoles.add(r.getId());
+        if (client instanceof ApplicationModel) {
+        	ApplicationModel appModel = (ApplicationModel) client;
+        	String redirectUrl = clientSession.getRedirectUri();
+        	String baseUrl = appModel.getBaseUrl();
+        	String url = redirectUrl.substring(baseUrl.length()+1, redirectUrl.length()-1);
+        	ModuleModel moduleModel = appModel.getModuleByRedirectUrl(url);
+        	if (moduleModel == null) {
+        		for (RoleModel r : TokenManager.getAccess(null, client, user)) {
+        			requestedRoles.add(r.getId());
+    	        }
+        	} else {
+        		Set<RoleModel> modRoles = user.getModuleRoleMappings(moduleModel);
+    	        for (RoleModel r : TokenManager.getAccess(null, client, user)) {
+    	        	for (RoleModel r1 : modRoles) {
+    	        		if (r1.hasRole(r)) {
+    	        			requestedRoles.add(r.getId());
+    	        		}
+    	        	}
+    	        }
+        	}
+        } else {
+        	for (RoleModel r : TokenManager.getAccess(null, client, user)) {
+        		requestedRoles.add(r.getId());
+        	}
         }
+        
         clientSession.setRoles(requestedRoles);
-
-
     }
-
 
     public static Set<RoleModel> getAccess(String scopeParam, ClientModel client, UserModel user) {
         // todo scopeParam is ignored until we figure out a scheme that fits with openid connect
         Set<RoleModel> requestedRoles = new HashSet<RoleModel>();
-
+        
         Set<RoleModel> roleMappings = user.getRoleMappings();
-        if (client.isFullScopeAllowed()) return roleMappings;
-
-        Set<RoleModel> scopeMappings = client.getScopeMappings();
-        if (client instanceof ApplicationModel) {
-            scopeMappings.addAll(((ApplicationModel) client).getRoles());
+        if (client.isFullScopeAllowed()) {
+        	return roleMappings;
         }
 
+        Set<RoleModel> scopeMappings = client.getScopeMappings();
+        
+        if (client instanceof ApplicationModel) {
+    		scopeMappings.addAll(((ApplicationModel) client).getRoles());
+        }
+        
         for (RoleModel role : roleMappings) {
             for (RoleModel desiredRole : scopeMappings) {
                 Set<RoleModel> visited = new HashSet<RoleModel>();
@@ -420,5 +446,5 @@ public class TokenManager {
             return res;
         }
     }
-
+    
 }

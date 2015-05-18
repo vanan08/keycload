@@ -412,4 +412,45 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
     ApplicationEntity getJpaEntity() {
         return applicationEntity;
     }
+
+	@Override
+	public boolean removeRole(String userId, RoleModel roleModel) {
+		// TODO Auto-generated method stub
+		if (roleModel == null) return false;
+        if (!roleModel.getContainer().equals(this)) return false;
+        
+		for (ModuleModel mod : getModules()) {
+			if (mod.container(userId, roleModel)) {
+				return false;
+			}
+		}
+
+        session.users().preRemove(getRealm(), roleModel);
+        RoleEntity role = RoleAdapter.toRoleEntity(roleModel, em);
+        if (!role.isApplicationRole()) return false;
+
+        applicationEntity.getRoles().remove(role);
+        applicationEntity.getDefaultRoles().remove(role);
+        em.createNativeQuery("delete from COMPOSITE_ROLE where CHILD_ROLE = :role").setParameter("role", role).executeUpdate();
+        em.createNamedQuery("deleteScopeMappingByRole").setParameter("role", role).executeUpdate();
+        role.setApplication(null);
+        em.flush();
+        em.remove(role);
+        em.flush();
+
+        return true;
+	}
+
+	@Override
+	public ModuleModel getModuleByRedirectUrl(String url) {
+		Map<String, ModuleModel> map = getModuleNameMap();
+		Set<String> keys = map.keySet();
+		for (String k : keys) {
+			ModuleModel model = map.get(k);
+			if (model.getUrl().trim().equals(url.trim())) {
+				return model;
+			}
+		}
+		return null;
+	}
 }

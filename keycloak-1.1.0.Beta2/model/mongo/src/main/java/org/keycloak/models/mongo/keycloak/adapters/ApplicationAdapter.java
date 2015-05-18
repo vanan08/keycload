@@ -320,4 +320,28 @@ public class ApplicationAdapter extends ClientAdapter<MongoApplicationEntity> im
 		return null;
 	}
 
+	@Override
+	public RoleModel getRoleById(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ModuleModel getModuleByRedirectUrl(String url) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean container(ModuleModel module) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeRole(String userId, RoleModel role) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

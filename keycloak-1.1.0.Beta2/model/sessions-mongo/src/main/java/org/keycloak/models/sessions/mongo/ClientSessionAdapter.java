@@ -4,6 +4,7 @@ import org.keycloak.connections.mongo.api.context.MongoStoreInvocationContext;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.ClientSessionModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserSessionModel;
 import org.keycloak.models.sessions.mongo.entities.MongoClientSessionEntity;
@@ -140,4 +141,16 @@ public class ClientSessionAdapter extends AbstractMongoAdapter<MongoClientSessio
     protected MongoClientSessionEntity getMongoEntity() {
         return entity;
     }
+
+	@Override
+	public void setAccessModule(ModuleModel moduleModel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ModuleModel getAccessModule() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -3,6 +3,7 @@ package org.keycloak.models.sessions.jpa;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.ClientSessionModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserSessionModel;
 import org.keycloak.models.sessions.jpa.entities.ClientSessionEntity;
@@ -11,6 +12,7 @@ import org.keycloak.models.sessions.jpa.entities.ClientSessionRoleEntity;
 import org.keycloak.models.sessions.jpa.entities.UserSessionEntity;
 
 import javax.persistence.EntityManager;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -163,4 +165,16 @@ public class ClientSessionAdapter implements ClientSessionModel {
         }
         return roles;
     }
+
+	@Override
+	public void setAccessModule(ModuleModel moduleModel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ModuleModel getAccessModule() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
