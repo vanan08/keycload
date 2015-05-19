@@ -29,6 +29,8 @@ import org.keycloak.util.Time;
 import javax.ws.rs.core.UriInfo;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -139,8 +141,22 @@ public class TokenManager {
         	ApplicationModel appModel = (ApplicationModel) client;
         	String redirectUrl = clientSession.getRedirectUri();
         	String baseUrl = appModel.getBaseUrl();
-        	String url = redirectUrl.substring(baseUrl.length()+1, redirectUrl.length()-1);
-        	ModuleModel moduleModel = appModel.getModuleByRedirectUrl(url);
+        	//String url = redirectUrl.substring(baseUrl.length()+1, redirectUrl.length()-1);
+        	
+        	ModuleModel moduleModel = null;
+        	try {
+        		for (ModuleModel md : appModel.getModules()) {
+        			URI u1 = new URI(baseUrl + "/" + md.getUrl());
+        			URI u2 = new URI(redirectUrl);
+        			if (u1.equals(u2)) {
+        				moduleModel = md;
+        				break;
+        			}
+        		}
+        	} catch (URISyntaxException ex) {
+        		logger.error("url invalid");
+        	}
+        	
         	if (moduleModel == null) {
         		for (RoleModel r : TokenManager.getAccess(null, client, user)) {
         			requestedRoles.add(r.getId());

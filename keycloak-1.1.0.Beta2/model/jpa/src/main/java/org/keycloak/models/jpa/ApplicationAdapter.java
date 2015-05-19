@@ -443,12 +443,9 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
 
 	@Override
 	public ModuleModel getModuleByRedirectUrl(String url) {
-		Map<String, ModuleModel> map = getModuleNameMap();
-		Set<String> keys = map.keySet();
-		for (String k : keys) {
-			ModuleModel model = map.get(k);
-			if (model.getUrl().trim().equals(url.trim())) {
-				return model;
+		for (ModuleModel module : getModules()) {
+			if (module.getUrl().trim().equalsIgnoreCase(url.trim())) {
+				return module;
 			}
 		}
 		return null;

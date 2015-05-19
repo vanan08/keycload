@@ -3,6 +3,7 @@
 <server xmlns="urn:jboss:domain:1.6">
 
     <extensions>
+        <extension module="org.keycloak.keycloak-subsystem"/>
         <extension module="org.jboss.as.clustering.infinispan"/>
         <extension module="org.jboss.as.connector"/>
         <extension module="org.jboss.as.deployment-scanner"/>
@@ -82,6 +83,7 @@
     </management>
 
     <profile>
+        <subsystem xmlns="urn:jboss:domain:keycloak:1.0"/>
         <subsystem xmlns="urn:jboss:domain:logging:1.4">
             <console-handler name="CONSOLE">
                 <level name="INFO"/>
@@ -293,7 +295,7 @@
         <subsystem xmlns="urn:jboss:domain:web:2.1" default-virtual-server="default-host" native="false">
             <connector name="http" protocol="HTTP/1.1" scheme="http" socket-binding="http"/>
             <connector name="https" protocol="HTTP/1.1" scheme="https" socket-binding="https" secure="true">
-                <ssl name="https" key-alias="jboss" password="izeno123" certificate-key-file="/Users/nvan/Documents/Projects/Java/jboss-eap-6.3/standalone/configuration/izeno.keystore"/>
+                <ssl name="https" key-alias="jboss" password="izeno123" certificate-key-file="${jboss.server.config.dir}/izeno.keystore"/>
             </connector>
             <virtual-server name="default-host" enable-welcome-root="true">
                 <alias name="localhost"/>
