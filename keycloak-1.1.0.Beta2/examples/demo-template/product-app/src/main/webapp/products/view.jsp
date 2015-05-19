@@ -14,9 +14,9 @@
 <body bgcolor="#F5F6CE">
 <%
     String logoutUri = KeycloakUriBuilder.fromUri("/auth").path(ServiceUrlConstants.TOKEN_SERVICE_LOGOUT_PATH)
-            .queryParam("redirect_uri", "/product-portal").build("demo").toString();
+            .queryParam("redirect_uri", "https://localhost:8443/product-portal").build("demo").toString();
     String acctUri = KeycloakUriBuilder.fromUri("/auth").path(ServiceUrlConstants.ACCOUNT_SERVICE_PATH)
-            .queryParam("referrer", "/product-portal").build("demo").toString();
+            .queryParam("referrer", "https://localhost:8443/product-portal").build("demo").toString();
 %>
 
 <p>Goto: <a href="<%=logoutUri%>">logout</a> | <a href="<%=acctUri%>">manage acct</a></p>
