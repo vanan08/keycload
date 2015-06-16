@@ -60,8 +60,6 @@ public class DefaultJpaConnectionProviderFactory implements JpaConnectionProvide
         if (emf == null) {
             synchronized (this) {
                 if (emf == null) {
-                    logger.debug("Initializing JPA connections");
-
                     Connection connection = null;
 
                     String unitName = config.get("unitName");

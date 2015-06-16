@@ -107,17 +107,13 @@ public class UserModuleRoleMappingsResource {
             throw new NotFoundException("Module not found");
         }
         
-        Set<RoleModel> rolesModule = module.getRoles(user.getId());
-        logger.info("userId="+user.getId()+",module="+module.getName()+",rolesModule="+rolesModule.size());
-        
         Set<RoleModel> mappings = user.getModuleRoleMappings(module);
-        logger.info("userId="+user.getId()+",module="+module.getName()+",rolesMapping="+mappings.size());
         
         List<RoleRepresentation> mapRep = new ArrayList<RoleRepresentation>();
         for (RoleModel roleModel : mappings) {
             mapRep.add(ModelToRepresentation.toRepresentation(roleModel));
         }
-        logger.info("getModuleRoleMappings.size() = "+ mapRep.size());
+        logger.debugv("getModuleRoleMappings.size() = {0}", mapRep.size());
         
         return mapRep;
     }

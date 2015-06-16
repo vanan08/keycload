@@ -824,6 +824,7 @@ public class OpenIDConnectService {
                               @QueryParam(OpenIDConnect.PROMPT_PARAM) String prompt,
                               @QueryParam(OpenIDConnect.LOGIN_HINT_PARAM) String loginHint) {
     	logger.info("clientId: "+clientId);
+    	logger.info("redirect:"+redirect);
         event.event(EventType.LOGIN);
         FrontPageInitializer pageInitializer = new FrontPageInitializer();
         pageInitializer.responseType = responseType;

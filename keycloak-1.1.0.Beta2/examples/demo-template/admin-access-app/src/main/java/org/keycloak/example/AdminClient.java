@@ -80,7 +80,7 @@ public class AdminClient {
             List <NameValuePair> formparams = new ArrayList <NameValuePair>();
             formparams.add(new BasicNameValuePair("username", "admin"));
             formparams.add(new BasicNameValuePair("password", "admin123"));
-            formparams.add(new BasicNameValuePair(OAuth2Constants.CLIENT_ID, "admin-client"));
+            formparams.add(new BasicNameValuePair(OAuth2Constants.CLIENT_ID, "security-admin-console")); //admin-client
             UrlEncodedFormEntity form = new UrlEncodedFormEntity(formparams, "UTF-8");
             post.setEntity(form);
 

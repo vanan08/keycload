@@ -128,4 +128,9 @@ public class CacheModuleAdapter implements ModuleModel {
 		return updated.hasRole(roleId);
 	}
 
+	@Override
+	public boolean removeAllRoles() {
+		return updated.removeAllRoles();
+	}
+
 }

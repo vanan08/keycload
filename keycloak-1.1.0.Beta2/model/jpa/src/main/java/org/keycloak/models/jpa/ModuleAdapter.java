@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.jboss.logging.Logger;
 import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleModel;
@@ -20,6 +21,8 @@ public class ModuleAdapter implements ModuleModel {
 	protected EntityManager em;
 	protected ModuleEntity moduleEntity;
 	protected ApplicationAdapter applicationAdapter;
+	
+	private final static Logger log = Logger.getLogger(ModuleAdapter.class);
 	
 	public ModuleAdapter(RealmModel realm, EntityManager em, ModuleEntity moduleEntity, ApplicationAdapter applicationAdapter) {
 		this.realm = realm;
@@ -116,6 +119,11 @@ public class ModuleAdapter implements ModuleModel {
 	
 	@Override
 	public void updateModule() {
+		if (moduleEntity != null) {
+			log.info(""+moduleEntity.toString());
+		} else {
+			log.info("module is null");
+		}
 		em.flush();
 	}
 
@@ -180,4 +188,21 @@ public class ModuleAdapter implements ModuleModel {
 	    
 		return true;
 	}
+
+	@Override
+	public boolean removeAllRoles() {
+	    em.createNamedQuery("deleteModuleRoleMappingByModule")
+	      .setParameter("module", moduleEntity)
+	      .executeUpdate();
+	    em.flush();
+		return true;
+	}
+	
+	public static ModuleEntity toModuleEntity(ModuleModel model, EntityManager em) {
+        if (model instanceof ModuleAdapter) {
+            return ((ModuleAdapter)model).getModuleEntity();
+        }
+        return em.getReference(ModuleEntity.class, model.getId());
+    }
+	
 }

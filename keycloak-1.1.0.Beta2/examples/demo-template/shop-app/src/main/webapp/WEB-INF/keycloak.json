@@ -1,0 +1,12 @@
+{
+  "realm": "demo",
+  "realm-public-key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCV7mPCkal5s6OEkcypVUvLXgm2baZhdm8LjYHh3qU72W0D+l046LXovYH7xM3huKfEoTR07s2DGkhmEoIfnsMvyy6mZwFskNGcvOwL6t8s0x+b2JLGJMCJa1NSl9BQPPQlDU9Y5PxT8kVl0C+1qkFMcido9kVnSxTgm5pQHU3sZQIDAQAB",
+  "auth-server-url": "https://localhost:8443/auth",
+  "ssl-required": "external",
+  "resource": "shop-app",
+  "credentials": {
+    "secret": "b5aa9986-f3b7-4658-a9e9-398767b8a8cc"
+  },
+  "use-resource-role-mappings": true,
+  "disable-trust-manager": true
+}

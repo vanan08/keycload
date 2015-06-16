@@ -9,6 +9,7 @@ import org.keycloak.models.ClaimMask;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.ClientSessionModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserModel;
@@ -22,12 +23,13 @@ import org.keycloak.services.resources.flows.Flows;
 import org.picketlink.common.constants.GeneralConstants;
 import org.picketlink.common.constants.JBossSAMLURIConstants;
 import org.picketlink.identity.federation.core.saml.v2.constants.X500SAMLProfileConstants;
-import org.picketlink.identity.federation.web.handlers.saml2.SAML2LogOutHandler;
-
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
 import java.security.PublicKey;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -35,7 +37,8 @@ import java.security.PublicKey;
  */
 public class SamlProtocol implements LoginProtocol {
     protected static final Logger logger = Logger.getLogger(SamlProtocol.class);
-
+    
+    public static final String BACK_CHANNEL_LOGOUT = "BACK_CHANNEL_LOGOUT";
 
     public static final String ATTRIBUTE_TRUE_VALUE = "true";
     public static final String ATTRIBUTE_FALSE_VALUE = "false";
@@ -139,12 +142,17 @@ public class SamlProtocol implements LoginProtocol {
     public Response authenticated(UserSessionModel userSession, ClientSessionCode accessCode) {
         ClientSessionModel clientSession = accessCode.getClientSession();
         ClientModel client = clientSession.getClient();
+        UserModel userModel = userSession.getUser();
+        RealmModel realmModel = clientSession.getRealm();
         String requestID = clientSession.getNote(SAML_REQUEST_ID);
         String relayState = clientSession.getNote(GeneralConstants.RELAY_STATE);
         String redirectUri = clientSession.getRedirectUri();
         String responseIssuer = getResponseIssuer(realm);
         String nameIdFormat = getNameIdFormat(clientSession);
         String nameId = getNameId(nameIdFormat, clientSession, userSession);
+        
+        logger.info(uriInfo.getPath());
+        logger.info("redirect="+redirectUri);
 
         SALM2LoginResponseBuilder builder = new SALM2LoginResponseBuilder();
         builder.requestID(requestID)
@@ -154,15 +162,42 @@ public class SamlProtocol implements LoginProtocol {
                .requestIssuer(clientSession.getClient().getClientId())
                .nameIdentifier(nameIdFormat, nameId)
                .authMethod(JBossSAMLURIConstants.AC_UNSPECIFIED.get());
-        initClaims(builder, clientSession.getClient(), userSession.getUser());
+        initClaims(builder, clientSession.getClient(), userModel);
         if (clientSession.getRoles() != null) {
             if (multivaluedRoles(client)) {
                 builder.multiValuedRoles(true);
             }
-            for (String roleId : clientSession.getRoles()) {
-                // todo need a role mapping
-                RoleModel roleModel = clientSession.getRealm().getRoleById(roleId);
-                builder.roles(roleModel.getName());
+            
+            for (ApplicationModel app : realmModel.getApplications()) {
+            	Set<RoleModel> rolesApp = app.getRoles();
+                int numOfRoles = rolesApp.size();
+                if (numOfRoles > 0) {
+                	StringBuilder sbRolesApp = new StringBuilder();
+                	sbRolesApp.append(app.getBaseUrl()+"/");
+                	
+                	for (RoleModel roleModel : rolesApp) {
+                		if (userModel.hasRole(roleModel)) {
+	                    	sbRolesApp.append(",").append(roleModel.getName());
+                		}
+                    }
+                	
+                	builder.roles(sbRolesApp.toString());
+                }
+                
+                List<ModuleModel> modules = app.getModules();
+                for (ModuleModel module : modules) {
+                	StringBuilder sbRoles = new StringBuilder();
+                	sbRoles.append(app.getBaseUrl() + "/" +module.getUrl());
+                	
+                	Set<RoleModel> rls = module.getRoles(userModel.getId());
+                	for (RoleModel roleModel : rls) {
+                		if (userModel.hasRole(roleModel)) {
+                			sbRoles.append(",").append(roleModel.getName());
+                		}
+                	}
+                	
+                	builder.roles(sbRoles.toString());
+                }
             }
         }
         if (requiresRealmSignature(client)) {
@@ -294,8 +329,8 @@ public class SamlProtocol implements LoginProtocol {
         try {
             ClientRequest request = executor.createRequest(adminUrl);
             request.formParameter(GeneralConstants.SAML_REQUEST_KEY, logoutRequestString);
-            request.formParameter(SAML2LogOutHandler.BACK_CHANNEL_LOGOUT, SAML2LogOutHandler.BACK_CHANNEL_LOGOUT);
-            ClientResponse response = null;
+            request.formParameter(BACK_CHANNEL_LOGOUT, BACK_CHANNEL_LOGOUT);
+            ClientResponse<String> response = null;
             try {
                 response = request.post();
                 response.releaseConnection();
@@ -306,7 +341,7 @@ public class SamlProtocol implements LoginProtocol {
                     if (withSlash.equals(redirect)) {
                         request = executor.createRequest(withSlash);
                         request.formParameter(GeneralConstants.SAML_REQUEST_KEY, logoutRequestString);
-                        request.formParameter(SAML2LogOutHandler.BACK_CHANNEL_LOGOUT, SAML2LogOutHandler.BACK_CHANNEL_LOGOUT);
+                        request.formParameter(BACK_CHANNEL_LOGOUT, BACK_CHANNEL_LOGOUT);
                         response = request.post();
                         response.releaseConnection();
                     }

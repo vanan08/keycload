@@ -252,7 +252,6 @@ public class LoginActionsService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response processLogin(@QueryParam("code") String code,
                                  final MultivaluedMap<String, String> formData) {
-    	logger.info("processLogin "+ code);
         event.event(EventType.LOGIN);
         if (!checkSsl()) {
             event.error(Errors.SSL_REQUIRED);

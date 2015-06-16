@@ -185,6 +185,7 @@ public class ApplicationResource {
         try {
         	new ApplicationManager(new RealmManager(session)).removeApplication(realm, application);
         } catch(Exception ex) {
+        	logger.error("deleteApplication()", ex);
         	return Flows.errors().exists(" Application '"+application.getName()+"' is already used");
         }
         
