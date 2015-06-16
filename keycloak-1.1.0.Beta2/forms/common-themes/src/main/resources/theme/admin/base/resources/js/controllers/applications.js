@@ -320,7 +320,7 @@ module.controller('ApplicationRoleDetailCtrl', function($scope, realm, applicati
     $scope.application = application;
     $scope.role = angular.copy(role);
     $scope.create = !role.name;
-
+    console.log("ApplicationRoleDetailCtrl");
     $scope.changed = $scope.create;
 
     $scope.save = function() {
@@ -368,9 +368,9 @@ module.controller('ApplicationRoleDetailCtrl', function($scope, realm, applicati
 
 });
 
-module.controller('ModuleDetailCtrl', function($scope, realm, application, module,
-		ApplicationModule, $http, $location, Dialog, Notifications) {
-	
+module.controller('ModuleDetailCtrl', function($scope, Loader, realm, application, module,
+		ApplicationModule, AppliationRoleMapping, $http, $location, Dialog, Notifications) {
+	 console.log("ModuleDetailCtrl");
 	$scope.realm = realm;
 	$scope.application = application;
 	$scope.create = false;
@@ -379,6 +379,40 @@ module.controller('ModuleDetailCtrl', function($scope, realm, application, modul
 	
 	$scope.create = !module.name;
 	$scope.changed = $scope.create;
+	
+	$scope.applicationRoles = AppliationRoleMapping.query({ realm : realm.realm, application: $scope.application.id });
+    
+	//TODO: Get all roles tag for module
+	$scope.applicationModuleRoles = [{name:"role3"}];
+	
+	$scope.addModuleRole = function() {
+		//TODO: add module role
+		if ($scope.create) {
+			//case1: add role for new module
+			//add to cache and call when save module
+			
+		}else{
+			//case2: add role for exist module
+			console.log('addModuleRole');
+	    	$http.post(authUrl + '/admin/realms/' + realm.realm + '/users/' + user.username + '/role-mappings/applications-by-id/' + $scope.application.id + "/modules/" + $scope.module.id,
+	            $scope.selectedModuleRoles).success(function() {
+	            $scope.moduleMappings = ModuleRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id, module : $scope.module.id});
+	            $scope.moduleRoles = AvailableModuleRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id, module : $scope.module.id});
+	            $scope.moduleComposite = CompositeModuleRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id, module : $scope.module.id});
+	            $scope.moduleRoles = AvailableModuleRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id, module : $scope.module.id});
+	            $scope.selectedModuleRoles = [];
+	            $scope.selectedModuleMappings = [];
+	            Notifications.success("Role mappings updated.");
+	        });
+		}
+    };
+
+    $scope.deleteModuleRole = function() {
+    	//TODO: delete module role
+    	//case1: add role for exist module
+		//case2: add role for new module
+    	Notifications.success("Role removed from module.");
+    };
 	
 	$scope.save = function() {
 		if ($scope.create) {

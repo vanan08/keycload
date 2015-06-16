@@ -288,6 +288,13 @@ module.factory('UserCredentials', function($resource) {
     return credentials;
 });
 
+module.factory('AppliationRoleMapping', function($resource) {
+	return $resource(authUrl + '/admin/realms/:realm/applications-by-id/:application/roles', {
+        realm : '@realm',
+        application : '@application'
+    });
+});
+
 module.factory('RealmRoleMapping', function($resource) {
     return $resource(authUrl + '/admin/realms/:realm/users/:userId/role-mappings/realm', {
         realm : '@realm',
