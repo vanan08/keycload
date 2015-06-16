@@ -288,4 +288,5 @@ public class UserAdapter implements UserModel {
         getDelegateForUpdate();
         updated.deleteRoleMapping(role);
     }
+    
 }

@@ -49,10 +49,11 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Providers;
+
 import java.io.InputStream;
-import java.net.URI;
 import java.security.PublicKey;
 import java.security.Signature;
+import java.util.StringTokenizer;
 
 /**
  * Resource class for the oauth/openid connect token service
@@ -136,7 +137,20 @@ public class SamlService {
 
             RequestAbstractType requestAbstractType = (RequestAbstractType)samlObject;
             String issuer = requestAbstractType.getIssuer().getValue();
-            ClientModel client = realm.findClient(issuer);
+            StringBuilder sb = new StringBuilder();
+			StringTokenizer stk = new StringTokenizer(issuer, "/");
+			if (stk.hasMoreElements()) {
+				sb.append(stk.nextToken()).append("//");
+			}
+			if (stk.hasMoreElements()) {
+				sb.append(stk.nextToken()).append("/");
+			}
+			
+			if (stk.hasMoreElements()) {
+				sb.append(stk.nextToken()).append("/");
+			}
+			
+            ClientModel client = realm.findClient(sb.toString());
 
             if (client == null) {
                 event.event(EventType.LOGIN);
@@ -191,9 +205,14 @@ public class SamlService {
 
         protected Response loginRequest(String relayState, AuthnRequestType requestAbstractType, ClientModel client) {
 
-            URI redirectUri = requestAbstractType.getAssertionConsumerServiceURL();
-            String redirect = OpenIDConnectService.verifyRedirectUri(uriInfo, redirectUri.toString(), realm, client);
+        	String redirect = requestAbstractType.getIssuer().getValue();
+            
+            //logger.info("=>>>>>>>>>>>="+redirectUri.toString());
+            
+            //String redirect = OpenIDConnectService.verifyRedirectUri(uriInfo, redirectUri.toString(), realm, client);
 
+            //logger.info("=>>>>>>>>>>>1="+redirect);
+            
             if (redirect == null) {
                 event.error(Errors.INVALID_REDIRECT_URI);
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Invalid redirect_uri.");
@@ -255,20 +274,22 @@ public class SamlService {
         protected abstract String getBindingType();
 
         protected Response logoutRequest(LogoutRequestType requestAbstractType, ClientModel client) {
+        	logger.info("====================logoutRequest()====================");
             // authenticate identity cookie, but ignore an access token timeout as we're logging out anyways.
             AuthenticationManager.AuthResult authResult = authManager.authenticateIdentityCookie(session, realm, uriInfo, clientConnection, headers, false);
             if (authResult != null) {
                 logout(authResult.getSession());
             }
-
+            
             String redirectUri = null;
 
             if (client instanceof ApplicationModel) {
                 redirectUri = ((ApplicationModel)client).getBaseUrl();
             }
-
+            
             if (redirectUri != null) {
-                String validatedRedirect = OpenIDConnectService.verifyRedirectUri(uriInfo, redirectUri, realm, client);;
+                String validatedRedirect = OpenIDConnectService.verifyRedirectUri(uriInfo, redirectUri, realm, client);
+                logger.info("validatedRedirect="+validatedRedirect);
                 if (validatedRedirect == null) {
                     return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Invalid redirect uri.");
                 }

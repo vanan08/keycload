@@ -15,12 +15,13 @@ import javax.persistence.Table;
 
 @NamedQueries({
 	@NamedQuery(name="moduleHasRole", query="select m from ModuleRoleMappingEntity m where m.roleId = :roleId"),
+	@NamedQuery(name="selectRolesByUser", query="select m from ModuleRoleMappingEntity m where m.userId = :userId"),
     @NamedQuery(name="selectRolesByUserModule", query="select m from ModuleRoleMappingEntity m where m.module = :module and m.userId = :userId"),
     @NamedQuery(name="selectRolesByRoleId", query="select m from ModuleRoleMappingEntity m where m.module = :module and m.roleId = :roleId and m.userId = :userId"),
     @NamedQuery(name="selectRolesByModule", query="select m from ModuleRoleMappingEntity m where m.module = :module"),
-    @NamedQuery(name="deleteModuleRoleMappingByRole", query="delete from ModuleRoleMappingEntity m where m.module = :module and m.roleId = :roleId"),
+    @NamedQuery(name="deleteModuleRoleMappingByRole", query="delete from ModuleRoleMappingEntity where module = :module and roleId = :roleId"),
     @NamedQuery(name="deleteModuleRoleMappingByUser", query="delete from ModuleRoleMappingEntity where module = :module and roleId = :roleId and userId = :userId"),
-    @NamedQuery(name="deleteModuleRoleMappingByModule", query="delete from ModuleRoleMappingEntity m where m.module = :module")
+    @NamedQuery(name="deleteModuleRoleMappingByModule", query="delete from ModuleRoleMappingEntity where module = :module")
 })
 @Table(name="MODULE_ROLE_MAPPING")
 @Entity

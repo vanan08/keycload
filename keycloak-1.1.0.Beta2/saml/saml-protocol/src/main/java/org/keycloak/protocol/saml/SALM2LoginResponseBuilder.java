@@ -114,7 +114,6 @@ public class SALM2LoginResponseBuilder extends SAML2BindingBuilder<SALM2LoginRes
     public PostBindingBuilder postBinding()  throws ConfigurationException, ProcessingException {
         Document samlResponseDocument = buildDocument();
         return new PostBindingBuilder(samlResponseDocument);
-
     }
 
     public Document buildDocument() throws ConfigurationException, ProcessingException {

@@ -19,12 +19,20 @@
     <xsl:template match="node()[name(.)='datasources']">
         <xsl:copy>
             <xsl:apply-templates select="node()[name(.)='datasource']"/>
-            <datasource jndi-name="java:jboss/datasources/KeycloakDS" pool-name="KeycloakDS" enabled="true" use-java-context="true">
+            <!-- <datasource jndi-name="java:jboss/datasources/KeycloakDS" pool-name="KeycloakDS" enabled="true" use-java-context="true">
                 <connection-url>jdbc:h2:${jboss.server.data.dir}/keycloak;AUTO_SERVER=TRUE</connection-url>
                 <driver>h2</driver>
                 <security>
                     <user-name>sa</user-name>
                     <password>sa</password>
+                </security>
+            </datasource> -->
+            <datasource jndi-name="java:/jboss/postgresqlKeycloakDS" pool-name="postgresqlKeycloakDS" enabled="true" use-java-context="true">
+                <connection-url>jdbc:postgresql://192.168.30.194:5432/keycloak</connection-url>
+                <driver>postgresql</driver>
+                <security>
+                    <user-name>nvan</user-name>
+                    <password>abc@123456</password>
                 </security>
             </datasource>
             <xsl:apply-templates select="node()[name(.)='drivers']"/>

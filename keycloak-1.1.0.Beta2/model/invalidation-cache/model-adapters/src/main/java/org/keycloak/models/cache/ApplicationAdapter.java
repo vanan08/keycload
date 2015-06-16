@@ -259,14 +259,14 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
 	}
 
 	@Override
-	public ModuleModel addModule(String name) {
-		return addModule(KeycloakModelUtils.generateId(), name);
+	public ModuleModel addModule(String name, String url) {
+		return addModule(KeycloakModelUtils.generateId(), name, url);
 	}
 
 	@Override
-	public ModuleModel addModule(String id, String name) {
+	public ModuleModel addModule(String id, String name, String url) {
 		getDelegateForUpdate();
-		return updated.addModule(id, name);
+		return updated.addModule(id, name, url);
 	}
 
 	@Override

@@ -417,6 +417,4 @@ public class UserAdapter implements UserModel {
         return getId().hashCode();
     }
 
-
-
 }

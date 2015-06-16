@@ -25,6 +25,7 @@ public interface ModuleModel {
     Set<RoleModel> getRoles(String userId);
     RoleModel addRole(String userId, String rolename);
     boolean removeRole(String userId, RoleModel role);
+    boolean removeAllRoles();
     
     boolean container(String userId, RoleModel role);
     

@@ -58,7 +58,7 @@ public class SAML2ErrorResponseBuilder extends SAML2BindingBuilder<SAML2ErrorRes
         sp.setResponseDestinationURI(destination);
 
         responseType = saml2Response.createResponseType(id);
-        responseType.setStatus(JBossSAMLAuthnResponseFactory.createStatusTypeForResponder(status));
+        responseType.setStatus(JBossSAMLAuthnResponseFactory.createStatusType(status));
         responseType.setDestination(destination);
 
         if (encrypt) encryptDocument(samlResponse);

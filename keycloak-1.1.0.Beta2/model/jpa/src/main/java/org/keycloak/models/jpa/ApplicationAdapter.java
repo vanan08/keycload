@@ -151,12 +151,20 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
             return false;
         }
         if (!roleModel.getContainer().equals(this)) return false;
-        if (moduleHasRole(roleModel)) return false;
+//        if (moduleHasRole(roleModel)) return false;
 
         session.users().preRemove(getRealm(), roleModel);
         RoleEntity role = RoleAdapter.toRoleEntity(roleModel, em);
         if (!role.isApplicationRole()) return false;
 
+        for (ModuleModel module : getModules()) {
+        	if (module.hasRole(role.getId())) {
+				em.createNamedQuery("deleteModuleRoleMappingByRole")
+					.setParameter("module", ModuleAdapter.toModuleEntity(module, em))
+					.setParameter("roleId", role.getId())
+					.executeUpdate();
+        	}
+		}
 
         applicationEntity.getRoles().remove(role);
         applicationEntity.getDefaultRoles().remove(role);
@@ -168,15 +176,6 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
         em.flush();
 
         return true;
-    }
-    
-    protected boolean moduleHasRole(RoleModel roleModel) {
-    	for (ModuleModel mod : getModules()) {
-    		if (mod.hasRole(roleModel.getId())) {
-    			return true;
-    		}
-    	}
-    	return false;
     }
 
     @Override
@@ -292,15 +291,16 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
     }
     
     @Override
-    public ModuleModel addModule(String name) {
-    	return addModule(KeycloakModelUtils.generateId(), name);
+    public ModuleModel addModule(String name, String url) {
+    	return addModule(KeycloakModelUtils.generateId(), name, url);
     }
     
     @Override
-    public ModuleModel addModule(String id, String name) {
+    public ModuleModel addModule(String id, String name, String url) {
     	ModuleEntity moduleData = new ModuleEntity();
     	moduleData.setId(id);
     	moduleData.setName(name);
+    	moduleData.setUrl(url);
     	moduleData.setApplication(applicationEntity);
     	
     	applicationEntity.getModules().add(moduleData);
@@ -316,19 +316,20 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
     	if (module == null) return false;
     	
     	ModuleEntity moduleEntity = null;
-    	Iterator<ModuleEntity> modules = applicationEntity.getModules().iterator();
-    	while (modules.hasNext()) {
-    		ModuleEntity me = modules.next();
+    	Iterator<ModuleEntity> itr = applicationEntity.getModules().iterator();
+    	while (itr.hasNext()) {
+    		ModuleEntity me = itr.next();
     		if (me.getId().equals(module.getId())) {
     			moduleEntity = me;
+    			itr.remove();
     			break;
     		}
     	}
+    	
     	em.remove(moduleEntity);
-    	em.createNamedQuery("deleteModuleRoleMappingByModule")
-    		.setParameter("module", moduleEntity)
-    		.executeUpdate();
+    	em.createNamedQuery("deleteModuleRoleMappingByModule").setParameter("module", moduleEntity).executeUpdate();
     	em.flush();
+    	
     	return true;
     }
     
@@ -418,17 +419,15 @@ public class ApplicationAdapter extends ClientAdapter implements ApplicationMode
 		// TODO Auto-generated method stub
 		if (roleModel == null) return false;
         if (!roleModel.getContainer().equals(this)) return false;
-        
-		for (ModuleModel mod : getModules()) {
-			if (mod.container(userId, roleModel)) {
-				return false;
-			}
-		}
 
         session.users().preRemove(getRealm(), roleModel);
         RoleEntity role = RoleAdapter.toRoleEntity(roleModel, em);
         if (!role.isApplicationRole()) return false;
 
+        for (ModuleModel module : getModules()) {
+			em.createNamedQuery("deleteModuleRoleMappingByModule").setParameter("module", module).executeUpdate();
+		}
+        
         applicationEntity.getRoles().remove(role);
         applicationEntity.getDefaultRoles().remove(role);
         em.createNativeQuery("delete from COMPOSITE_ROLE where CHILD_ROLE = :role").setParameter("role", role).executeUpdate();

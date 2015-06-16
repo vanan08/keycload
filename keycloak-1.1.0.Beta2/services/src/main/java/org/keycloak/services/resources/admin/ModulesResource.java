@@ -86,7 +86,7 @@ public class ModulesResource {
     		ModuleModel moduleModel = RepresentationToModel.createModule(realm, applicationModel, rep);
     		return Response.created(uriInfo.getAbsolutePathBuilder().path(getModulePath(moduleModel)).build()).build();
     	} catch (ModelDuplicateException e) {
-            return Flows.errors().exists("Module " + rep.getName() + " already exists");
+            return Flows.errors().exists("Module " + rep.toString() + " already exists");
         }
     }
     

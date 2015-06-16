@@ -15,6 +15,7 @@
             <directory>${basedir}</directory>
             <includes>
                 <include>keycloak-ds.xml</include>
+                <include>postgresql_keycloak-ds.xml</include>
                 <include>auth-server.war.dodeploy</include>
             </includes>
             <outputDirectory>deployments</outputDirectory>

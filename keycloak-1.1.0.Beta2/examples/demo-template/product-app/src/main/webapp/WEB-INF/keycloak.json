@@ -3,9 +3,9 @@
   "realm-public-key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCV7mPCkal5s6OEkcypVUvLXgm2baZhdm8LjYHh3qU72W0D+l046LXovYH7xM3huKfEoTR07s2DGkhmEoIfnsMvyy6mZwFskNGcvOwL6t8s0x+b2JLGJMCJa1NSl9BQPPQlDU9Y5PxT8kVl0C+1qkFMcido9kVnSxTgm5pQHU3sZQIDAQAB",
   "auth-server-url": "https://localhost:8443/auth",
   "ssl-required": "external",
-  "resource": "product-portal",
+  "resource": "shop",
   "credentials": {
-    "secret": "3251ce95-6808-4748-a705-4872e6b859de"
+    "secret": "63f03634-9949-420a-a3dc-e01a90c05ae0"
   },
   "use-resource-role-mappings": true,
   "disable-trust-manager": true

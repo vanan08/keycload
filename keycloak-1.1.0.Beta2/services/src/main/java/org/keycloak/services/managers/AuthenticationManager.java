@@ -275,14 +275,9 @@ public class AuthenticationManager {
         boolean isResource = client instanceof ApplicationModel;
         ClientSessionCode accessCode = new ClientSessionCode(realm, clientSession);
 
-
-//        logger.debugv("processAccessCode: isResource: {0}", isResource);
-//        logger.debugv("processAccessCode: go to oauth page?: {0}",
-//                !isResource);
-        
-        logger.info("processAccessCode: isResource: "+ isResource);
-        logger.info("processAccessCode: go to oauth page?: "+
-                (!isResource));
+        logger.debugv("processAccessCode: isResource: {0}", isResource);
+        logger.debugv("processAccessCode: go to oauth page?: {0}",
+                !isResource);
 
         event.detail(Details.CODE_ID, clientSession.getId());
 

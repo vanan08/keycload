@@ -1,5 +1,6 @@
 package org.keycloak.services.resources.admin;
 
+import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.spi.NotFoundException;
 import org.keycloak.models.ApplicationModel;
@@ -22,6 +23,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +36,8 @@ public class RoleContainerResource extends RoleResource {
     private final RealmModel realm;
     private final RealmAuth auth;
     protected RoleContainerModel roleContainer;
+    
+    private static final Logger logger = Logger.getLogger(RoleContainerResource.class);
 
     public RoleContainerResource(RealmModel realm, RealmAuth auth, RoleContainerModel roleContainer) {
         super(realm);

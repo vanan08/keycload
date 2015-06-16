@@ -4,6 +4,7 @@ import org.keycloak.enums.SslRequired;
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.OAuthClientModel;
 import org.keycloak.models.PasswordPolicy;
 import org.keycloak.models.RealmModel;
@@ -21,6 +22,7 @@ import org.keycloak.models.utils.KeycloakModelUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+
 import java.security.Key;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -642,6 +644,10 @@ public class RealmAdapter implements RealmModel {
         if (id == null) return false;
         ApplicationModel application = getApplicationById(id);
         if (application == null) return false;
+        
+        for (ModuleModel module : application.getModules()) {
+        	application.removeModule(module);
+        }
 
         for (RoleModel role : application.getRoles()) {
             application.removeRole(role);

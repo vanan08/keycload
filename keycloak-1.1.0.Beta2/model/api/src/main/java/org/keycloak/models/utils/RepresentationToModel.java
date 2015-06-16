@@ -575,14 +575,15 @@ public class RepresentationToModel {
     
     public static ModuleModel createModule(RealmModel realm, ApplicationModel appModel, ModuleRepresentation moduleRep) {
     	ModuleModel module = null;
-    	logger.info("ModuleName="+moduleRep.getName());
     	if (moduleRep.getId() != null) {
-    		module = appModel.addModule(moduleRep.getId(), moduleRep.getName());
+    		module = appModel.addModule(moduleRep.getId(), moduleRep.getName(), moduleRep.getUrl());
     	} else {
-    		module = appModel.addModule(moduleRep.getName());
+    		module = appModel.addModule(moduleRep.getName(), moduleRep.getUrl());
     	}
     	module.setUrl(moduleRep.getUrl());
     	module.setDescription(moduleRep.getDescription());
+    	
+    	logger.info("module="+module.toString());
     	
     	// mapping roles to module
     	//if (moduleRep.getRoles() != null && moduleRep.getRoles().length > 0) {

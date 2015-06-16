@@ -83,5 +83,9 @@ public class ModuleEntity {
 //		this.roles = roles;
 //	}
 	
+	@Override
+	public String toString() {
+		return "[name="+name+",url="+url+",description="+description+"]";
+	}
 	
 }

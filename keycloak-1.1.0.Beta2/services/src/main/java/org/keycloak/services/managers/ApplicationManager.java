@@ -41,7 +41,9 @@ public class ApplicationManager {
     }
 
     public boolean removeApplication(RealmModel realm, ApplicationModel application) {
+    	logger.info("before: "+realm.getApplications().size());
         if (realm.removeApplication(application.getId())) {
+        	logger.info("after: "+realm.getApplications().size());
             UserSessionProvider sessions = realmManager.getSession().sessions();
             if (sessions != null) {
                 sessions.onClientRemoved(realm, application);
