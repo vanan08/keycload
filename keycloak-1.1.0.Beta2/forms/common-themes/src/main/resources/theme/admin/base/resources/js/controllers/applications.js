@@ -374,44 +374,113 @@ module.controller('ModuleDetailCtrl', function($scope, Loader, realm, applicatio
 	$scope.realm = realm;
 	$scope.application = application;
 	$scope.create = false;
-	
+	$scope.applicationModuleRoles=[];
+	$scope.applicationRoles = [];
+	$scope.applicationComposite=[];
 	$scope.module = angular.copy(module);
 	
 	$scope.create = !module.name;
 	$scope.changed = $scope.create;
 	
-	$scope.applicationRoles = AppliationRoleMapping.query({ realm : realm.realm, application: $scope.application.id });
+	$scope.$watch('applicationRoles', function() {
+		console.log("applicationRoles: "+JSON.stringify($scope.applicationRoles));
+	});
+	
     
-	//TODO: Get all roles tag for module
-	$scope.applicationModuleRoles = [{name:"role3"}];
+	$scope.$watch('applicationModuleRoles', function() {
+		console.log("applicationModuleRoles: "+JSON.stringify($scope.applicationModuleRoles));
+	});
+	
+	$scope.$watch('applicationComposite', function() {
+		console.log("applicationComposite: "+JSON.stringify($scope.applicationComposite));
+	});
+	
+	$scope.applicationRoles = AppliationRoleMapping.query({ realm : realm.realm, application: $scope.application.id });
+	$scope.applicationComposite= angular.copy($scope.applicationRoles);
+	
+	if (!$scope.create) {
+		//TODO: Get all roles tag for module
+		$scope.applicationModuleRoles = [{name:"role3"}];
+	}
 	
 	$scope.addModuleRole = function() {
 		//TODO: add module role
+		if($scope.selectedModuleRoles.length == 0)
+			return;
 		if ($scope.create) {
 			//case1: add role for new module
 			//add to cache and call when save module
-			
+			console.log("selectedModuleRoles: "+ JSON.stringify($scope.selectedModuleRoles));
+			console.log("selectedModuleRoles.name: "+ $scope.selectedModuleRoles[0].name);
+			$scope.applicationModuleRoles.push($scope.selectedModuleRoles[0]);
+			$scope.applicationComposite.push($scope.selectedModuleRoles[0]);
+			var selectedItem = $scope.selectedModuleRoles[0];
+    		console.log("selectedItem name: "+selectedItem.name);
+    		console.log("applicationRoles: "+JSON.stringify($scope.applicationRoles));
+    		for(var i = 0; i < $scope.applicationRoles.length; i++){
+    			console.log("filter item name: "+ $scope.applicationRoles[i].name);
+    			console.log("filter selectedItem name: "+ selectedItem.name);
+    			if ($scope.applicationRoles[i].name.trim() == selectedItem.name.trim()){
+    				console.log("remove selectedItem name: "+selectedItem.name);
+    				$scope.applicationRoles.splice(i, 1);
+    			}
+    		}
+    		
+    		$scope.selectedModuleRoles = [];
+    		
 		}else{
 			//case2: add role for exist module
 			console.log('addModuleRole');
-	    	$http.post(authUrl + '/admin/realms/' + realm.realm + '/users/' + user.username + '/role-mappings/applications-by-id/' + $scope.application.id + "/modules/" + $scope.module.id,
+	    	$http.post(authUrl + '/admin/realms/' + realm.realm + '/role-mappings/applications-by-id/' + $scope.application.id + "/modules/" + $scope.module.id,
 	            $scope.selectedModuleRoles).success(function() {
-	            $scope.moduleMappings = ModuleRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id, module : $scope.module.id});
-	            $scope.moduleRoles = AvailableModuleRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id, module : $scope.module.id});
-	            $scope.moduleComposite = CompositeModuleRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id, module : $scope.module.id});
-	            $scope.moduleRoles = AvailableModuleRoleMapping.query({realm : realm.realm, userId : user.username, application : $scope.application.id, module : $scope.module.id});
-	            $scope.selectedModuleRoles = [];
-	            $scope.selectedModuleMappings = [];
-	            Notifications.success("Role mappings updated.");
+		            //TODO: Get module roles mapping without user
+		            $scope.applicationModuleRoles = [{name:"role3"}];
+		            $scope.applicationComposite= angular.copy($scope.applicationModuleRoles);
+		            $scope.selectedModuleRoles = [];
+		            $scope.selectedModuleMappings = [];
+		            Notifications.success("Role mappings updated.");
 	        });
 		}
     };
 
     $scope.deleteModuleRole = function() {
     	//TODO: delete module role
-    	//case1: add role for exist module
-		//case2: add role for new module
-    	Notifications.success("Role removed from module.");
+    	if($scope.selectedApplicationModuleRoles.length == 0)
+    		return;
+    	
+    	if ($scope.create) {
+    		//case1: add role for new module
+    		console.log("selected item array: "+ JSON.stringify($scope.selectedApplicationModuleRoles));
+    		console.log("selectedApplicationModuleRoles name: "+ $scope.selectedApplicationModuleRoles[0].name);
+    		console.log("applicationModuleRoles array: "+ JSON.stringify($scope.applicationModuleRoles));
+    		console.log("applicationModuleRoles array length: "+ $scope.applicationModuleRoles.length);
+    		
+    		for(var j = 0; j < $scope.applicationModuleRoles.length; j++){
+    			console.log("filter item name: "+ $scope.applicationModuleRoles[j].name);
+    			//console.log("filter selectedItem name: "+ $scope.selectedApplicationModuleRoles[0].name);
+    			if ($scope.selectedApplicationModuleRoles[0].name.trim() === $scope.applicationModuleRoles[j].name.trim()){
+    				console.log("remove selectedItem name: "+$scope.selectedApplicationModuleRoles[0].name);
+    				$scope.applicationModuleRoles.splice(j, 1);
+    				$scope.applicationComposite.splice(j, 1);
+    				$scope.applicationRoles.push($scope.selectedApplicationModuleRoles[0]);
+    			}
+    		}
+    		
+    		$scope.selectedApplicationModuleRoles = [];
+    		
+    	}else{
+    		//case2: add role for exist module
+        	console.log('deleteModuleRole');
+        	$http.delete(authUrl + '/admin/realms/' + realm.realm + '/role-mappings/applications-by-id/' + $scope.application.id + "/modules/" + $scope.module.id,
+        			{data : $scope.selectedModuleMappings, headers : {"content-type" : "application/json"}}).success(function() {
+        				$scope.applicationModuleRoles = [{name:"role3"}];
+    		            $scope.applicationComposite= angular.copy($scope.applicationModuleRoles);
+    		            $scope.selectedModuleRoles = [];
+    		            $scope.selectedModuleMappings = [];
+                    Notifications.success("Role mappings updated.");
+                });
+    	}
+		
     };
 	
 	$scope.save = function() {

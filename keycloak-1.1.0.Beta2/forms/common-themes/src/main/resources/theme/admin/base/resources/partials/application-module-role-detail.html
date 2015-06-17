@@ -51,7 +51,7 @@
                             <label class="control-label" for="available-app">Available Roles <span tooltip-placement="right" tooltip="Assignable roles from this application." class="fa fa-info-circle"></span></label>
                             <select id="available-app" class="form-control" multiple size="5"
                                     ng-multiple="true"
-                                    ng-model="selectedApplicationRoles"
+                                    ng-model="selectedModuleRoles"
                                     ng-options="r.name for r in applicationRoles">
                             </select>
                         </div>
@@ -67,7 +67,7 @@
                             <label class="control-label" for="assigned-app">Assigned Roles <span tooltip-placement="right" tooltip="Role mappings for this application." class="fa fa-info-circle"></span></label>
                             <select id="assigned-app" class="form-control" multiple size=5
                                     ng-multiple="true"
-                                    ng-model="selectedApplicationMappings"
+                                    ng-model="selectedApplicationModuleRoles"
                                     ng-options="r.name for r in applicationModuleRoles">
                             </select>
                         </div>
