@@ -1,7 +1,107 @@
-module.controller('ApplicationRoleListCtrl', function($scope, $location, realm, application, roles) {
+module.controller('ApplicationRoleListCtrl', function($scope, $http, $location, realm, application, roles, Notifications, MyApplicationRole, RealmRoles, AppliationRoleMapping) {
     $scope.realm = realm;
     $scope.roles = roles;
     $scope.application = application;
+    $scope.realmRoles = [];
+    $scope.selectedRealmRoles = [];
+    $scope.selectedApplicationRoles = [];
+    $scope.applicationRoles = [];
+    $scope.myApplicationRolesComposite = new Array();
+    
+    $scope.$watch('realmRoles', function(oldvalue, newvalue) {
+		console.log("watch realmRoles: "+JSON.stringify(newvalue));
+	});
+    
+    $scope.$watch('applicationRoles', function(oldvalue, newvalue) {
+		console.log("watch applicationRoles: "+JSON.stringify(newvalue));
+		
+	});
+    
+    $scope.$watch('applicationRolesComposite', function() {
+		console.log("applicationRolesComposite: "+JSON.stringify($scope.myApplicationRolesComposite));
+	});
+    
+    $scope.realmRoles = RealmRoles.query({ realm : realm.realm }, function(updated) {
+    	for(var i = 0; i < $scope.realmRoles.length; i++){
+			console.log("filter item name: "+ $scope.realmRoles[i].name);
+			for(var j = 0; j < $scope.applicationRoles.length; j++){
+				console.log("filter name: "+ $scope.applicationRoles[j].name);
+				if ($scope.applicationRoles[j].name.trim() == $scope.realmRoles[i].name.trim()){
+					console.log("remove name: "+$scope.realmRoles[i].name);
+					$scope.realmRoles.splice(i, 1);
+				}
+			}
+		}
+    });
+    $scope.applicationRoles = AppliationRoleMapping.query({ realm : realm.realm, application: $scope.application.id }, function(updated) {
+    	for(var i = 0; i < $scope.realmRoles.length; i++){
+			console.log("filter item name: "+ $scope.realmRoles[i].name);
+			for(var j = 0; j < $scope.applicationRoles.length; j++){
+				console.log("filter name: "+ $scope.applicationRoles[j].name);
+				if ($scope.applicationRoles[j].name.trim() == $scope.realmRoles[i].name.trim()){
+					console.log("remove name: "+$scope.realmRoles[i].name);
+					$scope.realmRoles.splice(i, 1);
+				}
+			}
+		}
+    	if($scope.applicationRoles != []) 
+    		$scope.myApplicationRolesComposite = $scope.applicationRoles;
+    });
+    
+    
+    
+    $scope.addRole = function() {
+    	//1) Add new appliation role
+    	console.log("selectedRealmRoles: "+JSON.stringify($scope.selectedRealmRoles));
+    	console.log("selectedRealmRoles name: "+ $scope.selectedRealmRoles[0].name);
+    	
+    	MyApplicationRole.save({
+            realm: realm.realm,
+            application : application.id
+        }, $scope.selectedRealmRoles[0], function (data, headers) {
+        	$http.post(authUrl + '/admin/realms/' + realm.realm + '/applications-by-id/' + application.id +  '/scope-mappings/applications-by-id/' + application.id,
+                $scope.selectedApplicationRoles).success(function () {
+               
+            	for(var i = 0; i < $scope.realmRoles.length; i++){
+            		console.log("filter item name: "+ $scope.realmRoles[i].name);
+        			if ($scope.realmRoles[i].name.trim() == $scope.selectedRealmRoles[0].name.trim()){
+        				console.log("remove name: "+$scope.realmRoles[i].name);
+        				$scope.realmRoles.splice(i, 1);
+        			}
+            	}   	
+            	
+                $scope.applicationRoles = AppliationRoleMapping.query({ realm : realm.realm, application: $scope.application.id }, function(updated) {
+                	if($scope.selectedRealmRoles[0] != []) 
+                		$scope.myApplicationRolesComposite.push($scope.selectedRealmRoles[0]);
+                });
+                $scope.selectedApplicationRoles = [];
+                Notifications.success("Scope mappings updated.");
+            });
+        });
+    };
+    $scope.deleteRole = function() {
+    	$http.delete(authUrl + '/admin/realms/' + realm.realm + '/applications-by-id/' + application.id +  '/scope-mappings/applications-by-id/' + application.id,
+        {data : $scope.selectedApplicationRoles, headers : {"content-type" : "application/json"}}).success(function () {
+        	//https://localhost:8443/auth/admin/realms/demo/applications-by-id/b2e784e6-2b9f-40d8-a683-c33f77138b08/roles/test
+        	$http.delete(authUrl + '/admin/realms/' + realm.realm + '/applications-by-id/' + application.id +  '/roles/' + $scope.selectedApplicationRoles[0].name)
+        	  .success(function(response, status, headers, config){
+        		  console.log("filter item name: "+ JSON.stringify($scope.myApplicationRolesComposite));
+        		  for(var i = 0; i < $scope.myApplicationRolesComposite.length; i++){
+              		console.log("filter item name: "+ JSON.stringify($scope.myApplicationRolesComposite[i]));
+          			if ($scope.myApplicationRolesComposite[i].name !== undefined && $scope.myApplicationRolesComposite[i].name.trim() == $scope.selectedApplicationRoles[0].name.trim()){
+          				console.log("remove name: "+$scope.myApplicationRolesComposite[i].name);
+          				$scope.myApplicationRolesComposite.splice(i, 1);
+          			}
+              	}  
+        		  	$scope.applicationRoles = AppliationRoleMapping.query({ realm : realm.realm, application: $scope.application.id }, function(updated) {
+        		  		//$scope.myApplicationRolesComposite.push($scope.applicationRoles);
+        		  	});
+        		  	$scope.realmRoles.push($scope.selectedApplicationRoles[0]);
+        		  	$scope.selectedApplicationRoles = [];
+        		  	Notifications.success("Scope mappings updated.");
+        	  });
+        });
+    };
 
     for (var i = 0; i < roles.length; i++) {
         console.log("role.id: " + roles[i].id + " role.name: " + roles[i].name);
@@ -435,6 +535,7 @@ module.controller('ModuleDetailCtrl', function($scope, Loader, realm, applicatio
 	            $scope.selectedModuleRoles).success(function() {
 		            //TODO: Get module roles mapping without user
 		            $scope.applicationModuleRoles = [{name:"role3"}];
+		            
 		            $scope.applicationComposite= angular.copy($scope.applicationModuleRoles);
 		            $scope.selectedModuleRoles = [];
 		            $scope.selectedModuleMappings = [];
@@ -534,7 +635,7 @@ module.controller('ModuleDetailCtrl', function($scope, Loader, realm, applicatio
 	};
 	
 	$scope.cancel = function () {
-		$location.url("/realms/" + realm.realm + "/applications/" + application.id + "/modules");
+		$location.url("/realms/" + realm.realm + "/applications/" + application.id);
 	};
 	
 });

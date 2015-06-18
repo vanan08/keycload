@@ -667,6 +667,18 @@ module.factory('ApplicationRole', function($resource) {
     });
 });
 
+module.factory('MyApplicationRole', function($resource) {
+    return $resource(authUrl + '/admin/realms/:realm/applications-by-id/:application/roles/:role', {
+        realm : '@realm',
+        application : "@application",
+        role : '@role'
+    },  {
+        update : {
+            method : 'PUT'
+        }
+    });
+});
+
 module.factory('ApplicationModule', function($resource) {//nvan
 	var data = $resource(authUrl + '/admin/realms/:realm/applications-by-id/:application/modules/:module', {
 	        realm : '@realm',

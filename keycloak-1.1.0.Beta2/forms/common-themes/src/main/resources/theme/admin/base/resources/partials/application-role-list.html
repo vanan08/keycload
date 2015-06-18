@@ -9,57 +9,46 @@
             <li class="active">Roles</li>
         </ol>
         <h2><span>{{application.name}}</span> Application Roles</h2>
-        <table class="table table-striped table-bordered">
-            <thead>
-            <tr>
-                <th class="kc-table-actions" colspan="3" data-ng-show="access.manageApplications">
-                    <div class="pull-right">
-                        <a class="btn btn-primary" href="#/create/role/{{realm.realm}}/applications/{{application.id}}">Add Role</a>
-                        <!-- <button class="remove disabled">Remove</button> -->
-                    </div>
-                </th>
-            </tr>
-            <!--<tr data-ng-show="roles && roles.length > 5">
-                <th class="kc-table-actions" colspan="3">
-                    <div class="search-comp clearfix">
-                        <input type="text" placeholder="Search..." class="search">
-                        <button class="icon-search" tooltip-placement="right"
-                                tooltip="Search by role name.">
-                            Icon: search
-                        </button>
-                    </div>
-                </th>
-            </tr>
-            -->
-            <tr data-ng-hide="!roles || roles.length == 0">
-                <th>Role Name</th>
-                <th>Composite</th>
-                <th>Description</th>
-            </tr>
-            </thead>
-            <!--<tfoot data-ng-show="roles && roles.length > 5">
-            <tr>
-                <td colspan="3">
-                    <div class="table-nav">
-                        <a href="#" class="first disabled">First page</a><a href="#" class="prev disabled">Previous
-                        page</a><span><strong>1-8</strong> of <strong>10</strong></span><a href="#"
-                                                                                           class="next">Next
-                        page</a><a href="#" class="last">Last page</a>
-                    </div>
-                </td>
-            </tr>
-            </tfoot>
-            -->
-            <tbody>
-            <tr ng-repeat="role in roles">
-                <td><a href="#/realms/{{realm.realm}}/applications/{{application.id}}/roles/{{role.name}}">{{role.name}}</a></td>
-                <td>{{role.composite}}</td>
-                <td>{{role.description}}</td>
-            </tr>
-            <tr data-ng-show="!roles || roles.length == 0">
-                <td>No application roles available</td>
-            </tr>
-            </tbody>
-        </table>
+       
+       <div class="form-group" ng-show="application">
+              <div class="controls changing-selectors col-sm-10">
+                  <div class="select-title">
+                      <label class="control-label" for="available-app">Available Roles <span tooltip-placement="right" tooltip="Assignable roles from this application." class="fa fa-info-circle"></span></label>
+                      <select id="available-app" class="form-control" multiple size="5"
+                              ng-multiple="true"
+                              ng-model="selectedRealmRoles"
+                              ng-options="r.name for r in realmRoles">
+                      </select>
+                  </div>
+                  <div class="middle-buttons">
+                      <button class="btn btn-default" type="submit" ng-click="addRole()" tooltip="Assign role" tooltip-placement="right">
+                          <span class="kc-icon-arrow-right">Move right</span>
+                      </button>
+                      <button class="btn btn-default" type="submit" ng-click="deleteRole()" tooltip="Unassign role" tooltip-placement="left">
+                          <span class="kc-icon-arrow-left">Move left</span>
+                      </button>
+                  </div>
+                  <div class="select-title">
+                      <label class="control-label" for="assigned-app">Assigned Roles <span tooltip-placement="right" tooltip="Role mappings for this application." class="fa fa-info-circle"></span></label>
+                      <select id="assigned-app" class="form-control" multiple size=5
+                              ng-multiple="true"
+                              ng-model="selectedApplicationRoles"
+                              ng-options="r.name for r in applicationRoles">
+                      </select>
+                  </div>
+                  <div class="middle-buttons">
+                      -
+                  </div>
+                  <div class="select-title">
+                      <label class="control-label" for="app-composite">Effective Roles <span tooltip-placement="right" tooltip="Role mappings for this application.  Some roles here might be inherited from a mapped composite role." class="fa fa-info-circle"></span></label>
+                      <select id="app-composite" class="form-control" multiple size=5
+                              ng-disabled="true"
+                              ng-model="dummymodel"
+                              ng-options="r.name for r in myApplicationRolesComposite">
+                      </select>
+                  </div>
+              </div>
+          </div>  
+            
     </div>
 </div>

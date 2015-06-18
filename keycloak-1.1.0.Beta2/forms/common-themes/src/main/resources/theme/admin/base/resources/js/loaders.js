@@ -183,6 +183,16 @@ module.factory('ApplicationModuleLoader', function(Loader, ApplicationModule, $r
      });
 });
 
+module.factory('MyApplicationRoleLoader', function(Loader, MyApplicationRole, $route, $q) {
+    return Loader.get(MyApplicationRole, function() {
+        return {
+            realm : $route.current.params.realm,
+            application : $route.current.params.application,
+            role : $route.current.params.role
+        }
+    });
+});
+
 module.factory('ApplicationSessionStatsLoader', function(Loader, ApplicationSessionStats, $route, $q) {
     return Loader.get(ApplicationSessionStats, function() {
         return {
