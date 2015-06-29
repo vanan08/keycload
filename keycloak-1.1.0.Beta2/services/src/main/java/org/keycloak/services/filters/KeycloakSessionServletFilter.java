@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 
 /**
@@ -26,7 +27,8 @@ public class KeycloakSessionServletFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest)servletRequest;
+    	System.out.println("=====eycloak - doFilter()=====");
+    	HttpServletRequest request = (HttpServletRequest)servletRequest;
 
         KeycloakSessionFactory sessionFactory = (KeycloakSessionFactory) servletRequest.getServletContext().getAttribute(KeycloakSessionFactory.class.getName());
         KeycloakSession session = sessionFactory.create();

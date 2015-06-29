@@ -126,6 +126,11 @@
 
     <dependencyManagement>
         <dependencies>
+        <dependency>
+	<groupId>org.apache.httpcomponents</groupId>
+	<artifactId>httpclient</artifactId>
+	<version>4.2.6</version>
+</dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk16</artifactId>
@@ -805,34 +810,24 @@
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>get-build-timestamp</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>create-timestamp</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Example date: Wed, 4 Jul 2001 12:08:56 -0700 -->
-                            <timestampFormat>EEE, d MMM yyyy HH:mm:ss Z</timestampFormat>
-                            <timestampPropertyName>build.datetime</timestampPropertyName>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>get-scm-revision</id>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                        <configuration>
-                            <doCheck>false</doCheck>
-                            <doUpdate>false</doUpdate>
-                            <revisionOnScmFailure>UNKNOWN</revisionOnScmFailure>
-                            <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
-                        </configuration>
-                    </execution>
-                </executions>
+			    <artifactId>buildnumber-maven-plugin</artifactId>
+			    <version>1.0-beta-3</version>
+			    <configuration>
+			      <buildNumberPropertyName>buildNumber.value</buildNumberPropertyName>
+			      <timestampPropertyName>buildNumber.timestamp</timestampPropertyName>
+			      <format>{0,date,yyyyMMdd-HHmm}</format>
+			      <items>
+			        <item>timestamp</item>
+			      </items>
+			    </configuration>
+			    <executions>
+			      <execution>
+			        <phase>validate</phase>
+			        <goals>
+			          <goal>create</goal>
+			        </goals>
+			      </execution>
+			    </executions>
             </plugin>
         </plugins>
 

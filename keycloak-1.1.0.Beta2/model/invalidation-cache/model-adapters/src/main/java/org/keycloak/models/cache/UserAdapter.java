@@ -76,6 +76,12 @@ public class UserAdapter implements UserModel {
         getDelegateForUpdate();
         updated.setEnabled(enabled);
     }
+    
+    @Override
+    public String getMobile() {
+        getDelegateForUpdate();
+        return updated.getMobile();
+    }
 
     @Override
     public void setAttribute(String name, String value) {
@@ -288,5 +294,11 @@ public class UserAdapter implements UserModel {
         getDelegateForUpdate();
         updated.deleteRoleMapping(role);
     }
+
+	@Override
+	public void setMobile(String mobile) {
+		getDelegateForUpdate();
+		updated.setMobile(mobile);
+	}
     
 }

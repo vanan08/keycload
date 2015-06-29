@@ -47,6 +47,7 @@ public class ModelToRepresentation {
         rep.setUsername(user.getUsername());
         rep.setLastName(user.getLastName());
         rep.setFirstName(user.getFirstName());
+        rep.setMobile(user.getMobile());
         rep.setEmail(user.getEmail());
         rep.setEnabled(user.isEnabled());
         rep.setEmailVerified(user.isEmailVerified());

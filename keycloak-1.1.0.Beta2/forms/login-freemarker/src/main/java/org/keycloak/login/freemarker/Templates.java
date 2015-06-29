@@ -12,9 +12,10 @@ public class Templates {
             case LOGIN:
                 return "login.ftl";
             case LOGIN_TOTP:
-                return "login-totp.ftl";
+            	return "login-totp.ftl";
             case LOGIN_CONFIG_TOTP:
-                return "login-config-totp.ftl";
+            	return "login-totp.ftl";
+//                return "login-config-totp.ftl";
             case LOGIN_VERIFY_EMAIL:
                 return "login-verify-email.ftl";
             case OAUTH_GRANT:

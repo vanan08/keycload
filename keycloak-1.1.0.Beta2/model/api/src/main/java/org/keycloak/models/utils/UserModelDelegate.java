@@ -191,4 +191,14 @@ public class UserModelDelegate implements UserModel {
 	public Set<RoleModel> getModuleRoleMappings(ModuleModel module) {
 		return delegate.getModuleRoleMappings(module);
 	}
+
+	@Override
+	public String getMobile() {
+		return delegate.getMobile();
+	}
+
+	@Override
+	public void setMobile(String mobile) {
+		delegate.setMobile(mobile);
+	}
 }

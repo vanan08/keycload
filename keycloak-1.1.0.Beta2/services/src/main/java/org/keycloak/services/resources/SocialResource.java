@@ -218,7 +218,7 @@ public class SocialResource {
 
             UserSessionModel userSession = session.sessions().createUserSession(realm, user, username, clientConnection.getRemoteAddr(), authMethod, false);
             event.session(userSession);
-            TokenManager.attachClientSession(userSession, clientSession);
+            TokenManager.attachClientSession(userSession, clientSession, request);
 
             AuthenticationManager authManager = new AuthenticationManager();
             Response response = authManager.nextActionAfterAuthentication(session, userSession, clientSession, clientConnection, request, uriInfo, event);

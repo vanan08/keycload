@@ -20,6 +20,7 @@ public class UserRepresentation {
     protected String firstName;
     protected String lastName;
     protected String email;
+    protected String mobile;
     protected String federationLink;
     protected Map<String, String> attributes;
     protected List<CredentialRepresentation> credentials;
@@ -90,6 +91,14 @@ public class UserRepresentation {
 
     public void setTotp(boolean totp) {
         this.totp = totp;
+    }
+    
+    public String getMobile() {
+    	return mobile;
+    }
+    
+    public void setMobile(String mobile) {
+    	this.mobile = mobile;
     }
 
     public boolean isEmailVerified() {

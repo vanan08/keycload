@@ -1,6 +1,9 @@
 package org.keycloak.protocol.oidc;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.jboss.logging.Logger;
+import org.jboss.resteasy.spi.HttpRequest;
 import org.keycloak.ClientConnection;
 import org.keycloak.OAuthErrorException;
 import org.keycloak.events.Details;
@@ -31,7 +34,9 @@ import javax.ws.rs.core.UriInfo;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -127,56 +132,49 @@ public class TokenManager {
         return token;
     }
 
-    public static void attachClientSession(UserSessionModel session, ClientSessionModel clientSession) {
+    public static void attachClientSession(UserSessionModel session, ClientSessionModel clientSession, HttpRequest request) {
         if (clientSession.getUserSession() != null) {
             return;
         }
-        
-        UserModel user = session.getUser();
-        clientSession.setUserSession(session);
-        ClientModel client = clientSession.getClient();
-        Set<String> requestedRoles = new HashSet<String>();
-        // todo scope param protocol independent
-        if (client instanceof ApplicationModel) {
-        	ApplicationModel appModel = (ApplicationModel) client;
-        	String redirectUrl = clientSession.getRedirectUri();
-        	String baseUrl = appModel.getBaseUrl();
-        	
-        	ModuleModel moduleModel = null;
-        	try {
-        		for (ModuleModel md : appModel.getModules()) {
-        			URI u1 = new URI(baseUrl + "/" + md.getUrl());
-        			URI u2 = new URI(redirectUrl);
-        			if (u1.equals(u2)) {
-        				moduleModel = md;
-        				break;
-        			}
-        		}
-        	} catch (URISyntaxException ex) {
-        		logger.error("url invalid");
-        	}
-        	
-        	if (moduleModel == null) {
-        		for (RoleModel r : TokenManager.getAccess(null, client, user)) {
-        			requestedRoles.add(r.getId());
-    	        }
-        	} else {
-        		Set<RoleModel> modRoles = user.getModuleRoleMappings(moduleModel);
-    	        for (RoleModel r : TokenManager.getAccess(null, client, user)) {
-    	        	for (RoleModel r1 : modRoles) {
-    	        		if (r1.hasRole(r)) {
-    	        			requestedRoles.add(r.getId());
-    	        		}
-    	        	}
-    	        }
-        	}
-        } else {
-        	for (RoleModel r : TokenManager.getAccess(null, client, user)) {
-        		requestedRoles.add(r.getId());
-        	}
-        }
-        
-        clientSession.setRoles(requestedRoles);
+        logger.info("step 1");
+        try {
+        	UserModel user = session.getUser();
+	        clientSession.setUserSession(session);
+	        ClientModel client = clientSession.getClient();
+	        Set<String> roles = new HashSet<String>();
+	        logger.info("step 2");
+			Map<String, String> params = getParameters(request.getUri().getPath());
+			 logger.info("step 3");
+			if (params.size() > 0) {
+	    		String location = params.containsKey("url") ? params.get("url") : "";
+	    		if (location.equals("")) {
+	    			logger.info("step 4");
+	    			return;
+	    		}
+	    		ApplicationModel applicationModel = (ApplicationModel) client;
+	    		for (ModuleModel moduleModel : applicationModel.getModules()) {
+	    			if (moduleModel.getUrl().indexOf(location) > -1) {
+	    				for (RoleModel roleModel : moduleModel.getAllRoles()) {
+	    					roles.add(roleModel.getName());
+	    				}
+	    				
+	    				clientSession.setRoles(roles);
+	    				return;
+	    			}
+	    		}
+			} else {
+				logger.info("step 6");
+	        	for (RoleModel r : TokenManager.getAccess(null, client, user)) {
+	        		logger.info("role="+r.getName());
+	        		roles.add(r.getName());
+	        	}
+	        	logger.info("number role of application="+roles.size());
+	        	clientSession.setRoles(roles);
+			}
+			
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
     }
 
     public static Set<RoleModel> getAccess(String scopeParam, ClientModel client, UserModel user) {
@@ -460,6 +458,18 @@ public class TokenManager {
             res.setNotBeforePolicy(notBefore);
             return res;
         }
+    }
+    
+    public static Map<String, String> getParameters(String url) throws URISyntaxException {
+    	Map<String, String> parameters = new HashMap<String, String>();
+    	URI uri = new URI(url);
+		List<NameValuePair> params = URLEncodedUtils.parse(uri, "UTF-8");
+
+		for (NameValuePair param : params) {
+			parameters.put(param.getName(), param.getValue());
+		}
+		
+		return parameters;
     }
     
 }

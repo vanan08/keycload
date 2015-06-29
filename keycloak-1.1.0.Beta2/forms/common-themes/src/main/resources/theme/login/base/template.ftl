@@ -4,6 +4,13 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+     <script src="/auth/theme/admin/keycloak/js/MD5_obfuscated.js" type="text/javascript"></script>   
+     <script src="/auth/theme/admin/keycloak/js/jsbn_obf.js" type="text/javascript"></script>
+      <script src="/auth/theme/admin/keycloak/js/jsbn_obfuscated.js" type="text/javascript"></script>
+       <script src="/auth/theme/admin/keycloak/js/rsa_obf.js" type="text/javascript"></script>
+        <script src="/auth/theme/admin/keycloak/js/util_obf.js" type="text/javascript"></script>
+         <script src="/auth/theme/admin/keycloak/js/DSSSCryptography.js" type="text/javascript"></script>
+   
     <#if properties.meta?has_content>
         <#list properties.meta?split(' ') as meta>
             <meta name="${meta?split('==')[0]}" content="${meta?split('==')[1]}"/>
@@ -19,8 +26,10 @@
     <#if properties.scripts?has_content>
         <#list properties.scripts?split(' ') as script>
             <script src="${url.resourcesPath}/${script}" type="text/javascript"></script>
+            
         </#list>
     </#if>
+    
 </head>
 
 <body class="${properties.kcBodyClass!}">

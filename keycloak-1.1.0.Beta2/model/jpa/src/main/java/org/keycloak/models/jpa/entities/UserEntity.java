@@ -54,6 +54,8 @@ public class UserEntity {
     protected boolean totp;
     @Column(name = "EMAIL_VERIFIED")
     protected boolean emailVerified;
+    @Column(name = "MOBILE")
+    protected String mobile;
 
     // Hack just to workaround the fact that on MS-SQL you can't have unique constraint with multiple NULL values TODO: Find better solution (like unique index with 'where' but that's proprietary)
     @Column(name = "EMAIL_CONSTRAINT")
@@ -139,6 +141,14 @@ public class UserEntity {
         this.totp = totp;
     }
 
+    public String getMobile() {
+    	return mobile;
+    }
+    
+    public void setMobile(String mobile) {
+    	this.mobile = mobile;
+    }
+    
     public boolean isEmailVerified() {
         return emailVerified;
     }

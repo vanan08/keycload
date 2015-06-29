@@ -31,13 +31,27 @@ import org.keycloak.models.UserModel;
 import org.keycloak.services.messages.Messages;
 import org.keycloak.services.resources.flows.Urls;
 
+import com.client.ClientAPI;
+import com.client.ClientNoAccessException;
+import com.client.NoServerException;
+import com.client.QueryRSAPublicKey;
+import com.client.QueryRandom;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +67,7 @@ public class FreeMarkerLoginFormsProvider implements LoginFormsProvider {
 
     private String message;
     private String accessCode;
+    private static int DOMAIN=22;
     private Response.Status status = Response.Status.OK;
     private List<RoleModel> realmRolesRequested;
     private MultivaluedMap<String, RoleModel> resourceRolesRequested;
@@ -133,6 +148,64 @@ public class FreeMarkerLoginFormsProvider implements LoginFormsProvider {
 
         return createResponse(page);
     }
+    
+    public String getPropAuthenticationValues(String value) throws IOException {
+
+		Properties prop = new Properties();
+		String propFileName = "authenticationConfig.properties";
+
+		InputStream inputStream = (InputStream) getClass().getClassLoader()
+				.getResourceAsStream(propFileName);
+
+		if (inputStream != null) {
+			prop.load(inputStream);
+		} else {
+			throw new FileNotFoundException("property file '" + propFileName
+					+ "' not found in the classpath");
+		}
+
+		return prop.getProperty(value);
+	}
+    
+    private  ClientAPI retriveClientAPI() throws KeyStoreException, NoSuchAlgorithmException, CertificateException, RemoteException, IOException, NotBoundException, ClientNoAccessException, NoServerException, Exception{
+    	 String keystorePath = getPropAuthenticationValues("keyStorePath");
+         String password = getPropAuthenticationValues("password");
+         String serverIP = getPropAuthenticationValues("serverIp");
+         
+         
+         System.out.println("KeytorePath=" +keystorePath);
+         System.out.println("password=" +password);
+         System.out.println("serverIP=" +serverIP);
+         
+         
+         return ClientAPI.getInstance(keystorePath, password, serverIP, true);
+         
+    }
+    
+    
+    private  String generateRandomKey() throws KeyStoreException, NoSuchAlgorithmException, CertificateException, RemoteException, IOException, NotBoundException, ClientNoAccessException, NoServerException, Exception{
+     
+    	//start updating by dtAnh 
+        //gen random key then set to session
+       
+    	ClientAPI api=retriveClientAPI();
+        QueryRandom random = api.getRandom("".getBytes(), 16);
+        String randomKey = random.getRandom();
+        logger.debug("DTANH random key:" + randomKey);
+        System.out.print("DTANH random key:" + randomKey);
+        
+        
+      
+    	return randomKey;
+    }
+    
+    private  String generatePublicKey() throws KeyStoreException, NoSuchAlgorithmException, CertificateException, RemoteException, IOException, NotBoundException, ClientNoAccessException, NoServerException, Exception{
+    	ClientAPI api=retriveClientAPI();
+    	QueryRSAPublicKey publickey = api.getRSAPublicKey("".getBytes(), DOMAIN);
+    	String publicKey = publickey.getRSAPublicKey();
+		return publicKey;
+
+    }
 
     private Response createResponse(LoginFormsPages page) {
         MultivaluedMap<String, String> queryParameterMap = queryParams != null ? queryParams : new MultivaluedMapImpl<String, String>();
@@ -152,7 +225,22 @@ public class FreeMarkerLoginFormsProvider implements LoginFormsProvider {
         }
 
         Map<String, Object> attributes = new HashMap<String, Object>();
-
+ 
+        //Get RandomKey
+        try {
+			String randomKey=this.generateRandomKey();
+			String publicKey=this.generatePublicKey();
+			String exponent="10001";
+			attributes.put("randomKey", randomKey);
+			attributes.put("publicKey", publicKey);
+			attributes.put("exponent", exponent);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error("Failed to create login page", e);
+			e.printStackTrace();
+			
+			this.createErrorPage();
+		}
         ThemeProvider themeProvider = session.getProvider(ThemeProvider.class, "extending");
         Theme theme;
         try {
