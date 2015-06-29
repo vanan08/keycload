@@ -34,6 +34,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -583,32 +584,55 @@ public class RepresentationToModel {
     	module.setUrl(moduleRep.getUrl());
     	module.setDescription(moduleRep.getDescription());
     	
-    	logger.info("module="+module.toString());
+    	module.updateModule();
     	
     	// mapping roles to module
-    	//if (moduleRep.getRoles() != null && moduleRep.getRoles().length > 0) {
-		//	module.setRoles(moduleRep.getRoles());
-    	//}
-    	
-    	module.updateModule();
+    	if (moduleRep.getRoles() != null && moduleRep.getRoles().length > 0) {
+			module.setRoles(new ArrayList<String>(Arrays.asList(moduleRep.getRoles())));
+    	}
     	
     	return module;
     }
     
     
-    public static ModuleModel updateModule(RealmModel realm, ModuleRepresentation moduleRep, ModuleModel resource) {
+    public static ModuleModel updateModule(RealmModel realm, ApplicationModel applicationModel, ModuleRepresentation moduleRep, ModuleModel resource) {
     	if (moduleRep.getName() != null) resource.setName(moduleRep.getName());
     	if (moduleRep.getDescription() != null) resource.setDescription(moduleRep.getDescription());
     	if (moduleRep.getUrl() != null) resource.setUrl(moduleRep.getUrl());
     	
-    	// mapping roles to module
-    	//if (moduleRep.getRoles() != null && moduleRep.getRoles().length > 0) {
-    	//	resource.setRoles(moduleRep.getRoles());
-    	//}
-    	
     	resource.updateModule();
     	
+    	// mapping roles to module
+    	setRoleModule(applicationModel, moduleRep, resource);
+    	
     	return resource;
+    }
+    
+    public static void setRoleModule(ApplicationModel applicationModel, ModuleRepresentation moduleRep, ModuleModel resource) {
+    	// mapping roles to module
+    	if (moduleRep.getRoles() != null && moduleRep.getRoles().length > 0) {
+    		List<RoleModel> temp = new ArrayList<RoleModel>();
+    		List<String> roles = new ArrayList<String>();
+    		for (String name : moduleRep.getRoles()) {
+    			RoleModel role = applicationModel.getRole(name);
+    			if (role == null) 
+    				throw new IllegalStateException("Role \""+name+"\" is not found in application");
+    			
+    			if (roles.contains(role)) {
+	    			temp.add(role);
+	    			roles.add(role.getName());
+    			}
+    		}
+    		
+    		for (RoleModel role : temp) {
+    			if (!resource.hasRole(role.getId())) {
+    				// TODO: remove role's module
+    				resource.removeRole(role.getName());
+    			}
+    		}
+    		
+    		resource.setRoles(roles);
+    	}
     }
     
     // OAuth clients

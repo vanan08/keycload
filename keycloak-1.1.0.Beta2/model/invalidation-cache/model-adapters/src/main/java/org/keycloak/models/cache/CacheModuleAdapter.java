@@ -138,4 +138,24 @@ public class CacheModuleAdapter implements ModuleModel {
 		return updated.getAllRoles();
 	}
 
+	@Override
+	public RoleModel addRole(String rolename) {
+		return updated.addRole(rolename);
+	}
+
+	@Override
+	public void setRoles(List<String> roles) {
+		updated.setRoles(roles);
+	}
+
+	@Override
+	public void removeRole(String role) {
+		updated.removeRole(role);
+	}
+
+	@Override
+	public void removeRoles(List<String> roles) {
+		updated.removeRoles(roles);
+	}
+
 }

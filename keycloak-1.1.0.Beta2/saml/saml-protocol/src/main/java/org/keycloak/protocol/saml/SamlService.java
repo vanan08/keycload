@@ -6,6 +6,7 @@ import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
 import org.keycloak.ClientConnection;
 import org.keycloak.VerificationException;
+import org.keycloak.events.Details;
 import org.keycloak.events.Errors;
 import org.keycloak.events.EventBuilder;
 import org.keycloak.events.EventType;
@@ -15,10 +16,13 @@ import org.keycloak.models.ClientModel;
 import org.keycloak.models.ClientSessionModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
+import org.keycloak.models.UserModel;
 import org.keycloak.models.UserSessionModel;
 import org.keycloak.models.utils.KeycloakModelUtils;
 import org.keycloak.protocol.oidc.OpenIDConnectService;
+import org.keycloak.protocol.oidc.TokenManager;
 import org.keycloak.services.managers.AuthenticationManager;
+import org.keycloak.services.managers.AuthenticationManager.AuthResult;
 import org.keycloak.services.managers.ClientSessionCode;
 import org.keycloak.services.resources.RealmsResource;
 import org.keycloak.services.resources.flows.Flows;
@@ -204,22 +208,116 @@ public class SamlService {
         protected abstract SAMLDocumentHolder extractDocument(String samlRequest);
 
         protected Response loginRequest(String relayState, AuthnRequestType requestAbstractType, ClientModel client) {
-
+        	
         	String redirect = requestAbstractType.getIssuer().getValue();
-            
-            //logger.info("=>>>>>>>>>>>="+redirectUri.toString());
-            
-            //String redirect = OpenIDConnectService.verifyRedirectUri(uriInfo, redirectUri.toString(), realm, client);
-
-            //logger.info("=>>>>>>>>>>>1="+redirect);
             
             if (redirect == null) {
                 event.error(Errors.INVALID_REDIRECT_URI);
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Invalid redirect_uri.");
             }
+            
+            AuthResult authResult = authManager.authenticateIdentityCookie(session, realm, uriInfo, clientConnection, headers, true);
+            
+            logger.info("authResult="+authResult);
+            
+            if (authResult != null) { // user is already login
+            	
+            	ClientSessionModel clientSessionModel = session.sessions().getClientSession(realm, authResult.getSession().getId(), client.getClientId());
+            	logger.info("clientSessionModel="+clientSessionModel);
+            	if (clientSessionModel == null) {
+            		ClientSessionModel clientSession = session.sessions().createClientSession(realm, client);
+                    clientSession.setAuthMethod(SamlProtocol.LOGIN_PROTOCOL);
+                    clientSession.setRedirectUri(redirect);
+                    clientSession.setAction(ClientSessionModel.Action.AUTHENTICATE);
+                    clientSession.setNote(ClientSessionCode.ACTION_KEY, KeycloakModelUtils.generateCodeSecret());
+                    clientSession.setNote(SamlProtocol.SAML_BINDING, getBindingType());
+                    clientSession.setNote(GeneralConstants.RELAY_STATE, relayState);
+                    clientSession.setNote(SamlProtocol.SAML_REQUEST_ID, requestAbstractType.getID());
+                    
+                    // Handle NameIDPolicy from SP
+                    NameIDPolicyType nameIdPolicy = requestAbstractType.getNameIDPolicy();
+                    if(nameIdPolicy != null) {
+                        String nameIdFormat = nameIdPolicy.getFormat().toString();
+                        // TODO: Handle AllowCreate too, relevant for persistent NameID.
+                        if(isSupportedNameIdFormat(nameIdFormat)) {
+                            clientSession.setNote(GeneralConstants.NAMEID_FORMAT, nameIdFormat);
+                        } else {
+                            event.error(Errors.INVALID_TOKEN);
+                            return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Unsupported NameIDFormat.");
+                        }
+                    } else {
+                        clientSession.setNote(GeneralConstants.NAMEID_FORMAT, JBossSAMLURIConstants.NAMEID_FORMAT_UNSPECIFIED.get());
+                    }
+                    
+                    LoginFormsProvider forms = Flows.forms(session, realm, clientSession.getClient(), uriInfo)
+                            						.setClientSessionCode(new ClientSessionCode(realm, clientSession).getCode());
 
+                    String rememberMeUsername = AuthenticationManager.getRememberMeUsername(realm, headers);
 
-            ClientSessionModel clientSession = session.sessions().createClientSession(realm, client);
+                    if (rememberMeUsername != null) {
+                        MultivaluedMap<String, String> formData = new MultivaluedMapImpl<String, String>();
+                        formData.add(AuthenticationManager.FORM_USERNAME, rememberMeUsername);
+                        formData.add("rememberMe", "on");
+
+                        forms.setFormData(formData);
+                    }
+
+                    return forms.createLogin();
+            	
+            	} else {
+            		
+            		UserModel user = authResult.getUser();
+        			UserSessionModel userSession = authResult.getSession();
+        			TokenManager.attachClientSession(userSession, clientSessionModel, request);
+        			event.user(user).session(userSession).detail(Details.AUTH_METHOD, "sso");
+        			return AuthenticationManager.nextActionAfterAuthentication(session, userSession, clientSessionModel, clientConnection, request, uriInfo, event);
+            		
+            	}
+            	
+            } else { // user is not login
+            	
+            	ClientSessionModel clientSession = session.sessions().createClientSession(realm, client);
+                clientSession.setAuthMethod(SamlProtocol.LOGIN_PROTOCOL);
+                clientSession.setRedirectUri(redirect);
+                clientSession.setAction(ClientSessionModel.Action.AUTHENTICATE);
+                clientSession.setNote(ClientSessionCode.ACTION_KEY, KeycloakModelUtils.generateCodeSecret());
+                clientSession.setNote(SamlProtocol.SAML_BINDING, getBindingType());
+                clientSession.setNote(GeneralConstants.RELAY_STATE, relayState);
+                clientSession.setNote(SamlProtocol.SAML_REQUEST_ID, requestAbstractType.getID());
+
+                // Handle NameIDPolicy from SP
+                NameIDPolicyType nameIdPolicy = requestAbstractType.getNameIDPolicy();
+                if(nameIdPolicy != null) {
+                    String nameIdFormat = nameIdPolicy.getFormat().toString();
+                    // TODO: Handle AllowCreate too, relevant for persistent NameID.
+                    if(isSupportedNameIdFormat(nameIdFormat)) {
+                        clientSession.setNote(GeneralConstants.NAMEID_FORMAT, nameIdFormat);
+                    } else {
+                        event.error(Errors.INVALID_TOKEN);
+                        return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Unsupported NameIDFormat.");
+                    }
+                } else {
+                    clientSession.setNote(GeneralConstants.NAMEID_FORMAT, JBossSAMLURIConstants.NAMEID_FORMAT_UNSPECIFIED.get());
+                }
+                
+                LoginFormsProvider forms = Flows.forms(session, realm, clientSession.getClient(), uriInfo)
+                        						.setClientSessionCode(new ClientSessionCode(realm, clientSession).getCode());
+
+                String rememberMeUsername = AuthenticationManager.getRememberMeUsername(realm, headers);
+
+                if (rememberMeUsername != null) {
+                    MultivaluedMap<String, String> formData = new MultivaluedMapImpl<String, String>();
+                    formData.add(AuthenticationManager.FORM_USERNAME, rememberMeUsername);
+                    formData.add("rememberMe", "on");
+
+                    forms.setFormData(formData);
+                }
+
+                return forms.createLogin();
+            	
+            }
+
+            /*ClientSessionModel clientSession = session.sessions().createClientSession(realm, client);
             clientSession.setAuthMethod(SamlProtocol.LOGIN_PROTOCOL);
             clientSession.setRedirectUri(redirect);
             clientSession.setAction(ClientSessionModel.Action.AUTHENTICATE);
@@ -259,7 +357,7 @@ public class SamlService {
                 forms.setFormData(formData);
             }
 
-            return forms.createLogin();
+            return forms.createLogin();*/
         }
 
         private boolean isSupportedNameIdFormat(String nameIdFormat) {

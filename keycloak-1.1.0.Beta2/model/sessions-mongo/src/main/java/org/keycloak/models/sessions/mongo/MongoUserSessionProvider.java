@@ -3,6 +3,7 @@ package org.keycloak.models.sessions.mongo;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.QueryBuilder;
+
 import org.keycloak.connections.mongo.api.MongoStore;
 import org.keycloak.connections.mongo.api.context.MongoStoreInvocationContext;
 import org.keycloak.models.ClientModel;
@@ -261,5 +262,19 @@ public class MongoUserSessionProvider implements UserSessionProvider {
     @Override
     public void close() {
     }
+
+	@Override
+	public ClientSessionModel getClientSession(RealmModel realm,
+			String userSessionId, String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void removeUserSession(RealmModel realm, UserModel user,
+			ClientModel client) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

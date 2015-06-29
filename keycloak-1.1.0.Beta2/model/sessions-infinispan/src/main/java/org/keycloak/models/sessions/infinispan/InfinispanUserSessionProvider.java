@@ -452,4 +452,18 @@ public class InfinispanUserSessionProvider implements UserSessionProvider {
         ADD, REMOVE, REPLACE
     }
 
+	@Override
+	public ClientSessionModel getClientSession(RealmModel realm,
+			String userSessionId, String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void removeUserSession(RealmModel realm, UserModel user,
+			ClientModel client) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

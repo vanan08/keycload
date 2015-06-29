@@ -348,4 +348,22 @@ public class UserAdapter extends AbstractMongoAdapter<MongoUserEntity> implement
         UserModel that = (UserModel) o;
         return that.getId().equals(getId());
     }
+
+	@Override
+	public void setMobile(String mobile) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getMobile() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<RoleModel> getModuleRoleMappings(ModuleModel module) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

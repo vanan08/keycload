@@ -27,7 +27,6 @@ public class KeycloakSessionServletFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-    	System.out.println("=====eycloak - doFilter()=====");
     	HttpServletRequest request = (HttpServletRequest)servletRequest;
 
         KeycloakSessionFactory sessionFactory = (KeycloakSessionFactory) servletRequest.getServletContext().getAttribute(KeycloakSessionFactory.class.getName());

@@ -11,7 +11,6 @@ import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.mongo.keycloak.entities.MongoApplicationEntity;
-import org.keycloak.models.mongo.keycloak.entities.MongoModuleEntity;
 import org.keycloak.models.mongo.keycloak.entities.MongoRoleEntity;
 import org.keycloak.models.mongo.utils.MongoModelUtils;
 
@@ -287,18 +286,13 @@ public class ApplicationAdapter extends ClientAdapter<MongoApplicationEntity> im
 	}
 
 	@Override
-	public ModuleModel addModule(String name) {
-		return null;
-	}
-
-	@Override
 	public ModuleModel addModule(String id, String name) {
-		MongoModuleEntity module = new MongoModuleEntity();
-		module.setId(id);
-		module.setName(name);
-		module.setApplicationId(getId());
-		
-		getMongoStore().insertEntity(module, invocationContext);
+//		MongoModuleEntity module = new MongoModuleEntity();
+//		module.setId(id);
+//		module.setName(name);
+//		module.setApplicationId(getId());
+//		
+//		getMongoStore().insertEntity(module, invocationContext);
 		
 		return null;
 	}
@@ -342,6 +336,12 @@ public class ApplicationAdapter extends ClientAdapter<MongoApplicationEntity> im
 	public boolean removeRole(String userId, RoleModel role) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public ModuleModel addModule(String id, String name, String url) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

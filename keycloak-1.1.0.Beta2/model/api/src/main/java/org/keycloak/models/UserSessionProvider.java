@@ -13,6 +13,7 @@ public interface UserSessionProvider extends Provider {
     ClientSessionModel createClientSession(RealmModel realm, ClientModel client);
     ClientSessionModel getClientSession(RealmModel realm, String id);
     ClientSessionModel getClientSession(String id);
+    ClientSessionModel getClientSession(RealmModel realm, String userSessionId, String id);
 
     UserSessionModel createUserSession(RealmModel realm, UserModel user, String loginUsername, String ipAddress, String authMethod, boolean rememberMe);
     UserSessionModel getUserSession(RealmModel realm, String id);
@@ -24,6 +25,7 @@ public interface UserSessionProvider extends Provider {
     void removeUserSessions(RealmModel realm, UserModel user);
     void removeExpiredUserSessions(RealmModel realm);
     void removeUserSessions(RealmModel realm);
+    void removeUserSession(RealmModel realm, UserModel user, ClientModel client);
 
     UsernameLoginFailureModel getUserLoginFailure(RealmModel realm, String username);
     UsernameLoginFailureModel addUserLoginFailure(RealmModel realm, String username);

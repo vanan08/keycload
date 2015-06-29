@@ -220,5 +220,62 @@ public class ModuleAdapter implements ModuleModel {
 
 		return roles;
 	}
+
+	@Override
+	public RoleModel addRole(String rolename) {
+		return _addRole(rolename);
+	}
+
+	@Override
+	public void setRoles(List<String> rolenames) {
+		if (rolenames.size() == 0) return;
+		for (String name : rolenames) {
+			_addRole(name);
+		}
+	}
+	
+	protected RoleModel _addRole(String rolename) {
+		RoleModel role = applicationAdapter.getRole(rolename);
+		if (role == null) {
+			throw new IllegalStateException("Role cannot found");
+		}
+		
+		ModuleRoleMappingEntity moduleRoleMappingEntity = new ModuleRoleMappingEntity();
+        moduleRoleMappingEntity.setModule(moduleEntity);
+        moduleRoleMappingEntity.setRoleId(role.getId());
+        em.persist(moduleRoleMappingEntity);
+        em.flush();
+        
+        return role;
+	}
+
+	@Override
+	public void removeRole(String rolename) {
+		_removeRole(rolename);
+	}
+	
+	@Override
+	public void removeRoles(List<String> rolenames) {
+		if (rolenames.size() == 0) {
+			return;
+		}
+		
+		for (String rolename : rolenames) {
+			_removeRole(rolename);
+		}
+	}
+	
+	protected void _removeRole(String rolename) {
+		RoleModel role = applicationAdapter.getRole(rolename);
+		if (role == null) {
+            throw new IllegalStateException("role \""+rolename+"\" cannot found");
+        }
+		
+		em.createNamedQuery("deleteModuleRoleMappingByRole")
+			.setParameter("module", moduleEntity)
+			.setParameter("roleId", role.getId())
+			.executeUpdate();
+		em.flush();
+	}
 	
 }

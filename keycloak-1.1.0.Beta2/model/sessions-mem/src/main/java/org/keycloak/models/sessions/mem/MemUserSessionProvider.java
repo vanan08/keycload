@@ -285,4 +285,46 @@ public class MemUserSessionProvider implements UserSessionProvider {
         }
     }
 
+	@Override
+	public ClientSessionModel getClientSession(RealmModel realm, String userSessionId, String id) {
+		// TODO Auto-generated method stub
+		Iterator<ClientSessionEntity> clients = clientSessions.values().iterator();
+		while (clients.hasNext()) {
+			ClientSessionEntity client = clients.next();
+			if (!client.getClientId().equals(id)) {
+				continue;
+			}
+			
+			String usId = client.getSession().getId();
+			
+			if (usId.equals(userSessionId)) {
+				return new ClientSessionAdapter(session, this, realm, client);
+			}
+		}
+		
+		return null;
+	}
+
+	@Override
+	public void removeUserSession(RealmModel realm, UserModel user, ClientModel client) {
+		// TODO Auto-generated method stub
+		Iterator<UserSessionEntity> itr = userSessions.values().iterator();
+        while (itr.hasNext()) {
+            UserSessionEntity s = itr.next();
+            if (s.getRealm().equals(realm.getId()) && s.getUser().equals(user.getId())) {
+                
+            	List<ClientSessionEntity> clients = s.getClientSessions();
+                if (clients.size() == 1) {
+                	itr.remove();
+                }
+                
+                for (ClientSessionEntity clientSession : clients) {
+                	if (clientSession.getRedirectUri().indexOf(client.getClientId()) > -1) {
+                		clientSessions.remove(clientSession.getId());
+                	}
+                }
+            }
+        }
+	}
+
 }

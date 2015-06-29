@@ -28,6 +28,11 @@ public interface ModuleModel {
     boolean removeRole(String userId, RoleModel role);
     boolean removeAllRoles();
     
+    RoleModel addRole(String rolename);
+    void setRoles(List<String> roles);
+    void removeRole(String role);
+    void removeRoles(List<String> roles);
+    
     boolean container(String userId, RoleModel role);
     
 }

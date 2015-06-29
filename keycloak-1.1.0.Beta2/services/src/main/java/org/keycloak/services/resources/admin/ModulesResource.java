@@ -72,6 +72,7 @@ public class ModulesResource {
     
     /**
      * Create a new module
+     * 
      * @param uriInfo
      * @param rep
      * @return
@@ -90,12 +91,19 @@ public class ModulesResource {
         }
     }
     
-    protected String getModulePath(ModuleModel moduleModel) {
+    /**
+     * Get path module
+     * 
+     * @param moduleModel
+     * @return
+     */
+    public static String getModulePath(ModuleModel moduleModel) {
         return moduleModel.getName();
     }
     
     /**
      * Base path for managing a specific module
+     * 
      * @param modId Id's module
      * @return
      */
