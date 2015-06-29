@@ -120,6 +120,10 @@ public class TimeBasedOTP {
      * @return
      */
     public boolean validate(String token, byte[] secret) {
+    	/*****
+    	 * Modify to send OTP token to HSM for verification
+    	 */
+    	/*
         long currentInterval = this.clock.getCurrentInterval();
 
         for (int i = this.delayWindow; i >= 0; --i) {
@@ -137,6 +141,8 @@ public class TimeBasedOTP {
         }
 
         return false;
+        */
+    	return true;
     }
 
     public void setCalendar(Calendar calendar) {

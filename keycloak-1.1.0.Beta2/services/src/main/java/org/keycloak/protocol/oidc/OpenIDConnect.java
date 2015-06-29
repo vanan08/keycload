@@ -99,6 +99,7 @@ public class OpenIDConnect implements LoginProtocol {
 
     @Override
     public Response authenticated(UserSessionModel userSession, ClientSessionCode accessCode) {
+    	System.out.println("OpenIDConnect - authenticated()");
         ClientSessionModel clientSession = accessCode.getClientSession();
         String redirect = clientSession.getRedirectUri();
         String state = clientSession.getNote(OpenIDConnect.STATE_PARAM);

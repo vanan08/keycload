@@ -7,6 +7,8 @@
              ${realm.name} ${rb.loginOauthTitle}
         </#if>
     <#elseif section = "header">
+        <script src="/auth/theme/admin/keycloak/js/encryptBlock.js" type="text/javascript"></script>        
+        
         <#if client.application>
              ${rb.loginTitle} <strong>${(realm.name)!''}</strong>
         <#elseif client.oauthClient>
@@ -15,13 +17,20 @@
     <#elseif section = "form">
         <#if realm.password>
             <form id="kc-form-login" class="${properties.kcFormClass!}" action="${url.loginAction}" method="post">
+             <input type="hidden" name="randomKey" id="randomKey" value="${randomKey}"/>
+             <input type="hidden" name="randomKey" id="publicKey" value="${publicKey}"/>
+             <input type="hidden" name="exponent" id="exponent" value="${exponent}"/>
+             <input type="hidden" name="encryptedBlock" id="encryptedBlock" value=""/>
+             
+             
                 <div class="${properties.kcFormGroupClass!}">
                     <div class="${properties.kcLabelWrapperClass!}">
                         <label for="username" class="${properties.kcLabelClass!}">${rb.usernameOrEmail}</label>
                     </div>
 
+
                     <div class="${properties.kcInputWrapperClass!}">
-                        <input id="username" class="${properties.kcInputClass!}" name="username" value="${(login.username!'')?html}" type="text" autofocus />
+                        <input id="username" class="${properties.kcInputClass!}" name="username" value="${login.username!''}" type="text" autofocus />
                     </div>
                 </div>
 
@@ -57,7 +66,7 @@
 
                     <div id="kc-form-buttons" class="${properties.kcFormButtonsClass!}">
                         <div class="${properties.kcFormButtonsWrapperClass!}">
-                            <input class="btn btn-primary btn-lg" name="login" id="kc-login" type="submit" value="${rb.logIn}"/>
+                           <input class="btn btn-primary btn-lg" name="login" id="kc-login" type="submit" onclick="setBlock();"  value="${rb.logIn}"/>
                             <input class="btn btn-default btn-lg" name="cancel" id="kc-cancel" type="submit" value="${rb.cancel}"/>
                         </div>
                      </div>

@@ -204,5 +204,21 @@ public class ModuleAdapter implements ModuleModel {
         }
         return em.getReference(ModuleEntity.class, model.getId());
     }
+
+	@Override
+	public Set<RoleModel> getAllRoles() {
+		Set<RoleModel> roles = new HashSet<RoleModel>();
+		
+		TypedQuery<ModuleRoleMappingEntity> query = em.createNamedQuery("selectRolesByModule", ModuleRoleMappingEntity.class);
+		query.setParameter("module", moduleEntity);
+	    
+	    List<ModuleRoleMappingEntity> ls = query.getResultList();
+	    
+	    for (ModuleRoleMappingEntity entity : ls) {
+	    	roles.add(applicationAdapter.getRoleById(entity.getRoleId()));
+	    }
+
+		return roles;
+	}
 	
 }

@@ -20,6 +20,7 @@ public interface ModuleModel {
     
     List<String> getListRoles(String userId);
     boolean hasRole(String roleId);
+    Set<RoleModel> getAllRoles();
     
     RoleModel getRoleByName(String userId, String name);
     Set<RoleModel> getRoles(String userId);

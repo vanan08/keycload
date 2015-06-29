@@ -348,26 +348,47 @@ module.factory('AvailableApplicationModules', function($resource) {
         application : '@application'
     });
 });
-module.factory('AvailableModuleRoleMapping', function($resource) {
-    return $resource(authUrl + '/admin/realms/:realm/users/:userId/role-mappings/applications-by-id/:application/modules/:module/available', {
+/*module.factory('AvailableModuleRoleMapping', function($resource) {
+    return $resource(authUrl + '/admin/realms/:realm//:userId/role-mappings/applications-by-id/:application/modules/:module/available', {
         realm : '@realm',
         userId : '@userId',
         application : "@application",
         module : "@module"
     });
+});*/
+module.factory('AvailableModuleRoleMapping', function($resource) {
+    return $resource(authUrl + '/admin/realms/:realm/applications-by-id/:application/modules/:module/available', {
+        realm : '@realm',
+        application : "@application",
+        module : "@module"
+    });
 });
-module.factory('ModuleRoleMapping', function($resource) {
+/*module.factory('ModuleRoleMapping', function($resource) {
     return $resource(authUrl + '/admin/realms/:realm/users/:userId/role-mappings/applications-by-id/:application/modules/:module', {
         realm : '@realm',
         userId : '@userId',
         application : "@application",
         module : "@module"
     });
+});*/
+module.factory('ModuleRoleMapping', function($resource) {
+    return $resource(authUrl + '/admin/realms/:realm/applications-by-id/:application/modules/:module/roles', {
+        realm : '@realm',
+        application : "@application",
+        module : "@module"
+    });
 });
-module.factory('CompositeModuleRoleMapping', function($resource) {
+/*module.factory('CompositeModuleRoleMapping', function($resource) {
     return $resource(authUrl + '/admin/realms/:realm/users/:userId/role-mappings/applications-by-id/:application/modules/:module/composite', {
     	realm : '@realm',
         userId : '@userId',
+        application : "@application",
+        module : "@module"
+    });
+});*/
+module.factory('CompositeModuleRoleMapping', function($resource) {
+    return $resource(authUrl + '/admin/realms/:realm/applications-by-id/:application/modules/:module/composite', {
+    	realm : '@realm',
         application : "@application",
         module : "@module"
     });

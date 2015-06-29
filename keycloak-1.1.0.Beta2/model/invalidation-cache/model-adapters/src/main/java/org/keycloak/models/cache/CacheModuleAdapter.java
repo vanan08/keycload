@@ -133,4 +133,9 @@ public class CacheModuleAdapter implements ModuleModel {
 		return updated.removeAllRoles();
 	}
 
+	@Override
+	public Set<RoleModel> getAllRoles() {
+		return updated.getAllRoles();
+	}
+
 }

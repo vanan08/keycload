@@ -166,7 +166,7 @@ public class UsersResource {
         user.setEmail(rep.getEmail());
         user.setFirstName(rep.getFirstName());
         user.setLastName(rep.getLastName());
-
+        user.setMobile(rep.getMobile());
         user.setEnabled(rep.isEnabled());
         user.setTotp(rep.isTotp());
         user.setEmailVerified(rep.isEmailVerified());

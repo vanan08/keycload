@@ -140,6 +140,7 @@ public class SamlProtocol implements LoginProtocol {
 
     @Override
     public Response authenticated(UserSessionModel userSession, ClientSessionCode accessCode) {
+    	logger.info("SamlProtocol - authenticated()");
         ClientSessionModel clientSession = accessCode.getClientSession();
         ClientModel client = clientSession.getClient();
         UserModel userModel = userSession.getUser();

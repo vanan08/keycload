@@ -193,6 +193,7 @@ public class LoginActionsService {
     @GET
     public Response loginPage(@QueryParam("code") String code) {
         event.event(EventType.LOGIN);
+       
         Checks checks = new Checks();
         if (!checks.check(code)) {
             return checks.response;
@@ -252,6 +253,8 @@ public class LoginActionsService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response processLogin(@QueryParam("code") String code,
                                  final MultivaluedMap<String, String> formData) {
+    	
+    	System.out.println("KeyCloack: request/login ");
         event.event(EventType.LOGIN);
         if (!checkSsl()) {
             event.error(Errors.SSL_REQUIRED);
@@ -262,6 +265,11 @@ public class LoginActionsService {
             event.error(Errors.REALM_DISABLED);
             return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Realm not enabled.");
         }
+        
+        String totp = formData.getFirst("totp");
+        
+        System.out.println("KeyCloack: check totp: "+totp);
+        
         ClientSessionCode clientCode = ClientSessionCode.parse(code, session, realm);
         if (clientCode == null) {
             event.error(Errors.INVALID_CODE);
@@ -313,23 +321,37 @@ public class LoginActionsService {
         AuthenticationManager.AuthenticationStatus status = authManager.authenticateForm(session, clientConnection, realm, formData);
 
         if (remember) {
-            authManager.createRememberMeCookie(realm, username, uriInfo, clientConnection);
+        	AuthenticationManager.createRememberMeCookie(realm, username, uriInfo, clientConnection);
         } else {
-            authManager.expireRememberMeCookie(realm, uriInfo, clientConnection);
+        	AuthenticationManager.expireRememberMeCookie(realm, uriInfo, clientConnection);
         }
 
         UserModel user = KeycloakModelUtils.findUserByNameOrEmail(session, realm, username);
         if (user != null) {
             event.user(user);
         }
-        
+        System.out.println("KeyCloack: processLogin status: "+status);
+        UserSessionModel userSession = null;
         switch (status) {
             case SUCCESS:
-            case ACTIONS_REQUIRED:
-                UserSessionModel userSession = session.sessions().createUserSession(realm, user, username, clientConnection.getRemoteAddr(), "form", remember);
-                TokenManager.attachClientSession(userSession, clientSession);
+//            	System.out.println("KeyCloack: ACTIONS_REQUIRED ");
+                userSession = session.sessions().createUserSession(realm, user, username, clientConnection.getRemoteAddr(), "form", remember);
+//                System.out.println("KeyCloack: attachClientSession ");
+                System.out.println("AnDK");
+                System.out.println("client="+clientSession);
+                System.out.println("client_1="+clientSession.getClient());
+                TokenManager.attachClientSession(userSession, clientSession, request);
                 event.session(userSession);
-                return authManager.nextActionAfterAuthentication(session, userSession, clientSession, clientConnection, request, uriInfo, event);
+                return AuthenticationManager.nextActionAfterAuthentication(session, userSession, clientSession, clientConnection, request, uriInfo, event);
+                
+            case ACTIONS_REQUIRED:
+            	System.out.println("KeyCloack: ACTIONS_REQUIRED ");
+                userSession = session.sessions().createUserSession(realm, user, username, clientConnection.getRemoteAddr(), "form", remember);
+                System.out.println("KeyCloack: attachClientSession ");
+                logger.info("client="+clientSession.getClient());
+                TokenManager.attachClientSession(userSession, clientSession, request);
+                event.session(userSession);
+                return AuthenticationManager.nextActionAfterAuthentication(session, userSession, clientSession, clientConnection, request, uriInfo, event);
             case ACCOUNT_TEMPORARILY_DISABLED:
                 event.error(Errors.USER_TEMPORARILY_DISABLED);
                 return Flows.forms(this.session, realm, client, uriInfo)
@@ -816,7 +838,7 @@ public class LoginActionsService {
         } else {
             UserSessionModel userSession = session.sessions().createUserSession(realm, user, username, clientConnection.getRemoteAddr(), "form", false);
             event.session(userSession);
-            TokenManager.attachClientSession(userSession, clientSession);
+            TokenManager.attachClientSession(userSession, clientSession, request);
 
             accessCode.setAction(ClientSessionModel.Action.RECOVER_PASSWORD);
 

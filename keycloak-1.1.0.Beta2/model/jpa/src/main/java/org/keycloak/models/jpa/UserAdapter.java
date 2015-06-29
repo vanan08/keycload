@@ -74,7 +74,17 @@ public class UserAdapter implements UserModel {
     public boolean isTotp() {
         return user.isTotp();
     }
-
+    
+    @Override
+    public String getMobile() {
+        return user.getMobile();
+    }
+    
+    @Override
+    public void setMobile(String mobile) {
+        user.setMobile(mobile);
+    }
+    
     @Override
     public void setEnabled(boolean enabled) {
         user.setEnabled(enabled);

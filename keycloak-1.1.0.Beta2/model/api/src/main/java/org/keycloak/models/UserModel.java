@@ -13,6 +13,7 @@ public interface UserModel {
     public static final String LAST_NAME = "lastName";
     public static final String FIRST_NAME = "firstName";
     public static final String EMAIL = "email";
+    public static final String MOBILE = "mobile";
 
     String getId();
 
@@ -57,6 +58,9 @@ public interface UserModel {
     void setEmailVerified(boolean verified);
 
     void setTotp(boolean totp);
+    
+    void setMobile(String mobile);
+    String getMobile();
 
     void updateCredential(UserCredentialModel cred);
 
