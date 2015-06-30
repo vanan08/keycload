@@ -95,7 +95,6 @@ public class ModuleAdapter implements ModuleModel {
         ModuleRoleMappingEntity moduleRoleMappingEntity = new ModuleRoleMappingEntity();
         moduleRoleMappingEntity.setModule(moduleEntity);
         moduleRoleMappingEntity.setRoleId(role.getId());
-        moduleRoleMappingEntity.setUserId(userId);
         em.persist(moduleRoleMappingEntity);
         em.flush();
         
@@ -111,7 +110,6 @@ public class ModuleAdapter implements ModuleModel {
 		em.createNamedQuery("deleteModuleRoleMappingByUser")
 			.setParameter("module", moduleEntity)
 			.setParameter("roleId", role.getId())
-			.setParameter("userId", userId)
 			.executeUpdate();
 		em.flush();
 		return true;
@@ -133,7 +131,6 @@ public class ModuleAdapter implements ModuleModel {
 		
 		TypedQuery<ModuleRoleMappingEntity> query = em.createNamedQuery("selectRolesByUserModule", ModuleRoleMappingEntity.class);
 		query.setParameter("module", moduleEntity);
-	    query.setParameter("userId", userId);
 	    
 	    List<ModuleRoleMappingEntity> ls = query.getResultList();
 	    
@@ -164,7 +161,6 @@ public class ModuleAdapter implements ModuleModel {
 	    
 	    TypedQuery<ModuleRoleMappingEntity> query = em.createNamedQuery("selectRolesByRoleId", ModuleRoleMappingEntity.class);
 		query.setParameter("module", moduleEntity);
-	    query.setParameter("userId", userId);
 	    query.setParameter("roleId", role.getId());
 	    
 	    List<ModuleRoleMappingEntity> ls = query.getResultList();
@@ -180,6 +176,7 @@ public class ModuleAdapter implements ModuleModel {
 	public boolean hasRole(String roleId) {
 		TypedQuery<ModuleRoleMappingEntity> query = em.createNamedQuery("moduleHasRole", ModuleRoleMappingEntity.class);
 	    query.setParameter("roleId", roleId);
+	    query.setParameter("module", moduleEntity);
 	    
 	    List<ModuleRoleMappingEntity> ls = query.getResultList();
 	    if (ls.size() == 0) {
@@ -198,13 +195,6 @@ public class ModuleAdapter implements ModuleModel {
 		return true;
 	}
 	
-	public static ModuleEntity toModuleEntity(ModuleModel model, EntityManager em) {
-        if (model instanceof ModuleAdapter) {
-            return ((ModuleAdapter)model).getModuleEntity();
-        }
-        return em.getReference(ModuleEntity.class, model.getId());
-    }
-
 	@Override
 	public Set<RoleModel> getAllRoles() {
 		Set<RoleModel> roles = new HashSet<RoleModel>();
@@ -217,9 +207,16 @@ public class ModuleAdapter implements ModuleModel {
 	    for (ModuleRoleMappingEntity entity : ls) {
 	    	roles.add(applicationAdapter.getRoleById(entity.getRoleId()));
 	    }
-
+		
 		return roles;
 	}
+	
+	public static ModuleEntity toModuleEntity(ModuleModel model, EntityManager em) {
+        if (model instanceof ModuleAdapter) {
+            return ((ModuleAdapter)model).getModuleEntity();
+        }
+        return em.getReference(ModuleEntity.class, model.getId());
+    }
 
 	@Override
 	public RoleModel addRole(String rolename) {
@@ -235,6 +232,7 @@ public class ModuleAdapter implements ModuleModel {
 	}
 	
 	protected RoleModel _addRole(String rolename) {
+		log.info("rolename="+rolename);
 		RoleModel role = applicationAdapter.getRole(rolename);
 		if (role == null) {
 			throw new IllegalStateException("Role cannot found");
@@ -277,5 +275,4 @@ public class ModuleAdapter implements ModuleModel {
 			.executeUpdate();
 		em.flush();
 	}
-	
 }

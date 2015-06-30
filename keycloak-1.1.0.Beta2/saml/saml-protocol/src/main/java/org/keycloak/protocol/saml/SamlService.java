@@ -19,11 +19,10 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.UserSessionModel;
 import org.keycloak.models.utils.KeycloakModelUtils;
-import org.keycloak.protocol.oidc.OpenIDConnectService;
 import org.keycloak.protocol.oidc.TokenManager;
 import org.keycloak.services.managers.AuthenticationManager;
-import org.keycloak.services.managers.AuthenticationManager.AuthResult;
 import org.keycloak.services.managers.ClientSessionCode;
+import org.keycloak.services.managers.AuthenticationManager.AuthResult;
 import org.keycloak.services.resources.RealmsResource;
 import org.keycloak.services.resources.flows.Flows;
 import org.keycloak.util.StreamUtil;
@@ -94,7 +93,7 @@ public class SamlService {
     @Context
     protected ResourceContext resourceContext;
     */
-
+    
     public SamlService(RealmModel realm, EventBuilder event, AuthenticationManager authManager) {
         this.realm = realm;
         this.event = event;
@@ -102,6 +101,7 @@ public class SamlService {
     }
 
     public abstract class BindingProtocol {
+    	
         protected Response basicChecks(String samlRequest, String samlResponse) {
             if (!checkSsl()) {
                 event.event(EventType.LOGIN);
@@ -136,9 +136,9 @@ public class SamlService {
                 event.error(Errors.INVALID_TOKEN);
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Invalid Request");
             }
-
+            
             SAML2Object samlObject = documentHolder.getSamlObject();
-
+            
             RequestAbstractType requestAbstractType = (RequestAbstractType)samlObject;
             String issuer = requestAbstractType.getIssuer().getValue();
             StringBuilder sb = new StringBuilder();
@@ -155,7 +155,7 @@ public class SamlService {
 			}
 			
             ClientModel client = realm.findClient(sb.toString());
-
+            
             if (client == null) {
                 event.event(EventType.LOGIN);
                 event.error(Errors.CLIENT_NOT_FOUND);
@@ -195,7 +195,6 @@ public class SamlService {
                 event.event(EventType.LOGOUT);
                 LogoutRequestType logout = (LogoutRequestType) samlObject;
                 return logoutRequest(logout, client);
-
             } else {
                 event.event(EventType.LOGIN);
                 event.error(Errors.INVALID_TOKEN);
@@ -208,8 +207,10 @@ public class SamlService {
         protected abstract SAMLDocumentHolder extractDocument(String samlRequest);
 
         protected Response loginRequest(String relayState, AuthnRequestType requestAbstractType, ClientModel client) {
-        	
+
         	String redirect = requestAbstractType.getIssuer().getValue();
+            
+            //String redirect = OpenIDConnectService.verifyRedirectUri(uriInfo, redirectUri.toString(), realm, client);
             
             if (redirect == null) {
                 event.error(Errors.INVALID_REDIRECT_URI);
@@ -218,12 +219,10 @@ public class SamlService {
             
             AuthResult authResult = authManager.authenticateIdentityCookie(session, realm, uriInfo, clientConnection, headers, true);
             
-            logger.info("authResult="+authResult);
-            
             if (authResult != null) { // user is already login
             	
             	ClientSessionModel clientSessionModel = session.sessions().getClientSession(realm, authResult.getSession().getId(), client.getClientId());
-            	logger.info("clientSessionModel="+clientSessionModel);
+            	
             	if (clientSessionModel == null) {
             		ClientSessionModel clientSession = session.sessions().createClientSession(realm, client);
                     clientSession.setAuthMethod(SamlProtocol.LOGIN_PROTOCOL);
@@ -265,7 +264,7 @@ public class SamlService {
                     return forms.createLogin();
             	
             	} else {
-            		
+            	
             		UserModel user = authResult.getUser();
         			UserSessionModel userSession = authResult.getSession();
         			TokenManager.attachClientSession(userSession, clientSessionModel, request);
@@ -316,48 +315,48 @@ public class SamlService {
                 return forms.createLogin();
             	
             }
-
-            /*ClientSessionModel clientSession = session.sessions().createClientSession(realm, client);
-            clientSession.setAuthMethod(SamlProtocol.LOGIN_PROTOCOL);
-            clientSession.setRedirectUri(redirect);
-            clientSession.setAction(ClientSessionModel.Action.AUTHENTICATE);
-            clientSession.setNote(ClientSessionCode.ACTION_KEY, KeycloakModelUtils.generateCodeSecret());
-            clientSession.setNote(SamlProtocol.SAML_BINDING, getBindingType());
-            clientSession.setNote(GeneralConstants.RELAY_STATE, relayState);
-            clientSession.setNote(SamlProtocol.SAML_REQUEST_ID, requestAbstractType.getID());
-
-            // Handle NameIDPolicy from SP
-            NameIDPolicyType nameIdPolicy = requestAbstractType.getNameIDPolicy();
-            if(nameIdPolicy != null) {
-                String nameIdFormat = nameIdPolicy.getFormat().toString();
-                // TODO: Handle AllowCreate too, relevant for persistent NameID.
-                if(isSupportedNameIdFormat(nameIdFormat)) {
-                    clientSession.setNote(GeneralConstants.NAMEID_FORMAT, nameIdFormat);
-                } else {
-                    event.error(Errors.INVALID_TOKEN);
-                    return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Unsupported NameIDFormat.");
-                }
-            } else {
-                clientSession.setNote(GeneralConstants.NAMEID_FORMAT, JBossSAMLURIConstants.NAMEID_FORMAT_UNSPECIFIED.get());
-            }
-
-            Response response = authManager.checkNonFormAuthentication(session, clientSession, realm, uriInfo, request, clientConnection, headers, event);
-            if (response != null) return response;
-
-            LoginFormsProvider forms = Flows.forms(session, realm, clientSession.getClient(), uriInfo)
-                    .setClientSessionCode(new ClientSessionCode(realm, clientSession).getCode());
-
-            String rememberMeUsername = AuthenticationManager.getRememberMeUsername(realm, headers);
-
-            if (rememberMeUsername != null) {
-                MultivaluedMap<String, String> formData = new MultivaluedMapImpl<String, String>();
-                formData.add(AuthenticationManager.FORM_USERNAME, rememberMeUsername);
-                formData.add("rememberMe", "on");
-
-                forms.setFormData(formData);
-            }
-
-            return forms.createLogin();*/
+            
+//            ClientSessionModel clientSession = session.sessions().createClientSession(realm, client);
+//            clientSession.setAuthMethod(SamlProtocol.LOGIN_PROTOCOL);
+//            clientSession.setRedirectUri(redirect);
+//            clientSession.setAction(ClientSessionModel.Action.AUTHENTICATE);
+//            clientSession.setNote(ClientSessionCode.ACTION_KEY, KeycloakModelUtils.generateCodeSecret());
+//            clientSession.setNote(SamlProtocol.SAML_BINDING, getBindingType());
+//            clientSession.setNote(GeneralConstants.RELAY_STATE, relayState);
+//            clientSession.setNote(SamlProtocol.SAML_REQUEST_ID, requestAbstractType.getID());
+//
+//            // Handle NameIDPolicy from SP
+//            NameIDPolicyType nameIdPolicy = requestAbstractType.getNameIDPolicy();
+//            if(nameIdPolicy != null) {
+//                String nameIdFormat = nameIdPolicy.getFormat().toString();
+//                // TODO: Handle AllowCreate too, relevant for persistent NameID.
+//                if(isSupportedNameIdFormat(nameIdFormat)) {
+//                    clientSession.setNote(GeneralConstants.NAMEID_FORMAT, nameIdFormat);
+//                } else {
+//                    event.error(Errors.INVALID_TOKEN);
+//                    return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Unsupported NameIDFormat.");
+//                }
+//            } else {
+//                clientSession.setNote(GeneralConstants.NAMEID_FORMAT, JBossSAMLURIConstants.NAMEID_FORMAT_UNSPECIFIED.get());
+//            }
+//
+//            Response response = authManager.checkNonFormAuthentication(session, clientSession, realm, uriInfo, request, clientConnection, headers, event);
+//            if (response != null) return response;
+//
+//            LoginFormsProvider forms = Flows.forms(session, realm, clientSession.getClient(), uriInfo)
+//                    .setClientSessionCode(new ClientSessionCode(realm, clientSession).getCode());
+//
+//            String rememberMeUsername = AuthenticationManager.getRememberMeUsername(realm, headers);
+//
+//            if (rememberMeUsername != null) {
+//                MultivaluedMap<String, String> formData = new MultivaluedMapImpl<String, String>();
+//                formData.add(AuthenticationManager.FORM_USERNAME, rememberMeUsername);
+//                formData.add("rememberMe", "on");
+//
+//                forms.setFormData(formData);
+//            }
+//
+//            return forms.createLogin();
         }
 
         private boolean isSupportedNameIdFormat(String nameIdFormat) {
@@ -372,34 +371,53 @@ public class SamlService {
         protected abstract String getBindingType();
 
         protected Response logoutRequest(LogoutRequestType requestAbstractType, ClientModel client) {
-        	logger.info("====================logoutRequest()====================");
+        	//logger.info("====================logoutRequest()====================");
+        	String clientId = requestAbstractType.getIssuer().getValue();
             // authenticate identity cookie, but ignore an access token timeout as we're logging out anyways.
             AuthenticationManager.AuthResult authResult = authManager.authenticateIdentityCookie(session, realm, uriInfo, clientConnection, headers, false);
             if (authResult != null) {
-                logout(authResult.getSession());
+            	if (requestAbstractType.getConsent().equalsIgnoreCase("LLO")) { // local logout
+            		ClientModel clientModel = realm.findClient(clientId);
+            		if (clientModel != null) {
+            			logout(authResult.getSession(), clientModel);
+            		}
+            	} else { // global logout
+            		logout(authResult.getSession());
+            	}
             }
             
             String redirectUri = null;
-
+            
             if (client instanceof ApplicationModel) {
-                redirectUri = ((ApplicationModel)client).getBaseUrl();
+	            ApplicationModel applicationModel = (ApplicationModel) client;
+            	if (requestAbstractType.getDestination() == null) {
+	                redirectUri = applicationModel.getBaseUrl();
+	            } else {
+	            	redirectUri = requestAbstractType.getDestination().getPath();
+	            	if (redirectUri.indexOf("http") == -1) {
+	            		redirectUri = applicationModel.getBaseUrl() + redirectUri;
+	            	}
+	            }
             }
             
+            logger.info("redirect="+redirectUri);
+            
             if (redirectUri != null) {
-                String validatedRedirect = OpenIDConnectService.verifyRedirectUri(uriInfo, redirectUri, realm, client);
-                logger.info("validatedRedirect="+validatedRedirect);
-                if (validatedRedirect == null) {
-                    return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Invalid redirect uri.");
-                }
-                return Response.status(302).location(UriBuilder.fromUri(validatedRedirect).build()).build();
+                return Response.status(302).location(UriBuilder.fromUri(redirectUri).build()).build();
             } else {
                 return Response.ok().build();
             }
-
         }
-
+        
         private void logout(UserSessionModel userSession) {
             authManager.logout(session, realm, userSession, uriInfo, clientConnection);
+            event.user(userSession.getUser()).session(userSession).success();
+        }
+
+        private void logout(UserSessionModel userSession, ClientModel clientId) {
+        	if (clientId instanceof ApplicationModel) {
+        		authManager.logoutLLO(session, realm, userSession, uriInfo, clientConnection, (ApplicationModel) clientId);
+        	}
             event.user(userSession.getUser()).session(userSession).success();
         }
 
@@ -410,11 +428,10 @@ public class SamlService {
                 return !realm.getSslRequired().isRequired(clientConnection);
             }
         }
+    
     }
 
-
     protected class PostBindingProtocol extends BindingProtocol {
-
 
         @Override
         protected void verifySignature(SAMLDocumentHolder documentHolder, ClientModel client) throws VerificationException {
@@ -430,7 +447,6 @@ public class SamlService {
         protected String getBindingType() {
             return SamlProtocol.SAML_POST_BINDING;
         }
-
 
         public Response execute(String samlRequest, String samlResponse, String relayState) {
             Response response = basicChecks(samlRequest, samlResponse);
@@ -486,7 +502,6 @@ public class SamlService {
                 throw new VerificationException(e);
             }
 
-
         }
 
         @Override
@@ -499,7 +514,6 @@ public class SamlService {
             return SamlProtocol.SAML_GET_BINDING;
         }
 
-
         public Response execute(String samlRequest, String samlResponse, String relayState) {
             Response response = basicChecks(samlRequest, samlResponse);
             if (response != null) return response;
@@ -508,7 +522,6 @@ public class SamlService {
         }
 
     }
-
 
     /**
      */
@@ -519,7 +532,6 @@ public class SamlService {
                                     @QueryParam(GeneralConstants.RELAY_STATE) String relayState)  {
         return new RedirectBindingProtocol().execute(samlRequest, samlResponse, relayState);
     }
-
 
     /**
      */

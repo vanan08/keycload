@@ -137,6 +137,43 @@ public class AuthenticationManager {
 
 		session.sessions().removeUserSession(realm, userSession);
 	}
+	
+	public static void logoutLLO(KeycloakSession session, RealmModel realm, UserSessionModel userSession, 
+    		UriInfo uriInfo, ClientConnection connection, ClientModel app) {
+        if (userSession == null) return;
+        UserModel user = userSession.getUser();
+        
+        logger.debugv("Logging out: {0} ({1})", user.getUsername(), userSession.getId());
+        ClientSessionModel clnt = null;
+        int size = userSession.getClientSessions().size();
+        for (ClientSessionModel clientSession : userSession.getClientSessions()) {
+            ClientModel client = clientSession.getClient();
+            if (client instanceof ApplicationModel) {
+            	if (app.getClientId().equals(client.getClientId())) {
+            		String authMethod = clientSession.getAuthMethod();
+                    if (authMethod == null) continue; // must be a keycloak service like account
+                    LoginProtocol protocol = session.getProvider(LoginProtocol.class, authMethod);
+                    protocol.setRealm(realm)
+                            .setUriInfo(uriInfo);
+                    protocol.backchannelLogout(userSession, clientSession);
+                    
+                    clnt = clientSession;
+            	}
+            }
+        }
+        
+        if (size == 0) {
+        	expireIdentityCookie(realm, uriInfo, connection);
+            expireRememberMeCookie(realm, uriInfo, connection);
+            session.sessions().removeUserSessions(realm, userSession.getUser());
+        } else {
+        	if (clnt != null) {
+        		logger.info("delete a session user to application \""+app.getClientId()+"\"");
+//        		 session.sessions().removeUserSessions(realm, userSession.getUser());
+        		session.sessions().removeUserSession(realm, user, clnt.getClient());
+        	}
+        }
+    }
 
 	public static AccessToken createIdentityToken(RealmModel realm,
 			UserModel user, UserSessionModel session) {

@@ -14,13 +14,12 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @NamedQueries({
-	@NamedQuery(name="moduleHasRole", query="select m from ModuleRoleMappingEntity m where m.roleId = :roleId"),
-	@NamedQuery(name="selectRolesByUser", query="select m from ModuleRoleMappingEntity m where m.userId = :userId"),
-    @NamedQuery(name="selectRolesByUserModule", query="select m from ModuleRoleMappingEntity m where m.module = :module and m.userId = :userId"),
-    @NamedQuery(name="selectRolesByRoleId", query="select m from ModuleRoleMappingEntity m where m.module = :module and m.roleId = :roleId and m.userId = :userId"),
+	@NamedQuery(name="moduleHasRole", query="select m from ModuleRoleMappingEntity m where m.roleId = :roleId and module = :module"),
+    @NamedQuery(name="selectRolesByUserModule", query="select m from ModuleRoleMappingEntity m where m.module = :module"),
+    @NamedQuery(name="selectRolesByRoleId", query="select m from ModuleRoleMappingEntity m where m.module = :module and m.roleId = :roleId"),
     @NamedQuery(name="selectRolesByModule", query="select m from ModuleRoleMappingEntity m where m.module = :module"),
     @NamedQuery(name="deleteModuleRoleMappingByRole", query="delete from ModuleRoleMappingEntity where module = :module and roleId = :roleId"),
-    @NamedQuery(name="deleteModuleRoleMappingByUser", query="delete from ModuleRoleMappingEntity where module = :module and roleId = :roleId and userId = :userId"),
+    @NamedQuery(name="deleteModuleRoleMappingByUser", query="delete from ModuleRoleMappingEntity where module = :module and roleId = :roleId"),
     @NamedQuery(name="deleteModuleRoleMappingByModule", query="delete from ModuleRoleMappingEntity where module = :module")
 })
 @Table(name="MODULE_ROLE_MAPPING")
@@ -36,10 +35,6 @@ public class ModuleRoleMappingEntity {
     @Id
     @Column(name = "ROLE_ID")
     protected String roleId;
-    
-    @Id
-    @Column(name = "USER_ID")
-    protected String userId;
 	
     public ModuleEntity getModule() {
 		return module;
@@ -57,29 +52,20 @@ public class ModuleRoleMappingEntity {
 		this.roleId = roleId;
 	}
     
-    public String getUserId() {
-		return userId;
-	}
-    
-    public void setUserId(String userId) {
-		this.userId = userId;
-	}
-    
 	public static class Key implements Serializable {
 
         protected ModuleEntity module;
 
         protected String roleId;
         
-        protected String userId;
+        //protected String userId;
 
         public Key() {
         }
 
-        public Key(ModuleEntity module, String roleId, String userId) {
+        public Key(ModuleEntity module, String roleId) {
             this.module = module;
             this.roleId = roleId;
-            this.userId = userId;
         }
 
         public ModuleEntity getModule() {
@@ -97,14 +83,6 @@ public class ModuleRoleMappingEntity {
         public void setRoleId(String roleId) {
 			this.roleId = roleId;
 		}
-        
-        public String getUserId() {
-			return userId;
-		}
-        
-        public void setUserId(String userId) {
-			this.userId = userId;
-		}
 
         @Override
         public boolean equals(Object o) {
@@ -115,7 +93,6 @@ public class ModuleRoleMappingEntity {
 
             if (!roleId.equals(key.roleId)) return false;
             if (!module.equals(key.module)) return false;
-            if (!userId.equals(key.userId)) return false;
 
             return true;
         }
@@ -123,7 +100,7 @@ public class ModuleRoleMappingEntity {
         @Override
         public int hashCode() {
             int result = module.hashCode();
-            result = 31 * result + roleId.hashCode() + userId.hashCode();
+            result = 31 * result + roleId.hashCode();
             return result;
         }
     }

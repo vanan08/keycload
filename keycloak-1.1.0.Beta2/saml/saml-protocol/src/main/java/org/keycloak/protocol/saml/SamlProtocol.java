@@ -1,5 +1,7 @@
 package org.keycloak.protocol.saml;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
@@ -9,9 +11,7 @@ import org.keycloak.models.ClaimMask;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.ClientSessionModel;
 import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
-import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.UserSessionModel;
 import org.keycloak.protocol.LoginProtocol;
@@ -23,13 +23,17 @@ import org.keycloak.services.resources.flows.Flows;
 import org.picketlink.common.constants.GeneralConstants;
 import org.picketlink.common.constants.JBossSAMLURIConstants;
 import org.picketlink.identity.federation.core.saml.v2.constants.X500SAMLProfileConstants;
+
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.PublicKey;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -64,8 +68,6 @@ public class SamlProtocol implements LoginProtocol {
     protected RealmModel realm;
 
     protected UriInfo uriInfo;
-
-
 
     @Override
     public SamlProtocol setSession(KeycloakSession session) {
@@ -140,7 +142,6 @@ public class SamlProtocol implements LoginProtocol {
 
     @Override
     public Response authenticated(UserSessionModel userSession, ClientSessionCode accessCode) {
-    	logger.info("SamlProtocol - authenticated()");
         ClientSessionModel clientSession = accessCode.getClientSession();
         ClientModel client = clientSession.getClient();
         UserModel userModel = userSession.getUser();
@@ -151,9 +152,6 @@ public class SamlProtocol implements LoginProtocol {
         String responseIssuer = getResponseIssuer(realm);
         String nameIdFormat = getNameIdFormat(clientSession);
         String nameId = getNameId(nameIdFormat, clientSession, userSession);
-        
-        logger.info(uriInfo.getPath());
-        logger.info("redirect="+redirectUri);
 
         SALM2LoginResponseBuilder builder = new SALM2LoginResponseBuilder();
         builder.requestID(requestID)
@@ -164,43 +162,20 @@ public class SamlProtocol implements LoginProtocol {
                .nameIdentifier(nameIdFormat, nameId)
                .authMethod(JBossSAMLURIConstants.AC_UNSPECIFIED.get());
         initClaims(builder, clientSession.getClient(), userModel);
+        builder.attribute("timeout", ""+realmModel.getSsoSessionMaxLifespan());
+        
         if (clientSession.getRoles() != null) {
+        	
             if (multivaluedRoles(client)) {
                 builder.multiValuedRoles(true);
             }
             
-            for (ApplicationModel app : realmModel.getApplications()) {
-            	Set<RoleModel> rolesApp = app.getRoles();
-                int numOfRoles = rolesApp.size();
-                if (numOfRoles > 0) {
-                	StringBuilder sbRolesApp = new StringBuilder();
-                	sbRolesApp.append(app.getBaseUrl()+"/");
-                	
-                	for (RoleModel roleModel : rolesApp) {
-                		if (userModel.hasRole(roleModel)) {
-	                    	sbRolesApp.append(",").append(roleModel.getName());
-                		}
-                    }
-                	
-                	builder.roles(sbRolesApp.toString());
-                }
-                
-                List<ModuleModel> modules = app.getModules();
-                for (ModuleModel module : modules) {
-                	StringBuilder sbRoles = new StringBuilder();
-                	sbRoles.append(app.getBaseUrl() + "/" +module.getUrl());
-                	
-                	Set<RoleModel> rls = module.getRoles(userModel.getId());
-                	for (RoleModel roleModel : rls) {
-                		if (userModel.hasRole(roleModel)) {
-                			sbRoles.append(",").append(roleModel.getName());
-                		}
-                	}
-                	
-                	builder.roles(sbRoles.toString());
-                }
+    		// application
+    		for (String rolename : clientSession.getRoles()) {           			
+            	builder.roles(rolename);
             }
-        }
+        }   
+        
         if (requiresRealmSignature(client)) {
             builder.signatureAlgorithm(getSignatureAlgorithm(client))
                    .signWith(realm.getPrivateKey(), realm.getPublicKey(), realm.getCertificate())
@@ -278,8 +253,6 @@ public class SamlProtocol implements LoginProtocol {
         }
     }
 
-
-
     @Override
     public Response consentDenied(ClientSessionModel clientSession) {
         return getErrorResponse(clientSession, JBossSAMLURIConstants.STATUS_REQUEST_DENIED.get());
@@ -325,8 +298,7 @@ public class SamlProtocol implements LoginProtocol {
         String adminUrl = ResourceAdminManager.getManagementUrl(uriInfo.getRequestUri(), app);
 
         ApacheHttpClient4Executor executor = ResourceAdminManager.createExecutor();
-
-
+        
         try {
             ClientRequest request = executor.createRequest(adminUrl);
             request.formParameter(GeneralConstants.SAML_REQUEST_KEY, logoutRequestString);
@@ -360,5 +332,17 @@ public class SamlProtocol implements LoginProtocol {
     @Override
     public void close() {
 
+    }
+    
+    public static Map<String, String> getParameters(String url) throws URISyntaxException {
+    	Map<String, String> parameters = new HashMap<String, String>();
+    	URI uri = new URI(url);
+		List<NameValuePair> params = URLEncodedUtils.parse(uri, "UTF-8");
+
+		for (NameValuePair param : params) {
+			parameters.put(param.getName(), param.getValue());
+		}
+		
+		return parameters;
     }
 }
