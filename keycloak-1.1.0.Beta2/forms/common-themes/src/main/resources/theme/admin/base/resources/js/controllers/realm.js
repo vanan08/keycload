@@ -70,6 +70,10 @@ module.controller('GlobalCtrl', function($scope, $http, Auth, WhoAmI, Current, $
 
         get manageEvents() {
             return getAccess('manage-events');
+        },
+        
+        get viewTest() {
+            return getAccess('view-test');
         }
     }
 

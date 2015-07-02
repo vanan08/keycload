@@ -671,7 +671,9 @@ public class AuthenticationManager {
 	protected AuthenticationStatus authenticateInternalNoneMaster(
 			KeycloakSession session, RealmModel realm,
 			MultivaluedMap<String, String> formData, String username) {
-
+		
+		//Uncomment for hard code rediret to TOTP screen
+//		return AuthenticationStatus.MISSING_TOTP;
 		ClientAPI clientAPI = null;
 		int domain = 0;
 		boolean enable2fa=true;
