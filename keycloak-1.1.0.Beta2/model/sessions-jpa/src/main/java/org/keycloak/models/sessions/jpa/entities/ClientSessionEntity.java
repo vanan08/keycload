@@ -24,6 +24,7 @@ import java.util.Collection;
 @Table(name = "CLIENT_SESSION")
 @NamedQueries({
         @NamedQuery(name = "removeClientSessionByRealm", query = "delete from ClientSessionEntity a where a.realmId = :realmId"),
+        @NamedQuery(name = "removeClientSessionBySessionIndex", query = "delete from ClientSessionEntity a where a.realmId = :realmId and a.sessionIndex = : sessionIndex"),
         @NamedQuery(name = "removeClientSessionByUser", query = "delete from ClientSessionEntity a where a.session IN (select s from UserSessionEntity s where s.realmId = :realmId and s.userId = :userId)"),
         @NamedQuery(name = "removeClientSessionByClient", query = "delete from ClientSessionEntity a where a.clientId = :clientId and a.realmId = :realmId"),
         @NamedQuery(name = "removeClientSessionByExpired", query = "delete from ClientSessionEntity a where a.session IN (select s from UserSessionEntity s where s.realmId = :realmId and (s.started < :maxTime or s.lastSessionRefresh < :idleTime))"),
@@ -41,6 +42,9 @@ public class ClientSessionEntity {
 
     @Column(name="CLIENT_ID",length = 36)
     protected String clientId;
+    
+    @Column(name="SESSION_INDEX", length = 36)
+    protected String sessionIndex;
 
     @Column(name="REALM_ID")
     protected String realmId;
@@ -70,6 +74,14 @@ public class ClientSessionEntity {
     public void setId(String id) {
         this.id = id;
     }
+    
+    public String getSessionIndex() {
+		return sessionIndex;
+	}
+    
+    public void setSessionIndex(String sessionIndex) {
+		this.sessionIndex = sessionIndex;
+	}
 
     public UserSessionEntity getSession() {
         return session;

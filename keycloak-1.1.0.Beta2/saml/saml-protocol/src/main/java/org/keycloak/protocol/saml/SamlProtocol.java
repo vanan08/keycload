@@ -296,6 +296,8 @@ public class SamlProtocol implements LoginProtocol {
 
 
         String adminUrl = ResourceAdminManager.getManagementUrl(uriInfo.getRequestUri(), app);
+        
+        logger.info("adminUrl=" + adminUrl);
 
         ApacheHttpClient4Executor executor = ResourceAdminManager.createExecutor();
         

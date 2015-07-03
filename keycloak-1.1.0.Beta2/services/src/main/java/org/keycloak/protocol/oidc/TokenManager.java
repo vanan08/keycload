@@ -136,19 +136,16 @@ public class TokenManager {
         if (clientSession.getUserSession() != null) {
             return;
         }
-        logger.info("step 1");
+        
         try {
         	UserModel user = session.getUser();
 	        clientSession.setUserSession(session);
 	        ClientModel client = clientSession.getClient();
 	        Set<String> roles = new HashSet<String>();
-	        logger.info("step 2");
 			Map<String, String> params = getParameters(request.getUri().getPath());
-			 logger.info("step 3");
 			if (params.size() > 0) {
 	    		String location = params.containsKey("url") ? params.get("url") : "";
 	    		if (location.equals("")) {
-	    			logger.info("step 4");
 	    			return;
 	    		}
 	    		ApplicationModel applicationModel = (ApplicationModel) client;
@@ -163,12 +160,9 @@ public class TokenManager {
 	    			}
 	    		}
 			} else {
-				logger.info("step 6");
 	        	for (RoleModel r : TokenManager.getAccess(null, client, user)) {
-	        		logger.info("role="+r.getName());
 	        		roles.add(r.getName());
 	        	}
-	        	logger.info("number role of application="+roles.size());
 	        	clientSession.setRoles(roles);
 			}
 			
