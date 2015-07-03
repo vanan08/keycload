@@ -497,6 +497,7 @@ module.controller('ModuleDetailCtrl', function($scope, Loader, realm, applicatio
 	
 	if (!$scope.create) {
 		//TODO: Get all roles tag for module
+		$scope.module.startdate = "1/1/2015";
 		$scope.availableModuleRoleMappings = AvailableModuleRoleMapping.query({ realm : realm.realm, application: $scope.application.id, module: $scope.module.name });
 		$scope.applicationModuleRoles = ModuleRoleMapping.query({ realm : realm.realm, application: $scope.application.id, module: $scope.module.name });
 		$scope.applicationComposite = $scope.applicationModuleRoles;
@@ -755,6 +756,8 @@ module.controller('ApplicationInstallationCtrl', function($scope, realm, applica
 module.controller('ApplicationDetailCtrl', function($scope, realm, application, serverInfo, Application, $location, Dialog, Notifications) {
     console.log('ApplicationDetailCtrl');
 
+    $scope.showEditModule = false;
+    
     $scope.accessTypes = [
         "confidential",
         "public",
@@ -785,6 +788,13 @@ module.controller('ApplicationDetailCtrl', function($scope, realm, application, 
             application.attributes = {};
         }
         $scope.application= angular.copy(application);
+        
+        if(application.modules !== undefined && application.modules.length > 0){
+        	$scope.showEditModule = true;
+        }else{
+        	$scope.showEditModule = false;
+        }
+        
         $scope.accessType = $scope.accessTypes[0];
         if (application.bearerOnly) {
             $scope.accessType = $scope.accessTypes[2];
@@ -903,6 +913,11 @@ module.controller('ApplicationDetailCtrl', function($scope, realm, application, 
     $scope.$watch('application', function() {
         if (!angular.equals($scope.application, application)) {
             $scope.changed = true;
+            if(application.modules !== undefined && application.modules.length > 0){
+            	$scope.showEditModule = true;
+            }else{
+            	$scope.showEditModule = false;
+            }
         }
     }, true);
 

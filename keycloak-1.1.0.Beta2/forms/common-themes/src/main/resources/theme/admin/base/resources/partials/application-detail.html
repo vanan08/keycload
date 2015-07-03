@@ -213,7 +213,7 @@
                  </div>
                  <div class="pull-right form-actions" data-ng-show="!create && access.manageApplications">
 	                <button kc-cancel data-ng-click="gotoModuleDetail()">Create module</button>
-	                <button kc-cancel data-ng-click="editModule()">Edit module</button>
+	                <button kc-cancel data-ng-show="showEditModule" data-ng-click="editModule()">Edit module</button>
 	            </div>
 			</fieldset>
            
