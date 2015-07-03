@@ -17,8 +17,12 @@ import javax.persistence.UniqueConstraint;
 public class ModuleEntity {
 
 	@Id
-    @Column(name="CUSTOM_PSE_FUNCTIONS _ID", length = 36)
+    @Column(name="CUSTOM_PSE_FUNCTIONS_ID", length = 36)
 	private String id;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "APPLICATION_ID")
+    private ApplicationEntity application;
 	
 	@Column(name = "NAME")
 	private String name;
@@ -49,10 +53,6 @@ public class ModuleEntity {
 	
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "APPLICATION_ID")
-    private ApplicationEntity application;
 	
 //    @OneToMany(fetch = FetchType.LAZY, cascade ={})
 //    @JoinTable(name="MODULE_ROLE", joinColumns = { @JoinColumn(name="MODULE_ID")}, inverseJoinColumns = { @JoinColumn(name="ROLE_ID")})

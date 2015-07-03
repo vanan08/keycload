@@ -31,7 +31,7 @@ public class ModuleRoleMappingEntity {
     private String id;
 	
     @ManyToOne(fetch= FetchType.LAZY)
-    @JoinColumn(name="CUSTOM_PSE_FUNCTIONS _ID")
+    @JoinColumn(name="CUSTOM_PSE_FUNCTIONS_ID")
     protected ModuleEntity module;
 
     @Column(name = "ROLE_ID")
