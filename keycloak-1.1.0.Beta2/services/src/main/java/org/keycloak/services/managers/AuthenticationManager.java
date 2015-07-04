@@ -507,7 +507,7 @@ public class AuthenticationManager {
 
 	public AuthenticationStatus authenticateForm(KeycloakSession session,
 			ClientConnection clientConnection, RealmModel realm,
-			MultivaluedMap<String, String> formData) {
+			MultivaluedMap<String, String> formData, StringBuilder errorMessage) {
 		String username = formData.getFirst(FORM_USERNAME);
 		if (username == null) {
 			logger.debug("Username not provided");
@@ -519,9 +519,10 @@ public class AuthenticationManager {
 				return AuthenticationStatus.ACCOUNT_TEMPORARILY_DISABLED;
 			}
 		}
+		
 
 		AuthenticationStatus status = authenticateInternal(session, realm,
-				formData, username);
+				formData, username, errorMessage);
 
 		System.out.println("Keycloack: session =" + session);
 		System.out.println("KeyCloack: realm name=" + realm.getName());
@@ -553,18 +554,18 @@ public class AuthenticationManager {
 
 	protected AuthenticationStatus authenticateInternal(
 			KeycloakSession session, RealmModel realm,
-			MultivaluedMap<String, String> formData, String username) {
+			MultivaluedMap<String, String> formData, String username, StringBuilder errorMessage) {
 
 		String realmName = realm.getName();
 
 		System.out.println("KeyCloack Authentication Realm: " + realmName);
-
+		
 		if (realmName.equals("master")) {
 			return this.authenticateInternalMaster(session, realm, formData,
 					username);
 		} else {
 			return this.authenticateInternalNoneMaster(session, realm,
-					formData, username);
+					formData, username, errorMessage);
 		}
 
 	}
@@ -670,7 +671,7 @@ public class AuthenticationManager {
 
 	protected AuthenticationStatus authenticateInternalNoneMaster(
 			KeycloakSession session, RealmModel realm,
-			MultivaluedMap<String, String> formData, String username) {
+			MultivaluedMap<String, String> formData, String username, StringBuilder errorMessage) {
 		
 		//Uncomment for hard code rediret to TOTP screen
 //		return AuthenticationStatus.MISSING_TOTP;
@@ -775,6 +776,8 @@ public class AuthenticationManager {
 										encryptedBlockBytes.length);
 						System.out.println("KeyCloack: Returned Code= "
 								+ returnCode);
+						
+						
 						// returnCode = 0;
 
 					} catch (Exception e) {
@@ -801,9 +804,12 @@ public class AuthenticationManager {
 						System.out.println("KeyCloack: verifyClearOTIP2 resultCode: "+resultCode);
 						
 						if (!(resultCode == 0 || resultCode == 2051)) {
+							errorMessage.delete(0, errorMessage.length());
+							errorMessage.append(getErrorMessage(resultCode));
 							System.out.println("KeyCloack: verifyClearOTIP2 false resultCode: "+resultCode);
 							return AuthenticationStatus.MISSING_TOTP;
 						}else {
+							errorMessage.delete(0, errorMessage.length());
 							return AuthenticationStatus.SUCCESS;
 						}
 	
@@ -823,6 +829,7 @@ public class AuthenticationManager {
 					// delete expiry token
 					int resultCode = clientAPI.deleteTokenEx(EMPTY_BYTES,
 							username, domain, SERIAL_NO, mediaType, 1);
+					
 					// if delete is successfull then generate new token
 					if (resultCode == 0 || resultCode == 789) {
 						String propertiesPath = getPropAuthenticationValues("propertiesPath");
@@ -854,7 +861,6 @@ public class AuthenticationManager {
 								smsSend.ENCODING_ASCII, MOBILE_CODE);
 
 					}
-
 					return AuthenticationStatus.MISSING_TOTP;
 
 				}
@@ -986,4 +992,29 @@ public class AuthenticationManager {
         return sb.toString();
     }
 
+	public static String getErrorMessage(int errorCode) {
+        String hexErrorCode = Integer.toHexString(errorCode);
+        String errorMessage = "System is unable to process your request. Try again later or contact PRUONE service desk for assistance. (" + hexErrorCode + ")";
+
+        if ("301,306,307,308,703,704,705,706,708,803".indexOf(hexErrorCode) != -1 && hexErrorCode.length() == 3) {
+            errorMessage = "Invalid Login ID/PIN. (" + hexErrorCode + ")";
+        }
+        if ("302,303,311,313,602,603,604,606,607,701,702".indexOf(hexErrorCode) != -1 && hexErrorCode.length() == 3) {
+            errorMessage = "Invalid Login Credentials. (" + hexErrorCode + ")";
+        }
+        if ("801".indexOf(hexErrorCode) != -1 && hexErrorCode.length() == 3) {
+            errorMessage = "Exceeded Maximum Password Change. (" + hexErrorCode + ")";
+        }
+        if ("802".indexOf(hexErrorCode) != -1 && hexErrorCode.length() == 3) {
+            errorMessage = "Password recently used. Please try another one. (" + hexErrorCode + ")";
+        }
+        if ("707".indexOf(hexErrorCode) != -1 && hexErrorCode.length() == 3) {
+            errorMessage = "Your PIN has expired, please click on 'Forgot PIN' now. (" + hexErrorCode + ")";
+        }
+        if ("8,309,605,901,902,903,2011".indexOf(hexErrorCode) != -1 && hexErrorCode.length() == 3) {
+            errorMessage = "Invalid request. Try again later. (" + hexErrorCode + ")";
+        }
+
+        return errorMessage;
+    }
 }

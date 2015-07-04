@@ -75,6 +75,15 @@
                     </div>
                 </div>
             </#if>
+            
+            <#if errorMessage?has_content>
+	    	    <div id="kc-feedback" class="feedback-error col-xs-12 col-sm-5 col-md-6 col-lg-7">
+                    <div id="kc-feedback-wrapper">
+                        <span class="kc-feedback-text">${errorMessage}</span>
+                    </div>
+                </div>
+	   		</#if>
+             
 				<div class="panel-body">
 					<#nested "form">
                     <div class="links_sec clearfix">

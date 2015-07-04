@@ -289,7 +289,7 @@ public class OpenIDConnectService {
             return createError("realm_disabled", "Realm is disabled", Response.Status.UNAUTHORIZED);
         }
 
-        AuthenticationStatus authenticationStatus = authManager.authenticateForm(session, clientConnection, realm, form);
+        AuthenticationStatus authenticationStatus = authManager.authenticateForm(session, clientConnection, realm, form, new StringBuilder());
         Map<String, String> err;
 
         switch (authenticationStatus) {

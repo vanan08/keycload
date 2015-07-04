@@ -317,9 +317,15 @@ public class LoginActionsService {
                     .setUriInfo(uriInfo);
             return protocol.cancelLogin(clientSession);
         }
+        StringBuilder errorMessage = new StringBuilder();
+        AuthenticationManager.AuthenticationStatus status = authManager.authenticateForm(session, clientConnection, realm, formData, errorMessage);
 
-        AuthenticationManager.AuthenticationStatus status = authManager.authenticateForm(session, clientConnection, realm, formData);
-
+        if(errorMessage.length() > 0){
+        	formData.add("errorMessage", errorMessage.toString());
+        }else{
+        	formData.add("errorMessage", "");
+        }
+        
         if (remember) {
         	AuthenticationManager.createRememberMeCookie(realm, username, uriInfo, clientConnection);
         } else {
@@ -370,7 +376,7 @@ public class LoginActionsService {
 
                 String passwordToken = new JWSBuilder().jsonContent(new PasswordToken(realm.getName(), user.getId())).rsa256(realm.getPrivateKey());
                 formData.add(CredentialRepresentation.PASSWORD_TOKEN, passwordToken);
-
+                
                 return Flows.forms(this.session, realm, client, uriInfo)
                         .setFormData(formData)
                         .setClientSessionCode(clientCode.getCode())

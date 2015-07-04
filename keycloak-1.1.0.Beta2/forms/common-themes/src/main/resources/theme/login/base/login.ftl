@@ -12,12 +12,10 @@
     <#elseif section = "form">
         <#if realm.password>
         	<form id="kc-form-login" action="${url.loginAction}" method="post">
-	             <#--
 	             <input type="hidden" name="randomKey" id="randomKey" value="${randomKey}"/>
 	             <input type="hidden" name="randomKey" id="publicKey" value="${publicKey}"/>
 	             <input type="hidden" name="exponent" id="exponent" value="${exponent}"/>
 	             <input type="hidden" name="encryptedBlock" id="encryptedBlock" value=""/>
-	             -->
 	        	<div class="form-group">
 					<div class="input-group">
 						<input id="username" name="username" value="${login.username!''}" type="text" autofocus placeholder="USERNAME" class="form-control">

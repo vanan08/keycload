@@ -64,7 +64,11 @@ import java.util.concurrent.TimeUnit;
 public class FreeMarkerLoginFormsProvider implements LoginFormsProvider {
 
     private static final Logger logger = Logger.getLogger(FreeMarkerLoginFormsProvider.class);
-
+    
+    /**
+     * This module name of 1fa for get url forget password
+     */
+    
     private String message;
     private String accessCode;
     private static int DOMAIN=22;
@@ -229,7 +233,9 @@ public class FreeMarkerLoginFormsProvider implements LoginFormsProvider {
         //Get RandomKey
         try {
 			String randomKey=this.generateRandomKey();
+//        	String randomKey = "ERWERWERDSFSDFSD43434DFS";
 			String publicKey=this.generatePublicKey();
+//        	String publicKey = "rwerwer";
 			String exponent="10001";
 			attributes.put("randomKey", randomKey);
 			attributes.put("publicKey", publicKey);
@@ -285,7 +291,9 @@ public class FreeMarkerLoginFormsProvider implements LoginFormsProvider {
         }
 
         attributes.put("login", new LoginBean(formData));
-
+        if(formData != null){
+        	attributes.put("errorMessage", formData.getFirst("errorMessage"));
+        }
         switch (page) {
             case LOGIN_CONFIG_TOTP:
                 attributes.put("totp", new TotpBean(realm, user, baseUri));
