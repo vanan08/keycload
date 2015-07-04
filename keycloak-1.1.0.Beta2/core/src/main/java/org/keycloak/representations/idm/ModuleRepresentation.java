@@ -8,6 +8,13 @@ public class ModuleRepresentation {
     protected String url;
     protected String description;
     protected String [] roles;
+    protected String active;
+    protected String startedDate;
+    protected String endDate;
+    protected String createdDate;
+    protected String updatedDate;
+    protected String createBy;
+    protected String updateBy;
     
     public String getId() {
 		return id;
@@ -61,6 +68,62 @@ public class ModuleRepresentation {
 		this.roles = roles;
 	}
 	
+	public String getActive() {
+		return active;
+	}
+	
+	public void setActive(String active) {
+		this.active = active;
+	}
+	
+	public String getStartedDate() {
+		return startedDate;
+	}
+
+	public void setStartedDate(String startedDate) {
+		this.startedDate = startedDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+	
+	public String getCreateBy() {
+		return createBy;
+	}
+	
+	public void setCreateBy(String createBy) {
+		this.createBy = createBy;
+	}
+	
+	public String getUpdateBy() {
+		return updateBy;
+	}
+	
+	public void setUpdateBy(String updateBy) {
+		this.updateBy = updateBy;
+	}
+
 	@Override
 	public String toString() {
 		return "{id="+id+",name="+name+",url="+url+",description="+description+",role="+Arrays.toString(roles)+"}";

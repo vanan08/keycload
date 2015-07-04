@@ -61,7 +61,7 @@ public class ModuleResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateModule(final ModuleRepresentation rep) {
         //auth.requireManage();
-
+		
         try {
             RepresentationToModel.updateModule(realm, application, rep, module);
             return Response.noContent().build();

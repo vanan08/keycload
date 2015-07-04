@@ -59,6 +59,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -234,7 +235,7 @@ public class LoginActionsService {
         ClientSessionModel clientSession = clientSessionCode.getClientSession();
 
 
-        authManager.expireIdentityCookie(realm, uriInfo, clientConnection);
+        AuthenticationManager.expireIdentityCookie(realm, uriInfo, clientConnection);
 
         return Flows.forms(session, realm, clientSession.getClient(), uriInfo)
                 .setClientSessionCode(clientSessionCode.getCode())
@@ -596,7 +597,7 @@ public class LoginActionsService {
 
         event.success();
 
-        return authManager.redirectAfterSuccessfulFlow(session, realm, userSession, clientSession, request, uriInfo, clientConnection);
+        return AuthenticationManager.redirectAfterSuccessfulFlow(session, realm, userSession, clientSession, request, uriInfo, clientConnection);
     }
 
 
@@ -737,6 +738,26 @@ public class LoginActionsService {
     }
 
 
+    @Path("{username}/password-forgot")
+    @GET
+    public Response passwordForgot(@PathParam("username") String username, @QueryParam("code") String code, @QueryParam("key") String key) {
+    	event.event(EventType.FORGOT_PASSWORD);
+        if (!checkSsl()) {
+            return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "HTTPS required");
+        }
+        if (!realm.isEnabled()) {
+            event.error(Errors.REALM_DISABLED);
+            return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Realm not enabled.");
+        }
+        
+        UserModel user = session.users().getUserByUsername(username, realm);
+        if (user == null && username.contains("@")) {
+            user = session.users().getUserByEmail(username, realm);
+        }
+        
+        return null;
+    }
+    
     @Path("email-verification")
     @GET
     public Response emailVerification(@QueryParam("code") String code, @QueryParam("key") String key) {

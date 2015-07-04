@@ -1,5 +1,6 @@
 package org.keycloak.models.jpa;
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -8,7 +9,6 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import org.jboss.logging.Logger;
 import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleModel;
@@ -21,8 +21,6 @@ public class ModuleAdapter implements ModuleModel {
 	protected EntityManager em;
 	protected ModuleEntity moduleEntity;
 	protected ApplicationAdapter applicationAdapter;
-	
-	private final static Logger log = Logger.getLogger(ModuleAdapter.class);
 	
 	public ModuleAdapter(RealmModel realm, EntityManager em, ModuleEntity moduleEntity, ApplicationAdapter applicationAdapter) {
 		this.realm = realm;
@@ -66,6 +64,76 @@ public class ModuleAdapter implements ModuleModel {
 		moduleEntity.setUrl(url);
 	}
 	
+	@Override
+	public String getActive() {
+		return moduleEntity.getActive();
+	}
+
+	@Override
+	public void setActive(String active) {
+		moduleEntity.setActive(active);
+	}
+
+	@Override
+	public Date getStartDate() {
+		return moduleEntity.getStartDate();
+	}
+
+	@Override
+	public void setStartDate(Date startDate) {
+		moduleEntity.setStartDate(startDate);
+	}
+
+	@Override
+	public Date getEndDate() {
+		return moduleEntity.getEndDate();
+	}
+
+	@Override
+	public void setEndDate(Date endDate) {
+		moduleEntity.setEndDate(endDate);
+	}
+
+	@Override
+	public String getCreatedBy() {
+		return moduleEntity.getCreatedBy();
+	}
+
+	@Override
+	public void setCreatedBy(String createdBy) {
+		moduleEntity.setCreatedBy(createdBy);
+	}
+
+	@Override
+	public Date getCreatedDate() {
+		return moduleEntity.getCreatedDate();
+	}
+
+	@Override
+	public void setCreatedDate(Date createdDate) {
+		moduleEntity.setCreatedDate(createdDate);
+	}
+
+	@Override
+	public String getUpdatedBy() {
+		return moduleEntity.getUpdatedBy();
+	}
+
+	@Override
+	public void setUpdatedBy(String updatedBy) {
+		moduleEntity.setUpdatedBy(updatedBy);
+	}
+
+	@Override
+	public Date getUpdatedDate() {
+		return moduleEntity.getUpdatedDate();
+	}
+
+	@Override
+	public void setUpdatedDate(Date updatedDate) {
+		moduleEntity.setUpdatedDate(updatedDate);
+	}
+
 	public ModuleEntity getModuleEntity() {
 		return moduleEntity;
 	}
@@ -82,19 +150,14 @@ public class ModuleAdapter implements ModuleModel {
 	}
 	
 	@Override
-	public RoleModel addRole(String userId, String rolename) {
+	public RoleModel addRole(String createdBy, String rolename) {
 		RoleModel role = applicationAdapter.getRole(rolename);
-        
-        Set<RoleModel> roles = getRoles(userId);
-        for (RoleModel rm : roles) {
-            if (rm.getId().equals(role.getId())) {
-                return role;
-            }
-        }
         
         ModuleRoleMappingEntity moduleRoleMappingEntity = new ModuleRoleMappingEntity();
         moduleRoleMappingEntity.setModule(moduleEntity);
         moduleRoleMappingEntity.setRoleId(role.getId());
+        moduleRoleMappingEntity.setCreatedBy(createdBy);
+        moduleRoleMappingEntity.setCreatedDate(new Date());
         em.persist(moduleRoleMappingEntity);
         em.flush();
         
@@ -117,11 +180,6 @@ public class ModuleAdapter implements ModuleModel {
 	
 	@Override
 	public void updateModule() {
-		if (moduleEntity != null) {
-			log.info(""+moduleEntity.toString());
-		} else {
-			log.info("module is null");
-		}
 		em.flush();
 	}
 
@@ -232,7 +290,6 @@ public class ModuleAdapter implements ModuleModel {
 	}
 	
 	protected RoleModel _addRole(String rolename) {
-		log.info("rolename="+rolename);
 		RoleModel role = applicationAdapter.getRole(rolename);
 		if (role == null) {
 			throw new IllegalStateException("Role cannot found");
@@ -241,6 +298,7 @@ public class ModuleAdapter implements ModuleModel {
 		ModuleRoleMappingEntity moduleRoleMappingEntity = new ModuleRoleMappingEntity();
         moduleRoleMappingEntity.setModule(moduleEntity);
         moduleRoleMappingEntity.setRoleId(role.getId());
+        moduleRoleMappingEntity.setCreatedDate(new Date());
         em.persist(moduleRoleMappingEntity);
         em.flush();
         

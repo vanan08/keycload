@@ -739,5 +739,5 @@ public class UsersResource {
             return Flows.errors().error("Failed to send email", Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
-
+    
 }

@@ -19,9 +19,17 @@ import java.net.URI;
  */
 public class SAML2LogoutRequestBuilder extends SAML2BindingBuilder<SAML2LogoutRequestBuilder> {
     protected String userPrincipal;
+    protected String userPrincipalFormat;
+    protected String sessionIndex;
 
     public SAML2LogoutRequestBuilder userPrincipal(String userPrincipal) {
         this.userPrincipal = userPrincipal;
+        return this;
+    }
+    
+    public SAML2LogoutRequestBuilder userPrincipal(String nameID, String nameIDformat) {
+        this.userPrincipal = nameID;
+        this.userPrincipalFormat = nameIDformat;
         return this;
     }
 
@@ -57,5 +65,26 @@ public class SAML2LogoutRequestBuilder extends SAML2BindingBuilder<SAML2LogoutRe
         lort.setNotOnOrAfter(XMLTimeUtil.add(lort.getIssueInstant(), assertionValidity));
         lort.setDestination(URI.create(destination));
         return lort;
+    	
+    	 /*LogoutRequestType lort = new SAML2Request().createLogoutRequest(responseIssuer);
+
+         NameIDType nameID = new NameIDType();
+         nameID.setValue(userPrincipal);
+         //Deal with NameID Format
+         String nameIDFormat = userPrincipalFormat;
+         System.out.println("nameIDFormat="+nameIDFormat);
+         nameID.setFormat(URI.create(nameIDFormat));
+         lort.setNameID(nameID);
+
+         if (responseIssuer != null) {
+             NameIDType issuerID = new NameIDType();
+             issuerID.setValue(responseIssuer);
+             lort.setIssuer(issuerID);
+         }
+         if (sessionIndex != null) lort.addSessionIndex(sessionIndex);
+
+
+         lort.setDestination(URI.create(destination));
+         return lort;*/
     }
 }

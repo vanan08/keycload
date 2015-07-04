@@ -1,5 +1,6 @@
 package org.keycloak.models.cache;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -60,7 +61,7 @@ public class CacheModuleAdapter implements ModuleModel {
 	public void setUrl(String url) {
 		if (updated != null) updated.setUrl(url);
 	}
-
+	
 //	@Override
 //	public boolean hasScope(RoleModel role) {
 //		if (updated != null) return updated.hasScope(role);
@@ -76,6 +77,83 @@ public class CacheModuleAdapter implements ModuleModel {
 //	public void setRoles(String[] roles) {
 //		if (updated != null) updated.setRoles(roles);
 //	}
+
+	@Override
+	public String getActive() {
+		if (updated != null) return updated.getActive();
+		return cached.getActive();
+	}
+
+	@Override
+	public void setActive(String active) {
+		if (updated != null) updated.setActive(active);
+	}
+
+	@Override
+	public Date getStartDate() {
+		if (updated != null) return updated.getStartDate();
+		return cached.getStartDate();
+	}
+
+	@Override
+	public void setStartDate(Date startDate) {
+		if (updated != null) updated.setStartDate(startDate);
+	}
+
+	@Override
+	public Date getEndDate() {
+		if (updated != null) return updated.getEndDate();
+		return cached.getEndDate();
+	}
+
+	@Override
+	public void setEndDate(Date endDate) {
+		if (updated != null) updated.setEndDate(endDate);
+	}
+
+	@Override
+	public String getCreatedBy() {
+		if (updated != null) return updated.getCreatedBy();
+		return cached.getCreatedBy();
+	}
+
+	@Override
+	public void setCreatedBy(String createdBy) {
+		if (updated != null) updated.setCreatedBy(createdBy);
+	}
+
+	@Override
+	public Date getCreatedDate() {
+		if (updated != null) return updated.getCreatedDate();
+		return cached.getCreatedDate();
+	}
+
+	@Override
+	public void setCreatedDate(Date createdDate) {
+		if (updated != null) updated.setCreatedDate(createdDate);
+	}
+
+	@Override
+	public String getUpdatedBy() {
+		if (updated != null) return updated.getUpdatedBy();
+		return cached.getUpdatedBy();
+	}
+
+	@Override
+	public void setUpdatedBy(String updatedBy) {
+		if (updated != null) updated.setUpdatedBy(updatedBy);
+	}
+
+	@Override
+	public Date getUpdatedDate() {
+		if (updated != null) return updated.getUpdatedDate();
+		return cached.getUpdatedDate();
+	}
+
+	@Override
+	public void setUpdatedDate(Date updatedDate) {
+		if (updated != null) updated.setUpdatedDate(updatedDate);
+	}
 
 	@Override
 	public List<String> getListRoles(String userId) {
@@ -109,8 +187,8 @@ public class CacheModuleAdapter implements ModuleModel {
 	}
 
 	@Override
-	public RoleModel addRole(String userId, String rolename) {
-		return updated.addRole(userId, rolename);
+	public RoleModel addRole(String createdBy, String rolename) {
+		return updated.addRole(createdBy, rolename);
 	}
 
 	@Override

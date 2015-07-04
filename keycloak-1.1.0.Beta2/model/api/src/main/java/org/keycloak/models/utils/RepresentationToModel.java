@@ -34,7 +34,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -117,9 +117,9 @@ public class RepresentationToModel {
 
         if (rep.getPasswordPolicy() != null) newRealm.setPasswordPolicy(new PasswordPolicy(rep.getPasswordPolicy()));
 
-        if (rep.getApplications() != null) {
+        /*if (rep.getApplications() != null) {
             Map<String, ApplicationModel> appMap = createApplications(rep, newRealm);
-        }
+        }*/
 
         if (rep.getRoles() != null) {
             if (rep.getRoles().getRealm() != null) { // realm roles
@@ -581,14 +581,20 @@ public class RepresentationToModel {
     	} else {
     		module = appModel.addModule(moduleRep.getName(), moduleRep.getUrl());
     	}
-    	module.setUrl(moduleRep.getUrl());
     	module.setDescription(moduleRep.getDescription());
+    	module.setCreatedBy(moduleRep.getCreateBy());
+    	module.setActive(moduleRep.getActive());
+    	module.setEndDate(new Date(moduleRep.getEndDate()));
+    	module.setStartDate(new Date(moduleRep.getStartedDate()));
     	
+    	// create new module
     	module.updateModule();
     	
     	// mapping roles to module
     	if (moduleRep.getRoles() != null && moduleRep.getRoles().length > 0) {
-			module.setRoles(new ArrayList<String>(Arrays.asList(moduleRep.getRoles())));
+    		for (String rolename : moduleRep.getRoles()) {
+    			module.addRole(moduleRep.getCreateBy(), rolename);
+    		}
     	}
     	
     	return module;
@@ -599,16 +605,22 @@ public class RepresentationToModel {
     	if (moduleRep.getName() != null) resource.setName(moduleRep.getName());
     	if (moduleRep.getDescription() != null) resource.setDescription(moduleRep.getDescription());
     	if (moduleRep.getUrl() != null) resource.setUrl(moduleRep.getUrl());
+    	if (moduleRep.getActive() != null) resource.setActive(moduleRep.getActive());
+    	if (moduleRep.getStartedDate() != null) resource.setStartDate(new Date(moduleRep.getStartedDate()));
+    	if (moduleRep.getEndDate() != null) resource.setEndDate(new Date(moduleRep.getEndDate()));
     	
+    	resource.setUpdatedBy(moduleRep.getCreateBy());
+    	resource.setUpdatedDate(new Date());
+    	// update module
     	resource.updateModule();
     	
     	// mapping roles to module
-    	setRoleModule(applicationModel, moduleRep, resource);
+    	setRoleModule(applicationModel, moduleRep, resource, moduleRep.getCreateBy());
     	
     	return resource;
     }
     
-    public static void setRoleModule(ApplicationModel applicationModel, ModuleRepresentation moduleRep, ModuleModel resource) {
+    public static void setRoleModule(ApplicationModel applicationModel, ModuleRepresentation moduleRep, ModuleModel resource, String createBy) {
     	// mapping roles to module
     	if (moduleRep.getRoles() != null && moduleRep.getRoles().length > 0) {
     		List<RoleModel> temp = new ArrayList<RoleModel>();
@@ -631,7 +643,10 @@ public class RepresentationToModel {
     			}
     		}
     		
-    		resource.setRoles(roles);
+    		for (String rolename : roles) {
+    			resource.addRole(createBy, rolename);
+    		}
+    		
     	}
     }
     

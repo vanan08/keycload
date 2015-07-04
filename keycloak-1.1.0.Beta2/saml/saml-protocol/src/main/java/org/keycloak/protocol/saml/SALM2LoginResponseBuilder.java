@@ -152,6 +152,8 @@ public class SALM2LoginResponseBuilder extends SAML2BindingBuilder<SALM2LoginRes
                     authContextRef);
 
             authnStatement.setSessionIndex(assertion.getID());
+            
+            logger.info("IdP - sessionIndex = "+assertion.getID());
 
             assertion.addStatement(authnStatement);
         }
