@@ -31,7 +31,7 @@ import java.net.URI;
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 public class UrlBean {
-
+	private final String FORGOT_PASSWORD = "forgot password";
     private URI baseURI;
 
     private Theme theme;
@@ -91,6 +91,11 @@ public class UrlBean {
     public String getResourcesPath() {
         URI uri = Urls.themeRoot(baseURI);
         return uri.getPath() + "/" + theme.getType().toString().toLowerCase() +"/" + theme.getName();
+    }
+    
+    public String getForgotPasswordLink(){
+    	//https://localhost:8443/auth/modules/{name}
+    	return "/auth/modules/"+FORGOT_PASSWORD;
     }
 
 }

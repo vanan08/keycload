@@ -26,7 +26,8 @@
 		function forgetPasswordLink(){
 			$.get('${url.forgotPasswordLink}', function(data, status){
 				if(status == 'success'){
-		        	window.location.href = 'http://google.com';
+					console.log(data);
+		        	window.location.href = data;
 		        }else{
 		        	alert(status);
 		        }
