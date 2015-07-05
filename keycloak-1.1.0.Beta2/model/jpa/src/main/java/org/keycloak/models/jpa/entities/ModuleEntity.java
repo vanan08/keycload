@@ -8,12 +8,17 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+@NamedQueries({
+    @NamedQuery(name="selectModuleByName", query="select m from ModuleEntity m where m.name = :name")
+})
 @Entity
 @Table(name = "CUSTOM_PSE_FUNCTIONS", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "NAME",  "APPLICATION_ID" })})
+        @UniqueConstraint(columnNames = { "NAME" })})
 public class ModuleEntity {
 
 	@Id
@@ -34,7 +39,7 @@ public class ModuleEntity {
 	private String url;
 	
 	@Column(name = "ACTIVE")
-	private String active;
+	private boolean active;
 	
 	@Column(name = "START_DATE")
 	private Date startDate;
@@ -106,11 +111,11 @@ public class ModuleEntity {
 //		this.roles = roles;
 //	}
 	
-	public String getActive() {
+	public boolean isActive() {
 		return active;
 	}
 
-	public void setActive(String active) {
+	public void setActive(boolean active) {
 		this.active = active;
 	}
 

@@ -413,10 +413,6 @@ public class SamlService {
         }
 
         public Response execute(String samlRequest, String samlResponse, String relayState) {
-        	logger.info("=======================REDIRECT - execute=====================");
-        	logger.info("samlRequest = "+samlRequest);
-        	logger.info("samlResponse = "+samlResponse);
-        	logger.info("====================================================");
             Response response = basicChecks(samlRequest, samlResponse);
             if (response != null) return response;
             if (samlRequest != null) return handleSamlRequest(samlRequest, relayState);

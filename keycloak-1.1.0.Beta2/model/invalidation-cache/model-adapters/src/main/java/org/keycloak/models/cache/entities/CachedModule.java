@@ -10,7 +10,7 @@ public class CachedModule {
     final protected String url;
     final protected String description;
     final protected List<String> roles;
-    final protected String active;
+    final protected boolean active;
     final protected Date startDate;
     final protected Date endDate;
     final protected String createdBy;
@@ -19,7 +19,7 @@ public class CachedModule {
 	final protected Date updatedDate;
 
     public CachedModule(String id, String name, String url, String description, List<String> roles,
-    		String active, Date startDate, Date endDate, String createdBy, Date createdDate, String updatedBy, Date updatedDate) {
+    		boolean active, Date startDate, Date endDate, String createdBy, Date createdDate, String updatedBy, Date updatedDate) {
 		this.id = id;
 		this.name = name;
 		this.url = url;
@@ -54,7 +54,7 @@ public class CachedModule {
 		return roles;
 	}
 
-	public String getActive() {
+	public boolean getActive() {
 		return active;
 	}
 

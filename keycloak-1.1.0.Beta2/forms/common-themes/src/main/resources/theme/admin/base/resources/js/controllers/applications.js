@@ -473,18 +473,21 @@ module.controller('ModuleDetailCtrl', function($scope, Loader, realm, applicatio
 	 console.log("ModuleDetailCtrl");
 	$scope.realm = realm;
 	$scope.application = application;
-	$scope.create = false;
+	$scope.create = !module.name;
 	$scope.applicationModuleRoles=[];
 	$scope.availableModuleRoleMappings = [];
 	$scope.applicationComposite=[];
 	$scope.module = angular.copy(module);
 	
-	$scope.create = !module.name;
 	$scope.changed = $scope.create;
 	
 	$scope.$watch('availableModuleRoleMappings', function() {
 		console.log("availableModuleRoleMappings: "+JSON.stringify($scope.availableModuleRoleMappings));
 	});
+	
+	$scope.switchChange = function() {
+        $scope.changed = true;
+    }
 	
     
 	$scope.$watch('applicationModuleRoles', function() {
@@ -497,7 +500,8 @@ module.controller('ModuleDetailCtrl', function($scope, Loader, realm, applicatio
 	
 	if (!$scope.create) {
 		//TODO: Get all roles tag for module
-		$scope.module.startdate = "1/1/2015";
+		//$scope.module.startdate = "1/1/2015";
+		$scope.module = angular.copy(module);
 		$scope.availableModuleRoleMappings = AvailableModuleRoleMapping.query({ realm : realm.realm, application: $scope.application.id, module: $scope.module.name });
 		$scope.applicationModuleRoles = ModuleRoleMapping.query({ realm : realm.realm, application: $scope.application.id, module: $scope.module.name });
 		$scope.applicationComposite = $scope.applicationModuleRoles;
@@ -619,7 +623,7 @@ module.controller('ModuleDetailCtrl', function($scope, Loader, realm, applicatio
 			application : application.id,
 			module: $scope.module.name
         }, $scope.module, function () {
-        	$scope.changed = false;
+        	$scope.changed = true;
         	
         	$scope.availableModuleRoleMappings = AvailableModuleRoleMapping.query({ realm : realm.realm, application: $scope.application.id, module: $scope.module.name });
 			$scope.applicationModuleRoles = ModuleRoleMapping.query({ realm : realm.realm, application: $scope.application.id, module: $scope.module.name });

@@ -303,6 +303,16 @@ public class ModelToRepresentation {
     	req.setName(model.getName());
     	req.setUrl(model.getUrl());
     	req.setDescription(model.getDescription());
+		req.setActive(model.getActive());
+    	
+    	if (model.getEndDate() != null) {
+    		req.setEnddate(RepresentationToModel.convertDateToString(model.getEndDate(), "yyyy-MM-dd"));
+    	}
+    	
+    	if (model.getStartDate() != null) {
+    		req.setStartdate(RepresentationToModel.convertDateToString(model.getStartDate(), "yyyy-MM-dd"));
+    	}
+    	
     	return req;
     }
     

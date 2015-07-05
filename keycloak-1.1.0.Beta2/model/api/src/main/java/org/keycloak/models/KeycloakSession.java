@@ -42,7 +42,11 @@ public interface KeycloakSession {
      */
     UserSessionProvider sessions();
 
-
+    /**
+     * 
+     * @return
+     */
+    ModuleProvider modules();
 
     void close();
 

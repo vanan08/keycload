@@ -9,24 +9,22 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.ModuleModel;
-import org.keycloak.models.RealmModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.jpa.entities.ModuleEntity;
 import org.keycloak.models.jpa.entities.ModuleRoleMappingEntity;
 
 public class ModuleAdapter implements ModuleModel {
 
-	protected RealmModel realm;
 	protected EntityManager em;
 	protected ModuleEntity moduleEntity;
-	protected ApplicationAdapter applicationAdapter;
+	protected ApplicationModel applicationModel;
 	
-	public ModuleAdapter(RealmModel realm, EntityManager em, ModuleEntity moduleEntity, ApplicationAdapter applicationAdapter) {
-		this.realm = realm;
+	public ModuleAdapter(EntityManager em, ModuleEntity moduleEntity, ApplicationModel applicationModel) {
 		this.em = em;
 		this.moduleEntity = moduleEntity;
-		this.applicationAdapter = applicationAdapter;
+		this.applicationModel = applicationModel;
 	}
 	
 	@Override
@@ -65,12 +63,12 @@ public class ModuleAdapter implements ModuleModel {
 	}
 	
 	@Override
-	public String getActive() {
-		return moduleEntity.getActive();
+	public boolean getActive() {
+		return moduleEntity.isActive();
 	}
 
 	@Override
-	public void setActive(String active) {
+	public void setActive(boolean active) {
 		moduleEntity.setActive(active);
 	}
 
@@ -151,7 +149,8 @@ public class ModuleAdapter implements ModuleModel {
 	
 	@Override
 	public RoleModel addRole(String createdBy, String rolename) {
-		RoleModel role = applicationAdapter.getRole(rolename);
+		RoleModel role = applicationModel.getRole(rolename);
+		if (role == null) return null;
         
         ModuleRoleMappingEntity moduleRoleMappingEntity = new ModuleRoleMappingEntity();
         moduleRoleMappingEntity.setModule(moduleEntity);
@@ -193,7 +192,7 @@ public class ModuleAdapter implements ModuleModel {
 	    List<ModuleRoleMappingEntity> ls = query.getResultList();
 	    
 	    for (ModuleRoleMappingEntity entity : ls) {
-	    	roles.add(applicationAdapter.getRoleById(entity.getRoleId()));
+	    	roles.add(applicationModel.getRoleById(entity.getRoleId()));
 	    }
 		
 		return roles;
@@ -214,7 +213,7 @@ public class ModuleAdapter implements ModuleModel {
 
 	@Override
 	public RoleModel getRoleByName(String userId, String name) {
-	    RoleModel role = applicationAdapter.getRole(name);
+	    RoleModel role = applicationModel.getRole(name);
 	    if (role == null) return null;
 	    
 	    TypedQuery<ModuleRoleMappingEntity> query = em.createNamedQuery("selectRolesByRoleId", ModuleRoleMappingEntity.class);
@@ -263,7 +262,7 @@ public class ModuleAdapter implements ModuleModel {
 	    List<ModuleRoleMappingEntity> ls = query.getResultList();
 	    
 	    for (ModuleRoleMappingEntity entity : ls) {
-	    	roles.add(applicationAdapter.getRoleById(entity.getRoleId()));
+	    	roles.add(applicationModel.getRoleById(entity.getRoleId()));
 	    }
 		
 		return roles;
@@ -290,7 +289,7 @@ public class ModuleAdapter implements ModuleModel {
 	}
 	
 	protected RoleModel _addRole(String rolename) {
-		RoleModel role = applicationAdapter.getRole(rolename);
+		RoleModel role = applicationModel.getRole(rolename);
 		if (role == null) {
 			throw new IllegalStateException("Role cannot found");
 		}
@@ -322,7 +321,7 @@ public class ModuleAdapter implements ModuleModel {
 	}
 	
 	protected void _removeRole(String rolename) {
-		RoleModel role = applicationAdapter.getRole(rolename);
+		RoleModel role = applicationModel.getRole(rolename);
 		if (role == null) {
             throw new IllegalStateException("role \""+rolename+"\" cannot found");
         }
@@ -332,5 +331,15 @@ public class ModuleAdapter implements ModuleModel {
 			.setParameter("roleId", role.getId())
 			.executeUpdate();
 		em.flush();
+	}
+
+	@Override
+	public String getBaseUrl() {
+		return moduleEntity.getUrl();
+	}
+
+	@Override
+	public String getFullPath() {
+		return moduleEntity.getUrl();
 	}
 }

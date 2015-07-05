@@ -79,13 +79,13 @@ public class CacheModuleAdapter implements ModuleModel {
 //	}
 
 	@Override
-	public String getActive() {
+	public boolean getActive() {
 		if (updated != null) return updated.getActive();
 		return cached.getActive();
 	}
 
 	@Override
-	public void setActive(String active) {
+	public void setActive(boolean active) {
 		if (updated != null) updated.setActive(active);
 	}
 
@@ -234,6 +234,18 @@ public class CacheModuleAdapter implements ModuleModel {
 	@Override
 	public void removeRoles(List<String> roles) {
 		updated.removeRoles(roles);
+	}
+
+	@Override
+	public String getBaseUrl() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getFullPath() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

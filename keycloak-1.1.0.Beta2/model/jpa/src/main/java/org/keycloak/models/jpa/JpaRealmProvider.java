@@ -2,11 +2,14 @@ package org.keycloak.models.jpa;
 
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.OAuthClientModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RealmProvider;
 import org.keycloak.models.RoleModel;
+import org.keycloak.models.jpa.ApplicationModuleAdapter.ApplicationInfo;
 import org.keycloak.models.jpa.entities.ApplicationEntity;
+import org.keycloak.models.jpa.entities.ModuleEntity;
 import org.keycloak.models.jpa.entities.OAuthClientEntity;
 import org.keycloak.models.jpa.entities.RealmEntity;
 import org.keycloak.models.jpa.entities.RoleEntity;
@@ -14,6 +17,7 @@ import org.keycloak.models.utils.KeycloakModelUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -126,5 +130,20 @@ public class JpaRealmProvider implements RealmProvider {
         if (client == null || !realm.getId().equals(client.getRealm().getId())) return null;
         return new OAuthClientAdapter(realm, client, em);
     }
+
+	@Override
+	public ModuleModel getModuleByName(String name) {
+		TypedQuery<ModuleEntity> query = em.createNamedQuery("selectModuleByName", ModuleEntity.class);
+        query.setParameter("name", name);
+        
+        List<ModuleEntity> modules = query.getResultList();
+        
+        if (modules == null || modules.size() == 0) 
+        	return null;
+        
+        ApplicationInfo app = new ApplicationInfo(modules.get(0).getApplication());
+        
+		return new ApplicationModuleAdapter(modules.get(0), app);
+	}
 
 }

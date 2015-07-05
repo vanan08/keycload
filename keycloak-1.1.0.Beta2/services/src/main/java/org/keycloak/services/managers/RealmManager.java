@@ -10,6 +10,7 @@ import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.BrowserSecurityHeaders;
 import org.keycloak.models.Constants;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RealmProvider;
 import org.keycloak.models.RoleModel;
@@ -18,7 +19,6 @@ import org.keycloak.models.UserModel;
 import org.keycloak.models.UserSessionProvider;
 import org.keycloak.models.utils.KeycloakModelUtils;
 import org.keycloak.models.utils.RepresentationToModel;
-import org.keycloak.protocol.oidc.OpenIDConnect;
 import org.keycloak.representations.idm.ApplicationRepresentation;
 import org.keycloak.representations.idm.RealmEventsConfigRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
@@ -90,6 +90,10 @@ public class RealmManager {
         return realm;
     }
 
+    public ModuleModel getModuleByName(String name) {
+    	return model.getModuleByName(name);
+    }
+    
     protected void setupAdminConsole(RealmModel realm) {
         ApplicationModel adminConsole = realm.getApplicationByName(Constants.ADMIN_CONSOLE_APPLICATION);
         if (adminConsole == null) adminConsole = new ApplicationManager(this).createApplication(realm, Constants.ADMIN_CONSOLE_APPLICATION);

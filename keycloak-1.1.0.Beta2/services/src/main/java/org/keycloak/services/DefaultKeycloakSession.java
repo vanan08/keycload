@@ -3,10 +3,12 @@ package org.keycloak.services;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.models.KeycloakTransactionManager;
+import org.keycloak.models.ModuleProvider;
 import org.keycloak.models.RealmProvider;
 import org.keycloak.models.UserFederationManager;
 import org.keycloak.models.UserProvider;
 import org.keycloak.models.UserSessionProvider;
+import org.keycloak.models.cache.CacheModuleProvider;
 import org.keycloak.models.cache.CacheRealmProvider;
 import org.keycloak.models.cache.CacheUserProvider;
 import org.keycloak.provider.Provider;
@@ -31,6 +33,7 @@ public class DefaultKeycloakSession implements KeycloakSession {
     private RealmProvider model;
     private UserProvider userModel;
     private UserSessionProvider sessionProvider;
+    private ModuleProvider moduleProvider;
     private UserFederationManager federationManager;
 
     public DefaultKeycloakSession(DefaultKeycloakSessionFactory factory) {
@@ -52,6 +55,14 @@ public class DefaultKeycloakSession implements KeycloakSession {
             return getProvider(CacheUserProvider.class);
         } else {
             return getProvider(UserProvider.class);
+        }
+    }
+    
+    private ModuleProvider getModuleProvider() {
+        if (factory.getDefaultProvider(CacheModuleProvider.class) != null) {
+            return getProvider(CacheModuleProvider.class);
+        } else {
+            return getProvider(ModuleProvider.class);
         }
     }
 
@@ -137,6 +148,14 @@ public class DefaultKeycloakSession implements KeycloakSession {
             sessionProvider = getProvider(UserSessionProvider.class);
         }
         return sessionProvider;
+    }
+    
+    @Override
+    public ModuleProvider modules() {
+    	if (moduleProvider == null) {
+            moduleProvider = getModuleProvider();
+        }
+        return moduleProvider;
     }
 
     public void close() {

@@ -19,8 +19,8 @@ public interface ModuleModel {
 	String getUrl();
 	void setUrl(String url);
 	
-	String getActive();
-	void setActive(String active);
+	boolean getActive();
+	void setActive(boolean active);
 
 	Date getStartDate();
 	void setStartDate(Date startDate);
@@ -56,5 +56,8 @@ public interface ModuleModel {
     void removeRoles(List<String> roles);
     
     boolean container(String userId, RoleModel role);
+    
+    String getBaseUrl();
+    public String getFullPath();
     
 }

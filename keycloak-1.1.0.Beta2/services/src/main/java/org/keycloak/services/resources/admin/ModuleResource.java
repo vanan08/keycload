@@ -63,7 +63,7 @@ public class ModuleResource {
         //auth.requireManage();
 		
         try {
-            RepresentationToModel.updateModule(realm, application, rep, module);
+            RepresentationToModel.updateModule(application, rep, module);
             return Response.noContent().build();
         } catch (ModelDuplicateException e) {
             return Flows.errors().exists("Module " + rep.getName() + " already exists");

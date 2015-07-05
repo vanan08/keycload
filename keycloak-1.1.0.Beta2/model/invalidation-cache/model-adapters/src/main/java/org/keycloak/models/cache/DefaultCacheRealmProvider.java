@@ -3,6 +3,7 @@ package org.keycloak.models.cache;
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakTransaction;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.OAuthClientModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RealmProvider;
@@ -316,5 +317,10 @@ public class DefaultCacheRealmProvider implements CacheRealmProvider {
         managedClients.put(id, adapter);
         return adapter;
     }
+
+	@Override
+	public ModuleModel getModuleByName(String name) {
+		return getDelegate().getModuleByName(name);
+	}
 
 }

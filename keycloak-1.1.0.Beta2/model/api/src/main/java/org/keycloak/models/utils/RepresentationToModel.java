@@ -33,11 +33,15 @@ import org.keycloak.representations.idm.UserRepresentation;
 
 import java.io.IOException;
 import java.net.URI;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -582,10 +586,11 @@ public class RepresentationToModel {
     		module = appModel.addModule(moduleRep.getName(), moduleRep.getUrl());
     	}
     	module.setDescription(moduleRep.getDescription());
-    	module.setCreatedBy(moduleRep.getCreateBy());
+    	module.setCreatedBy("");
     	module.setActive(moduleRep.getActive());
-    	module.setEndDate(new Date(moduleRep.getEndDate()));
-    	module.setStartDate(new Date(moduleRep.getStartedDate()));
+    	module.setEndDate(convertStringToDate(moduleRep.getEnddate(), "yyyy-MM-dd"));
+    	module.setStartDate(convertStringToDate(moduleRep.getStartdate(), "yyyy-MM-dd"));
+    	module.setCreatedDate(new Date());
     	
     	// create new module
     	module.updateModule();
@@ -593,7 +598,7 @@ public class RepresentationToModel {
     	// mapping roles to module
     	if (moduleRep.getRoles() != null && moduleRep.getRoles().length > 0) {
     		for (String rolename : moduleRep.getRoles()) {
-    			module.addRole(moduleRep.getCreateBy(), rolename);
+    			module.addRole("", rolename);
     		}
     	}
     	
@@ -601,21 +606,21 @@ public class RepresentationToModel {
     }
     
     
-    public static ModuleModel updateModule(RealmModel realm, ApplicationModel applicationModel, ModuleRepresentation moduleRep, ModuleModel resource) {
+    public static ModuleModel updateModule(ApplicationModel applicationModel, ModuleRepresentation moduleRep, ModuleModel resource) {
     	if (moduleRep.getName() != null) resource.setName(moduleRep.getName());
     	if (moduleRep.getDescription() != null) resource.setDescription(moduleRep.getDescription());
     	if (moduleRep.getUrl() != null) resource.setUrl(moduleRep.getUrl());
-    	if (moduleRep.getActive() != null) resource.setActive(moduleRep.getActive());
-    	if (moduleRep.getStartedDate() != null) resource.setStartDate(new Date(moduleRep.getStartedDate()));
-    	if (moduleRep.getEndDate() != null) resource.setEndDate(new Date(moduleRep.getEndDate()));
+    	if (moduleRep.getStartdate() != null) resource.setStartDate(convertStringToDate(moduleRep.getStartdate(), "yyyy-MM-dd"));
+    	if (moduleRep.getEnddate() != null) resource.setEndDate(convertStringToDate(moduleRep.getEnddate(), "yyyy-MM-dd"));
     	
-    	resource.setUpdatedBy(moduleRep.getCreateBy());
+    	resource.setActive(moduleRep.getActive());
+    	resource.setUpdatedBy("");
     	resource.setUpdatedDate(new Date());
     	// update module
     	resource.updateModule();
     	
     	// mapping roles to module
-    	setRoleModule(applicationModel, moduleRep, resource, moduleRep.getCreateBy());
+    	setRoleModule(applicationModel, moduleRep, resource, "");
     	
     	return resource;
     }
@@ -822,5 +827,27 @@ public class RepresentationToModel {
 
         }
     }
+    
+    public static Date convertStringToDate(String strDate, String format) {
+    	Date dt = new Date();
+    	DateFormat df = new SimpleDateFormat(format, Locale.ENGLISH);
+    	try {
+    		dt = df.parse(strDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+    	
+    	return dt;
+    }
+    
+    public static String convertDateToString(Date date, String format) {
+    	DateFormat df = new SimpleDateFormat(format, Locale.ENGLISH);
+    	return df.format(date);
+    }
+    
+    public static void main(String[] args) {
+    	Date dt = convertStringToDate("04-07-2015", "dd-MM-yyyy");
+    	System.out.println(dt);
+	}
 
 }
