@@ -286,6 +286,10 @@ public class FreeMarkerLoginFormsProvider implements LoginFormsProvider {
 
         attributes.put("login", new LoginBean(formData));
 
+        if(formData != null){
+        	attributes.put("errorMessage", formData.getFirst("errorMessage"));
+        }
+        
         switch (page) {
             case LOGIN_CONFIG_TOTP:
                 attributes.put("totp", new TotpBean(realm, user, baseUri));
