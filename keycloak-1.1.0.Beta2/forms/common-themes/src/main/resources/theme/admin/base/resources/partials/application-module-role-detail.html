@@ -48,7 +48,7 @@
                 <div class="form-group clearfix block">
                     <label class="col-sm-2 control-label" for="enabled">Active</label>
                     <div class="col-sm-6">
-                        <input ng-model="module.active" name="enabled" id="enabled" onoffswitch />
+                        <input ng-change="changed = true" ng-model="module.active" name="enabled" id="enabled" onoffswitch />
                     </div>
                     <span tooltip-placement="right" tooltip="Mandatory field. FunctionÕs status. If an application is down then prudential admin to disable it and this function will not be shown on PSE landing page." class="fa fa-info-circle"></span>
                 </div>
@@ -57,7 +57,7 @@
                     <label class="col-sm-2 control-label" for="description">Start Date </label>
 
                     <div class="col-sm-4">
-                        <input type="date" name="startdate" id="startdate" ng-model="module.startdate"> 
+                        <input ng-change="changed = true" type="date" name="startdate" id="startdate" ng-model="module.startdate"> 
                     </div>
                 </div>
              
@@ -65,7 +65,7 @@
                     <label class="col-sm-2 control-label" for="description">End Date </label>
 
                     <div class="col-sm-4">
-                        <input type="date" name="startdate" id="startdate" ng-model="module.enddate"> 
+                        <input ng-change="changed = true" type="date" name="startdate" id="startdate" ng-model="module.enddate"> 
                     </div>
                 </div>
              

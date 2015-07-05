@@ -22,6 +22,17 @@
    
    	<script type="text/javascript">
 		$('.newsticker').newsTicker();
+		
+		function forgetPasswordLink(){
+			$.get('${url.forgotPasswordLink}', function(data, status){
+				if(status == 'success'){
+					console.log(data);
+		        	window.location.href = data;
+		        }else{
+		        	alert(status);
+		        }
+		    });
+		}
 	</script>
    
     <#if properties.meta?has_content>
@@ -84,7 +95,7 @@
                     <div class="links_sec clearfix">
                     <div class="form-group clearfix">
                     <div class="col-md-6 col-sm-6">
-                    <a class="link_btn" href="#">&raquo; <span>FORGOT PASSWORD ?</span> </a>
+                    <a class="link_btn" href="javascript:forgetPasswordLink();">&raquo; <span>FORGOT PASSWORD ?</span> </a>
                     </div>
                      <div class="col-md-6 col-sm-6"><a class="link_btn" href="#">&raquo; <span>TERMS &amp; CONDITIONS </span></a></div>
                     </div>
