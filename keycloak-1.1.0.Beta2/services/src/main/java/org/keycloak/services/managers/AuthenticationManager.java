@@ -840,7 +840,7 @@ public class AuthenticationManager {
 							UserModel userModel = session.users().getUserByUsername(username);
 							CustomUserModel customUserModel = userModel.getCustomUsers().get(0);
 							acceptedTNC = customUserModel.getAcceptedTNC();
-//							needTNC = customUserModel.getNeedTNC();
+//							needTNC = userModel.isNeedTNC();
 							logger.debug("Check TNC conditions: acceptedTNC="+acceptedTNC);
 							logger.debug("Check TNC conditions: needTNC="+needTNC);
 							
