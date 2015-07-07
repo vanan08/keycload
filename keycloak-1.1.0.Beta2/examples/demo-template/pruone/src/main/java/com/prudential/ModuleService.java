@@ -18,7 +18,7 @@ public class ModuleService {
 	
 	private final static Log log = LogFactory.getLog(ModuleService.class); 
 	
-	public static class Failure extends Exception {
+	/*public static class Failure extends Exception {
         private int status;
 
         public Failure(int status) {
@@ -28,16 +28,17 @@ public class ModuleService {
         public int getStatus() {
             return status;
         }
-    }
+    }*/
 	
-	public static ModuleRepresentation getModuleByApp(String appName) {
+	public static ModuleRepresentation getModuleByApp(String moduleName) {
 		HttpClient client = new HttpClientBuilder().disableTrustManager().build();
-		HttpGet get = new HttpGet("https://localhost:8443/auth/modules/"+appName+"/info");
+		HttpGet get = new HttpGet("https://localhost:8443/auth/modules/"+moduleName+"/info");
 		try {
 			HttpResponse response = client.execute(get);
 			
 			if (response.getStatusLine().getStatusCode() != 200) {
-	            throw new Failure(response.getStatusLine().getStatusCode());
+	            //throw new Failure(response.getStatusLine().getStatusCode());
+				return null;
 	        }
 	        HttpEntity entity = response.getEntity();
 	        InputStream is = entity.getContent();

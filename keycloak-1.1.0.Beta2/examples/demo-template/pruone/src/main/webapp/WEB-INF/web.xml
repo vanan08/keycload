@@ -4,7 +4,9 @@
          xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
 	<!-- <filter>
 		<filter-name>SPFilter</filter-name>
 		<filter-class>com.prudential.SPFilter</filter-class>
@@ -20,6 +22,11 @@
 			<param-name>LOGOUT_PAGE</param-name>
 			<param-value>/logout1.jsp</param-value>
 		</init-param>
+		<init-param>
+			<param-name>PRUONE</param-name>
+			<param-value>?SSO&souce=PSE</param-value>
+		</init-param>
+		
 	</filter>
 	<filter-mapping>
 		<filter-name>SPFilter</filter-name>

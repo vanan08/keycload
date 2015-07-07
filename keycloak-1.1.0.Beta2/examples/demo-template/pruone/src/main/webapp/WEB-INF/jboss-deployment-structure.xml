@@ -4,14 +4,14 @@
         from JBoss EAP modules directory. -->
         <dependencies>
 	    	<module name="org.apache.httpcomponents"/>
-            <module name="org.codehaus.jackson.jackson-core-asl"/>
+            <!-- <module name="org.codehaus.jackson.jackson-core-asl"/>
             <module name="org.codehaus.jackson.jackson-mapper-asl"/>
             <module name="org.codehaus.jackson.jackson-xc"/>
-            <module name="org.infinispan"/>
+            <module name="org.infinispan"/> -->
             <module name="org.jboss.security.xacml" />
 	    	<module name="org.picketlink.federation"/>
             <module name="org.picketlink.common"/>
-            <module name="org.picketlink.config"/>
+            <module name="org.picketlink.config"/> 
         </dependencies>
     </deployment>
 </jboss-deployment-structure>
