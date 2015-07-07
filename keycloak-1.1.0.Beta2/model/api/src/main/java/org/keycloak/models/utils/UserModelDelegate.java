@@ -217,4 +217,74 @@ public class UserModelDelegate implements UserModel {
 	public void updateCustomUser(CustomUserModel customUserModel) {
 		delegate.updateCustomUser(customUserModel);
 	}
+	
+	@Override
+	public String getCustomUserTypeId() {
+		return delegate.getCustomUserTypeId();
+	}
+
+	@Override
+	public void setCustomUserTypeId(String customUserTypeId) {
+		delegate.setCustomUserTypeId(customUserTypeId);	
+	}
+
+	@Override
+	public String getCustomUserSubTypeId() {
+		return delegate.getCustomUserSubTypeId();
+	}
+
+	@Override
+	public void setCustomUserSubTypeId(String customUserSubTypeId) {
+		delegate.setCustomUserSubTypeId(customUserSubTypeId);
+	}
+
+	@Override
+	public boolean isNeed2FA() {
+		return delegate.isNeed2FA();
+	}
+
+	@Override
+	public void setNeed2FA(boolean need2fa) {
+		delegate.setNeed2FA(need2fa);
+	}
+
+	@Override
+	public boolean isNeedTNC() {
+		return delegate.isNeedTNC();
+	}
+
+	@Override
+	public void setNeedTNC(boolean needTNC) {
+		delegate.setNeedTNC(needTNC);		
+	}
+
+	@Override
+	public String getAccountStatus() {
+		return delegate.getAccountStatus();
+	}
+
+	@Override
+	public void setAccountStatus(String accountStatus) {
+		delegate.setAccountStatus(accountStatus);
+	}
+
+	@Override
+	public String getAgentCode() {
+		return delegate.getAgentCode();
+	}
+
+	@Override
+	public void setAgentCode(String agentCode) {
+		delegate.setAgentCode(agentCode);
+	}
+
+	@Override
+	public String getAgency() {
+		return delegate.getAgency();
+	}
+
+	@Override
+	public void setAgency(String agency) {
+		delegate.setAgency(agency);
+	}
 }

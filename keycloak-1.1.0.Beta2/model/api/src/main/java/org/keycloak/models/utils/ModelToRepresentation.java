@@ -54,6 +54,14 @@ public class ModelToRepresentation {
         rep.setTotp(user.isTotp());
         rep.setFederationLink(user.getFederationLink());
 
+    	rep.setCustomUserTypeId(user.getCustomUserTypeId());
+    	rep.setCustomUserSubTypeId(user.getCustomUserSubTypeId());
+    	rep.setNeed2FA(user.isNeed2FA());
+    	rep.setNeedTNC(user.isNeedTNC());
+    	rep.setAccountStatus(user.getAccountStatus()) ;
+    	rep.setAgentCode(user.getAgentCode()) ;
+    	rep.setAgency(user.getAgency());    
+    	 
         List<String> reqActions = new ArrayList<String>();
         for (UserModel.RequiredAction ra : user.getRequiredActions()){
             reqActions.add(ra.name());
@@ -304,7 +312,7 @@ public class ModelToRepresentation {
     	req.setUrl(model.getUrl());
     	req.setDescription(model.getDescription());
 		req.setActive(model.isActive());
-		req.setFullpath(model.getFullpath());
+		req.setFullPath(model.getFullPath());
     	
     	if (model.getEndDate() != null) {
     		req.setEnddate(RepresentationToModel.convertDateToString(model.getEndDate(), "yyyy-MM-dd"));
