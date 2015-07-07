@@ -293,4 +293,9 @@ public class DefaultCacheUserProvider implements CacheUserProvider {
         realmInvalidations.add(realm.getId()); // easier to just invalidate whole realm
         getDelegate().preRemove(realm, link);
     }
+
+	@Override
+	public UserModel getUserByUsername(String username) {
+		return getDelegate().getUserByUsername(username);
+	}
 }

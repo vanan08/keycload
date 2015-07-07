@@ -1,7 +1,9 @@
 package org.keycloak.representations.idm;
 
-import java.util.Arrays;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ModuleRepresentation {
 	protected String id;
     protected String name;
@@ -11,6 +13,7 @@ public class ModuleRepresentation {
     protected boolean active;
     protected String startdate;
     protected String enddate;
+    protected String fullPath;
     
     public String getId() {
 		return id;
@@ -26,7 +29,7 @@ public class ModuleRepresentation {
 		}
 		return name;
 	}
-
+	
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -40,6 +43,15 @@ public class ModuleRepresentation {
 	
 	public void setUrl(String url) {
 		this.url = url;
+	}
+	
+	public String getFullPath() {
+		return fullPath;
+	}
+	
+	@JsonProperty("FullPath")
+	public void setFullPath(String fullPath) {
+		this.fullPath = fullPath;
 	}
 
 	public String getDescription() {
@@ -64,18 +76,20 @@ public class ModuleRepresentation {
 		this.roles = roles;
 	}
 	
-	public boolean getActive() {
+	@JsonProperty("IsActive")
+	public boolean isActive() {
 		return active;
 	}
-	
+
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	
+
 	public String getStartdate() {
 		return startdate;
 	}
 
+	@JsonProperty("Startdate")
 	public void setStartdate(String startdate) {
 		this.startdate = startdate;
 	}
@@ -84,12 +98,13 @@ public class ModuleRepresentation {
 		return enddate;
 	}
 
+	@JsonProperty("Enddate")
 	public void setEnddate(String enddate) {
 		this.enddate = enddate;
 	}
 	
 	@Override
 	public String toString() {
-		return "{id="+id+",name="+name+",url="+url+",description="+description+",role="+Arrays.toString(roles)+"}";
+		return "{id="+id+",name="+name+",url="+url+",description="+description+"}";
 	}
 }

@@ -16,10 +16,11 @@ public interface UserProvider extends Provider {
     UserModel addUser(RealmModel realm, String id, String username, boolean addDefaultRoles);
     UserModel addUser(RealmModel realm, String username);
     boolean removeUser(RealmModel realm, UserModel user);
-
+    
     public void addSocialLink(RealmModel realm, UserModel user, SocialLinkModel socialLink);
     public boolean removeSocialLink(RealmModel realm, UserModel user, String socialProvider);
 
+    UserModel getUserByUsername(String username);
     UserModel getUserById(String id, RealmModel realm);
     UserModel getUserByUsername(String username, RealmModel realm);
     UserModel getUserByEmail(String email, RealmModel realm);

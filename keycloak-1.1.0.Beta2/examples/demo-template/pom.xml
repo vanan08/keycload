@@ -40,5 +40,6 @@
     <module>employee</module>
     <module>employee-multi-protected</module>
     <module>root</module>
+    <module>pruone</module>
   </modules>
 </project>

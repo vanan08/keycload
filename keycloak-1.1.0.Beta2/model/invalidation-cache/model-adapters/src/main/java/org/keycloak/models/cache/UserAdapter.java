@@ -1,6 +1,7 @@
 package org.keycloak.models.cache;
 
 import org.keycloak.models.ApplicationModel;
+import org.keycloak.models.CustomUserModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
@@ -299,6 +300,24 @@ public class UserAdapter implements UserModel {
 	public void setMobile(String mobile) {
 		getDelegateForUpdate();
 		updated.setMobile(mobile);
+	}
+
+	@Override
+	public List<CustomUserModel> getCustomUsers() {
+		getDelegateForUpdate();
+		return updated.getCustomUsers();
+	}
+
+	@Override
+	public void addCustomUser(CustomUserModel customUserModel) {
+		getDelegateForUpdate();
+		updated.addCustomUser(customUserModel);
+	}
+
+	@Override
+	public void updateCustomUser(CustomUserModel customUserModel) {
+		getDelegateForUpdate();
+		updated.updateCustomUser(customUserModel);
 	}
     
 }

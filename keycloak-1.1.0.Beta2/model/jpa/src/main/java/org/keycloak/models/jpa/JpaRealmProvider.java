@@ -145,5 +145,5 @@ public class JpaRealmProvider implements RealmProvider {
         
 		return new ApplicationModuleAdapter(modules.get(0), app);
 	}
-
+	
 }

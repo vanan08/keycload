@@ -537,8 +537,8 @@ module.controller('ModuleDetailCtrl', function($scope, Loader, realm, applicatio
 	            $scope.selectedModuleRoles[0].name).success(function() {
 		            //TODO: Get module roles mapping without user
 	            	$scope.availableModuleRoleMappings = AvailableModuleRoleMapping.query({ realm : realm.realm, application: $scope.application.id, module: $scope.module.name });
-		            $scope.applicationModuleRoles = ModuleRoleMapping.query({ realm : realm.realm, application: $scope.application.id, module: $scope.module.name });;
-		            $scope.applicationComposite= $scope.applicationModuleRoles;
+		            $scope.applicationModuleRoles = ModuleRoleMapping.query({ realm : realm.realm, application: $scope.application.id, module: $scope.module.name });
+		            $scope.applicationComposite= ModuleRoleMapping.query({ realm : realm.realm, application: $scope.application.id, module: $scope.module.name });
 		            $scope.selectedModuleRoles = [];
 		            $scope.selectedModuleMappings = [];
 		            Notifications.success("Role mappings updated.");

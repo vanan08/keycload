@@ -75,7 +75,7 @@ public class ApplicationModuleAdapter implements ModuleModel {
 	}
 
 	@Override
-	public boolean getActive() {
+	public boolean isActive() {
 		return moduleEntity.isActive();
 	}
 

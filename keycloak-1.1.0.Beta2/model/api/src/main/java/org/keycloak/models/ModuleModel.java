@@ -19,7 +19,7 @@ public interface ModuleModel {
 	String getUrl();
 	void setUrl(String url);
 	
-	boolean getActive();
+	boolean isActive();
 	void setActive(boolean active);
 
 	Date getStartDate();
