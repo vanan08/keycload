@@ -10,7 +10,7 @@ import java.util.Map;
  * @author <a href="mailto:mposolda@redhat.com">Marek Posolda</a>
  */
 public class UserEntity extends AbstractIdentifiableEntity {
-
+	//test
     private String username;
     private String firstName;
     private String lastName;
