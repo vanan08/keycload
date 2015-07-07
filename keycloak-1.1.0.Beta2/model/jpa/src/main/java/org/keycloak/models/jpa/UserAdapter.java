@@ -1,6 +1,7 @@
 package org.keycloak.models.jpa;
 
 import org.keycloak.models.ApplicationModel;
+import org.keycloak.models.CustomUserModel;
 import org.keycloak.models.ModuleModel;
 import org.keycloak.models.PasswordPolicy;
 import org.keycloak.models.RealmModel;
@@ -10,6 +11,7 @@ import org.keycloak.models.UserCredentialModel;
 import org.keycloak.models.UserCredentialValueModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.jpa.entities.CredentialEntity;
+import org.keycloak.models.jpa.entities.CustomUserEntity;
 import org.keycloak.models.jpa.entities.UserAttributeEntity;
 import org.keycloak.models.jpa.entities.UserEntity;
 import org.keycloak.models.jpa.entities.UserRequiredActionEntity;
@@ -21,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -426,5 +429,27 @@ public class UserAdapter implements UserModel {
     public int hashCode() {
         return getId().hashCode();
     }
+
+	@Override
+	public List<CustomUserModel> getCustomUsers() {
+		List<CustomUserModel> customUsers = new ArrayList<CustomUserModel>();
+		Collection<CustomUserEntity> entities = user.getCustomUsers();
+		for (CustomUserEntity entity : entities) {
+			CustomUserModel customUserModel = new CustomUserAdapter(entity);
+			customUsers.add(customUserModel);
+		}
+		return customUsers;
+	}
+
+	@Override
+	public void addCustomUser(CustomUserModel customUserModel) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void updateCustomUser(CustomUserModel customUserModel) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

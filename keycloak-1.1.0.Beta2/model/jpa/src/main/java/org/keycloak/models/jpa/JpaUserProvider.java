@@ -16,6 +16,7 @@ import org.keycloak.models.utils.KeycloakModelUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -364,4 +365,14 @@ public class JpaUserProvider implements UserProvider {
     public boolean validCredentials(RealmModel realm, UserModel user, UserCredentialModel... input) {
         return CredentialValidation.validCredentials(realm, user, input);
     }
+
+	@Override
+	public UserModel getUserByUsername(String username) {
+		TypedQuery<UserEntity> query = em.createNamedQuery("getUserByUsername", UserEntity.class);
+        query.setParameter("username", username);
+        List<UserEntity> results = query.getResultList();
+        if (results.size() == 0) return null;
+        return new PublicUserAdapter(em, results.get(0));
+	}
+
 }

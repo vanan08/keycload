@@ -79,8 +79,8 @@ public class CacheModuleAdapter implements ModuleModel {
 //	}
 
 	@Override
-	public boolean getActive() {
-		if (updated != null) return updated.getActive();
+	public boolean isActive() {
+		if (updated != null) return updated.isActive();
 		return cached.getActive();
 	}
 

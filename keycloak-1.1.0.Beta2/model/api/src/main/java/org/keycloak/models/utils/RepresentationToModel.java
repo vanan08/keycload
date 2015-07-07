@@ -586,8 +586,8 @@ public class RepresentationToModel {
     		module = appModel.addModule(moduleRep.getName(), moduleRep.getUrl());
     	}
     	module.setDescription(moduleRep.getDescription());
-    	module.setCreatedBy("");
-    	module.setActive(moduleRep.getActive());
+    	module.setCreatedBy("admin");
+    	module.setActive(moduleRep.isActive());
     	module.setEndDate(convertStringToDate(moduleRep.getEnddate(), "yyyy-MM-dd"));
     	module.setStartDate(convertStringToDate(moduleRep.getStartdate(), "yyyy-MM-dd"));
     	module.setCreatedDate(new Date());
@@ -598,7 +598,7 @@ public class RepresentationToModel {
     	// mapping roles to module
     	if (moduleRep.getRoles() != null && moduleRep.getRoles().length > 0) {
     		for (String rolename : moduleRep.getRoles()) {
-    			module.addRole("", rolename);
+    			module.addRole("admin", rolename);
     		}
     	}
     	
@@ -613,14 +613,14 @@ public class RepresentationToModel {
     	if (moduleRep.getStartdate() != null) resource.setStartDate(convertStringToDate(moduleRep.getStartdate(), "yyyy-MM-dd"));
     	if (moduleRep.getEnddate() != null) resource.setEndDate(convertStringToDate(moduleRep.getEnddate(), "yyyy-MM-dd"));
     	
-    	resource.setActive(moduleRep.getActive());
-    	resource.setUpdatedBy("");
+    	resource.setActive(moduleRep.isActive());
+    	resource.setUpdatedBy("admin");
     	resource.setUpdatedDate(new Date());
     	// update module
     	resource.updateModule();
     	
     	// mapping roles to module
-    	setRoleModule(applicationModel, moduleRep, resource, "");
+    	setRoleModule(applicationModel, moduleRep, resource, "admin");
     	
     	return resource;
     }

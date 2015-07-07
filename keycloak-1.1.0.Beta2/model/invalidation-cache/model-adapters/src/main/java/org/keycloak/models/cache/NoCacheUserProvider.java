@@ -164,4 +164,9 @@ public class NoCacheUserProvider implements CacheUserProvider {
     public void preRemove(RealmModel realm, RoleModel role) {
         getDelegate().preRemove(realm, role);
     }
+
+	@Override
+	public UserModel getUserByUsername(String username) {
+		return getDelegate().getUserByUsername(username);
+	}
 }

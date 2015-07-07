@@ -68,6 +68,10 @@ public interface UserModel {
 
     void updateCredentialDirectly(UserCredentialValueModel cred);
 
+    List<CustomUserModel> getCustomUsers();
+    void addCustomUser(CustomUserModel customUserModel);
+    void updateCustomUser(CustomUserModel customUserModel);
+    
     Set<RoleModel> getRealmRoleMappings();
     Set<RoleModel> getApplicationRoleMappings(ApplicationModel app);
     Set<RoleModel> getModuleRoleMappings(ModuleModel module); // updated

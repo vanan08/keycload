@@ -22,6 +22,7 @@ import java.util.Collection;
         @NamedQuery(name="getAllUsersByRealm", query="select u from UserEntity u where u.realmId = :realmId order by u.username"),
         @NamedQuery(name="searchForUser", query="select u from UserEntity u where u.realmId = :realmId and ( lower(u.username) like :search or lower(concat(u.firstName, ' ', u.lastName)) like :search or u.email like :search ) order by u.username"),
         @NamedQuery(name="getRealmUserById", query="select u from UserEntity u where u.id = :id and u.realmId = :realmId"),
+        @NamedQuery(name="getUserByUsername", query="select u from UserEntity u where u.username = :username"),
         @NamedQuery(name="getRealmUserByUsername", query="select u from UserEntity u where u.username = :username and u.realmId = :realmId"),
         @NamedQuery(name="getRealmUserByEmail", query="select u from UserEntity u where u.email = :email and u.realmId = :realmId"),
         @NamedQuery(name="getRealmUserByLastName", query="select u from UserEntity u where u.lastName = :lastName and u.realmId = :realmId"),
@@ -72,6 +73,9 @@ public class UserEntity {
 
     @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy="user")
     protected Collection<CredentialEntity> credentials = new ArrayList<CredentialEntity>();
+    
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy="user")
+    protected Collection<CustomUserEntity> customUsers = new ArrayList<CustomUserEntity>();
 
     @Column(name="federation_link")
     protected String federationLink;
@@ -196,4 +200,12 @@ public class UserEntity {
     public void setFederationLink(String federationLink) {
         this.federationLink = federationLink;
     }
+    
+    public Collection<CustomUserEntity> getCustomUsers() {
+		return customUsers;
+	}
+    
+    public void setCustomUsers(Collection<CustomUserEntity> customUsers) {
+		this.customUsers = customUsers;
+	}
 }

@@ -138,6 +138,11 @@ public class UserFederationManager implements UserProvider {
     }
 
     @Override
+    public UserModel getUserByUsername(String username) {
+    	return session.userStorage().getUserByUsername(username);
+    }
+    
+    @Override
     public UserModel getUserByUsername(String username, RealmModel realm) {
         UserModel user = session.userStorage().getUserByUsername(username, realm);
         if (user != null) {

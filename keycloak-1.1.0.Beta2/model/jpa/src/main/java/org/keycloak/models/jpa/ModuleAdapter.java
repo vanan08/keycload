@@ -14,6 +14,7 @@ import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.jpa.entities.ModuleEntity;
 import org.keycloak.models.jpa.entities.ModuleRoleMappingEntity;
+import org.keycloak.models.utils.KeycloakModelUtils;
 
 public class ModuleAdapter implements ModuleModel {
 
@@ -63,7 +64,7 @@ public class ModuleAdapter implements ModuleModel {
 	}
 	
 	@Override
-	public boolean getActive() {
+	public boolean isActive() {
 		return moduleEntity.isActive();
 	}
 
@@ -153,6 +154,7 @@ public class ModuleAdapter implements ModuleModel {
 		if (role == null) return null;
         
         ModuleRoleMappingEntity moduleRoleMappingEntity = new ModuleRoleMappingEntity();
+        moduleRoleMappingEntity.setId(KeycloakModelUtils.generateId());
         moduleRoleMappingEntity.setModule(moduleEntity);
         moduleRoleMappingEntity.setRoleId(role.getId());
         moduleRoleMappingEntity.setCreatedBy(createdBy);
@@ -295,6 +297,7 @@ public class ModuleAdapter implements ModuleModel {
 		}
 		
 		ModuleRoleMappingEntity moduleRoleMappingEntity = new ModuleRoleMappingEntity();
+		moduleRoleMappingEntity.setId(KeycloakModelUtils.generateId());
         moduleRoleMappingEntity.setModule(moduleEntity);
         moduleRoleMappingEntity.setRoleId(role.getId());
         moduleRoleMappingEntity.setCreatedDate(new Date());

@@ -1,6 +1,7 @@
 package org.keycloak.models.utils;
 
 import org.keycloak.models.ApplicationModel;
+import org.keycloak.models.CustomUserModel;
 import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserCredentialModel;
@@ -200,5 +201,20 @@ public class UserModelDelegate implements UserModel {
 	@Override
 	public void setMobile(String mobile) {
 		delegate.setMobile(mobile);
+	}
+
+	@Override
+	public List<CustomUserModel> getCustomUsers() {
+		return delegate.getCustomUsers();
+	}
+
+	@Override
+	public void addCustomUser(CustomUserModel customUserModel) {
+		delegate.addCustomUser(customUserModel);
+	}
+
+	@Override
+	public void updateCustomUser(CustomUserModel customUserModel) {
+		delegate.updateCustomUser(customUserModel);
 	}
 }
