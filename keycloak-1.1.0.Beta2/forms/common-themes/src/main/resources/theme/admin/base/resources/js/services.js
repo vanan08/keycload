@@ -1144,3 +1144,39 @@ module.factory('PasswordPolicy', function() {
 
     return p;
 });
+
+/*Start add more by HieuDM*/
+module.factory('UserType', function($resource) {
+    return $resource(authUrl + '/admin/realms/:realm/userTypes/:userTypeId', {
+        realm : '@realm',
+        userId : '@userTypeId'
+    }, {
+        update : {
+            method : 'PUT'
+        }
+    });
+});
+
+module.factory('UserTypeRole', function($resource) {
+    return $resource(authUrl + '/admin/realms/:realm/userTypes/:userTypeId', {
+        realm : '@realm',
+        usertype : "@usertype",
+        role : '@role'
+    },  {
+        update : {
+            method : 'PUT'
+        }
+    });
+});
+
+module.factory('UserSubType', function($resource) {
+    return $resource(authUrl + '/admin/realms/:realm/userTypes/:userSubTypeId', {
+        realm : '@realm',
+        userId : '@userSubTypeId'
+    }, {
+        update : {
+            method : 'PUT'
+        }
+    });
+});
+/*End add more by HieuDM*/
