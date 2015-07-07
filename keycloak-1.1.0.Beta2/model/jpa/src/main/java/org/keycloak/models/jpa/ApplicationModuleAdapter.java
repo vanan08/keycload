@@ -25,7 +25,7 @@ public class ApplicationModuleAdapter implements ModuleModel {
 	}
 	
 	@Override
-	public String getFullPath() {
+	public String getFullpath() {
 		String slash = "/";
 		if (getBaseUrl().indexOf(slash, getBaseUrl().length() - 1) > -1) {
 			return getBaseUrl() + getUrl();

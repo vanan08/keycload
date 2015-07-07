@@ -1,19 +1,18 @@
 package org.keycloak.representations.idm;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class ModuleRepresentation {
 	protected String id;
     protected String name;
     protected String url;
     protected String description;
     protected String [] roles;
-    protected boolean active;
-    protected String startdate;
-    protected String enddate;
-    protected String fullPath;
+    protected boolean isActive;
+    protected String start_date;
+    protected String end_date;
+    protected String full_path;
     
     public String getId() {
 		return id;
@@ -45,13 +44,12 @@ public class ModuleRepresentation {
 		this.url = url;
 	}
 	
-	public String getFullPath() {
-		return fullPath;
+	public String getFullpath() {
+		return full_path;
 	}
 	
-	@JsonProperty("FullPath")
-	public void setFullPath(String fullPath) {
-		this.fullPath = fullPath;
+	public void setFullpath(String full_path) {
+		this.full_path = full_path;
 	}
 
 	public String getDescription() {
@@ -76,31 +74,28 @@ public class ModuleRepresentation {
 		this.roles = roles;
 	}
 	
-	@JsonProperty("IsActive")
 	public boolean isActive() {
-		return active;
+		return isActive;
 	}
 
-	public void setActive(boolean active) {
-		this.active = active;
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
 	}
 
 	public String getStartdate() {
-		return startdate;
+		return start_date;
 	}
 
-	@JsonProperty("Startdate")
-	public void setStartdate(String startdate) {
-		this.startdate = startdate;
+	public void setStartdate(String start_date) {
+		this.start_date = start_date;
 	}
 
 	public String getEnddate() {
-		return enddate;
+		return end_date;
 	}
-
-	@JsonProperty("Enddate")
-	public void setEnddate(String enddate) {
-		this.enddate = enddate;
+	
+	public void setEnddate(String end_date) {
+		this.end_date = end_date;
 	}
 	
 	@Override

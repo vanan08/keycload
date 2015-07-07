@@ -243,7 +243,7 @@ public class CacheModuleAdapter implements ModuleModel {
 	}
 
 	@Override
-	public String getFullPath() {
+	public String getFullpath() {
 		// TODO Auto-generated method stub
 		return null;
 	}

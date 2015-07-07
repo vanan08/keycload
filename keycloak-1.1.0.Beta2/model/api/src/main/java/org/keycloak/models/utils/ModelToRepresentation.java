@@ -304,7 +304,7 @@ public class ModelToRepresentation {
     	req.setUrl(model.getUrl());
     	req.setDescription(model.getDescription());
 		req.setActive(model.isActive());
-		req.setFullPath(model.getFullPath());
+		req.setFullpath(model.getFullpath());
     	
     	if (model.getEndDate() != null) {
     		req.setEnddate(RepresentationToModel.convertDateToString(model.getEndDate(), "yyyy-MM-dd"));

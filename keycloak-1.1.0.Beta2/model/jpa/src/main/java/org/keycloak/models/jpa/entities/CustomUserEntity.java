@@ -15,12 +15,12 @@ import javax.persistence.Table;
 public class CustomUserEntity {
 
 	@Id
-    @Column(name="CUSTOM_USER _ID", length = 36)
+    @Column(name="CUSTOM_USER_ID", length = 36)
 	private String id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID")
-	private UserAttributeEntity user;
+	private UserEntity user;
 	
 	@Column(name = "ACCEPTED_TNC", length = 1)
 	private String acceptedTNC;
@@ -48,11 +48,11 @@ public class CustomUserEntity {
 		this.id = id;
 	}
 
-	public UserAttributeEntity getUser() {
+	public UserEntity getUser() {
 		return user;
 	}
 
-	public void setUser(UserAttributeEntity user) {
+	public void setUser(UserEntity user) {
 		this.user = user;
 	}
 

@@ -16,7 +16,7 @@ public class PublicModuleResource {
 	@GET
     @NoCache
 	public String getModuleByName() {
-		return model.getFullPath();
+		return model.getFullpath();
 	}
 	
 }

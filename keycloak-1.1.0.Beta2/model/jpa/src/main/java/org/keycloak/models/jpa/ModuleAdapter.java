@@ -342,7 +342,7 @@ public class ModuleAdapter implements ModuleModel {
 	}
 
 	@Override
-	public String getFullPath() {
+	public String getFullpath() {
 		return moduleEntity.getUrl();
 	}
 }

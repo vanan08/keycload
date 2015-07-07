@@ -58,6 +58,6 @@ public interface ModuleModel {
     boolean container(String userId, RoleModel role);
     
     String getBaseUrl();
-    public String getFullPath();
+    public String getFullpath();
     
 }
