@@ -309,3 +309,46 @@ module.factory('OAuthClientInstallationLoader', function(Loader, OAuthClientInst
         }
     });
 });
+
+/*Start add more by HieuDM*/
+module.factory('UserTypeCtrl', function(Loader, User, $route, $q) {
+    return Loader.query(User, function() {
+        return {
+            realm : $route.current.params.realm
+        }
+    });
+});
+
+module.factory('UserTypeLoader', function(Loader, UserType, $route, $q) {
+    return Loader.get(UserType, function() {
+        console.log('usertype loader****');
+        console.log($route.current.params.usertype);
+        return {
+            realm : $route.current.params.realm,
+            usertype : $route.current.params.usertype
+        }
+    });
+});
+
+/*Start add more user sub type page*/
+module.factory('UserSubTypeCtrl', function(Loader, User, $route, $q) {
+    return Loader.query(User, function() {
+        return {
+            realm : $route.current.params.realm
+        }
+    });
+});
+module.factory('UserSubTypeDetailCtrl', function(Loader, UserSubType, $route, $q) {
+    return Loader.get(UserSubType, function() {
+        console.log('usertype loader****');
+        console.log($route.current.params.usersubtype);
+        return {
+            realm : $route.current.params.realm,
+            usersubtype : $route.current.params.usersubtype
+        }
+    });
+});
+
+/*End add more user sub type page*/
+
+/*End add more by HieuDM*/
