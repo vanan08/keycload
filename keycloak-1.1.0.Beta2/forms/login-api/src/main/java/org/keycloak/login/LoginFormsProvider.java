@@ -23,6 +23,8 @@ public interface LoginFormsProvider extends Provider {
     public Response createResponse(UserModel.RequiredAction action);
 
     public Response createLogin();
+    
+    public Response createTNCPage();
 
     public Response createPasswordReset();
 

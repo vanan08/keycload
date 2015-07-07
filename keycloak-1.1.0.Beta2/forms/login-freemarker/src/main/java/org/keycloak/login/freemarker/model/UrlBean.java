@@ -31,7 +31,7 @@ import java.net.URI;
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 public class UrlBean {
-	private final String FORGOT_PASSWORD = "forgot password";
+	private final String FORGOT_PASSWORD = "FORGETPASSWORD";
     private URI baseURI;
 
     private Theme theme;

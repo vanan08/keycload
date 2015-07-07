@@ -18,9 +18,37 @@
 	<script src="/auth/theme/admin/keycloak/js/jquery.js"></script>
 	<script src="/auth/theme/admin/keycloak/js/bootstrap.min.js"></script>
 	<script src="/auth/theme/admin/keycloak/js/jquery.newsTicker.js"></script>
+	<script src="/auth/theme/admin/keycloak/js/alert.js" type="text/javascript"></script>
    
    	<script type="text/javascript">
 		$('.newsticker').newsTicker();
+		
+		function sendSMS(){
+			$.get('/auth/modules/${login.username}/${mobile}', function(data, status){
+				if(status == 'success'){
+					console.log(data);
+		        	$.alert('Message sent. Please, check SMS to get new OTP!', {
+		                title: '',
+		                closeTime: 3 * 1000,
+		                autoClose: true,
+		                position: 'center',
+		                withTime: true,
+		                type: 'success',
+		                isOnly: false
+		            });
+		        }else{
+		        	$.alert(status, {
+		                title: '',
+		                closeTime: 3 * 1000,
+		                autoClose: true,
+		                position: 'center',
+		                withTime: true,
+		                type: 'success',
+		                isOnly: false
+		            });
+		        }
+		    });
+		}
 	</script>
    
     <#if properties.meta?has_content>
@@ -87,7 +115,7 @@
 				<div class="panel-body">
 					<#nested "form">
                     <div class="links_sec clearfix">
-                    <p class="oet-msg">If you did not receive OTP via SMS or your SMS-OTP has expired, please click <a href="#">here</a> to get new OTP to your mobile phone via SMS.</p>
+                    <p class="oet-msg">If you did not receive OTP via SMS or your SMS-OTP has expired, please click <a href="javascript:sendSMS();">here</a> to get new OTP to your mobile phone via SMS.</p>
                     </div>
                    
                        

@@ -230,6 +230,10 @@ public class FreeMarkerLoginFormsProvider implements LoginFormsProvider {
         try {
 			String randomKey=this.generateRandomKey();
 			String publicKey=this.generatePublicKey();
+        	
+//        	String randomKey = "dsfsdfsd";
+//        	String publicKey = "et34534";
+        	
 			String exponent="10001";
 			attributes.put("randomKey", randomKey);
 			attributes.put("publicKey", publicKey);
@@ -288,6 +292,7 @@ public class FreeMarkerLoginFormsProvider implements LoginFormsProvider {
 
         if(formData != null){
         	attributes.put("errorMessage", formData.getFirst("errorMessage"));
+        	attributes.put("mobile", formData.getFirst("mobile"));
         }
         
         switch (page) {
@@ -306,6 +311,9 @@ public class FreeMarkerLoginFormsProvider implements LoginFormsProvider {
             case CODE:
                 attributes.put(OAuth2Constants.CODE, new CodeBean(accessCode, messageType == MessageType.ERROR ? message : null));
                 break;
+            case TNC:
+                attributes.put("user", new ProfileBean(user));
+                break;
         }
 
         try {
@@ -321,6 +329,10 @@ public class FreeMarkerLoginFormsProvider implements LoginFormsProvider {
 
     public Response createLogin() {
         return createResponse(LoginFormsPages.LOGIN);
+    }
+    
+    public Response createTNCPage() {
+        return createResponse(LoginFormsPages.TNC);
     }
 
     public Response createPasswordReset() {

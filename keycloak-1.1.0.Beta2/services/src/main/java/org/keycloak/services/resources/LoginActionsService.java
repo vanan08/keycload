@@ -382,6 +382,16 @@ public class LoginActionsService {
                         .setFormData(formData)
                         .setClientSessionCode(clientCode.getCode())
                         .createLoginTotp();
+            case TNC:
+                formData.remove(CredentialRepresentation.PASSWORD);
+
+                String passwordTokenTNC = new JWSBuilder().jsonContent(new PasswordToken(realm.getName(), user.getId())).rsa256(realm.getPrivateKey());
+                formData.add(CredentialRepresentation.PASSWORD_TOKEN, passwordTokenTNC);
+                
+                return Flows.forms(this.session, realm, client, uriInfo)
+                        .setFormData(formData)
+                        .setClientSessionCode(clientCode.getCode())
+                        .createTNCPage();
             case INVALID_USER:
                 event.error(Errors.USER_NOT_FOUND);
                 return Flows.forms(this.session, realm, client, uriInfo).setError(Messages.INVALID_USER)

@@ -673,6 +673,22 @@ public class AuthenticationManager {
 			KeycloakSession session, RealmModel realm,
 			MultivaluedMap<String, String> formData, String username, StringBuilder errorMessage) {
 		
+		String need_tnc = formData.getFirst("need_tnc");
+		if(need_tnc != null){
+			System.out.println("KeyCloack: processLogin need_tnc: "+need_tnc);
+			if(need_tnc.equalsIgnoreCase("Y")){
+				//Update to database
+				
+				//go to landing page
+				return AuthenticationStatus.SUCCESS;
+			}else{
+				// forward to 1fa
+				return AuthenticationStatus.INVALID_USER;
+			}
+		}
+		
+//		formData.add("mobile", "0984352423");
+		
 		//Uncomment for hard code rediret to TOTP screen
 //		return AuthenticationStatus.MISSING_TOTP;
 		ClientAPI clientAPI = null;
@@ -810,6 +826,15 @@ public class AuthenticationManager {
 							return AuthenticationStatus.MISSING_TOTP;
 						}else {
 							errorMessage.delete(0, errorMessage.length());
+							
+							//Check TNC page
+							String needTNC = "Y";
+							String acceptedTNC = "Y";
+							
+							if(needTNC.equals("Y") && acceptedTNC.equals("N")){
+								return AuthenticationStatus.TNC;
+							}
+							
 							return AuthenticationStatus.SUCCESS;
 						}
 	
@@ -834,7 +859,7 @@ public class AuthenticationManager {
 					if (resultCode == 0 || resultCode == 789) {
 						String propertiesPath = getPropAuthenticationValues("propertiesPath");
 						String mobileNumber = user.getMobile();
-
+						formData.add("mobile", mobileNumber);
 						System.out.println("KeyCloack: User:" + username
 								+ " ; Mobile: " + mobileNumber);
 
@@ -942,7 +967,8 @@ public class AuthenticationManager {
 	}
 
 	public enum AuthenticationStatus {
-		SUCCESS, ACCOUNT_TEMPORARILY_DISABLED, ACCOUNT_DISABLED, ACTIONS_REQUIRED, INVALID_USER, INVALID_CREDENTIALS, MISSING_PASSWORD, MISSING_TOTP, FAILED
+		SUCCESS, ACCOUNT_TEMPORARILY_DISABLED, ACCOUNT_DISABLED, ACTIONS_REQUIRED, INVALID_USER, INVALID_CREDENTIALS, MISSING_PASSWORD, MISSING_TOTP, 
+		FAILED, TNC
 	}
 
 	public class AuthResult {

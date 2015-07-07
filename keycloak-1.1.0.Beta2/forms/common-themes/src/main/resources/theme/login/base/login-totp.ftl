@@ -4,6 +4,9 @@
         PSE-OTP
     <#elseif section = "form">
     	<form id="kc-totp-login-form" action="${url.loginAction}" method="post">	
+    		<#if mobile?has_content>
+	    	    <input id="mobile" name="mobile" value="${mobile}" type="hidden" />
+	   		</#if>
     		<input id="username" name="username" value="${login.username!''}" type="hidden" />
             <input id="password-token" name="password-token" value="${login.passwordToken!''}" type="hidden" />					
 			<div class="form-group mar-btm15">
