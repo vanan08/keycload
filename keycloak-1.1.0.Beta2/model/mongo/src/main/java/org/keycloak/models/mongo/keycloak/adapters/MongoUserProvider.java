@@ -3,6 +3,7 @@ package org.keycloak.models.mongo.keycloak.adapters;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.QueryBuilder;
+
 import org.keycloak.connections.mongo.api.MongoStore;
 import org.keycloak.connections.mongo.api.context.MongoStoreInvocationContext;
 import org.keycloak.models.ApplicationModel;
@@ -369,4 +370,10 @@ public class MongoUserProvider implements UserProvider {
     public boolean validCredentials(RealmModel realm, UserModel user, UserCredentialModel... input) {
         return CredentialValidation.validCredentials(realm, user, input);
     }
+
+	@Override
+	public UserModel getUserByUsername(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

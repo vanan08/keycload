@@ -173,8 +173,8 @@ public class UsersResource {
         
     	user.setCustomUserTypeId(rep.getCustomUserTypeId());
     	user.setCustomUserSubTypeId(rep.getCustomUserSubTypeId());
-    	user.setNeed2FA(rep.isNeed2FA());
-    	user.setNeedTNC(rep.isNeedTNC());
+    	user.setNeed2FA(rep.isNeed2FA() == true ? "Y":"N");
+    	user.setNeedTNC(rep.isNeedTNC() == true ? "Y":"N");
     	user.setAccountStatus(rep.getAccountStatus());
     	user.setAgentCode(rep.getAgentCode());
     	user.setAgency(rep.getAgency());

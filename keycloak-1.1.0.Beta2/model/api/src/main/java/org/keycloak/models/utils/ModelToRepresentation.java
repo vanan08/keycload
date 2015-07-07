@@ -56,8 +56,8 @@ public class ModelToRepresentation {
 
     	rep.setCustomUserTypeId(user.getCustomUserTypeId());
     	rep.setCustomUserSubTypeId(user.getCustomUserSubTypeId());
-    	rep.setNeed2FA(user.isNeed2FA());
-    	rep.setNeedTNC(user.isNeedTNC());
+    	rep.setNeed2FA("y".equalsIgnoreCase(user.getNeed2FA()) ? true : false);
+    	rep.setNeedTNC("y".equalsIgnoreCase(user.getNeedTNC()) ? true: false);
     	rep.setAccountStatus(user.getAccountStatus()) ;
     	rep.setAgentCode(user.getAgentCode()) ;
     	rep.setAgency(user.getAgency());    
@@ -312,7 +312,7 @@ public class ModelToRepresentation {
     	req.setUrl(model.getUrl());
     	req.setDescription(model.getDescription());
 		req.setActive(model.isActive());
-		req.setFullPath(model.getFullPath());
+		req.setFullpath(model.getFullpath());
     	
     	if (model.getEndDate() != null) {
     		req.setEnddate(RepresentationToModel.convertDateToString(model.getEndDate(), "yyyy-MM-dd"));

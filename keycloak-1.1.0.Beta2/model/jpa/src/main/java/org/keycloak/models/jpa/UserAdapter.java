@@ -474,22 +474,22 @@ public class UserAdapter implements UserModel {
 	}
 
 	@Override
-	public boolean isNeed2FA() {
-		return user.isNeed2FA();
+	public String getNeed2FA() {
+		return user.getNeed2FA();
 	}
 
 	@Override
-	public void setNeed2FA(boolean need2fa) {
+	public void setNeed2FA(String need2fa) {
 		user.setNeed2FA(need2fa);
 	}
 
 	@Override
-	public boolean isNeedTNC() {
-		return user.isNeedTNC();
+	public String getNeedTNC() {
+		return user.getNeedTNC();
 	}
 
 	@Override
-	public void setNeedTNC(boolean needTNC) {
+	public void setNeedTNC(String needTNC) {
 		user.setNeedTNC(needTNC);		
 	}
 

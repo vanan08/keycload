@@ -3,10 +3,12 @@ package org.keycloak.models.mongo.keycloak.adapters;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.QueryBuilder;
+
 import org.keycloak.connections.mongo.api.MongoStore;
 import org.keycloak.connections.mongo.api.context.MongoStoreInvocationContext;
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.OAuthClientModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RealmProvider;
@@ -127,5 +129,11 @@ public class MongoRealmProvider implements RealmProvider {
 
         return new OAuthClientAdapter(session, realm, clientEntity, invocationContext);
     }
+
+	@Override
+	public ModuleModel getModuleByName(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

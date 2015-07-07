@@ -75,10 +75,10 @@ public class UserEntity {
 	protected String customUserSubTypeId;
 
 	@Column(name = "NEED2FA")
-	protected boolean need2FA;
+	protected String need2FA;
 
 	@Column(name = "NEEDTNC")
-	protected boolean needTNC;
+	protected String needTNC;
 
 	@Column(name = "ACCOUNT_STATUS", length = 10)
 	protected String accountStatus;
@@ -258,19 +258,19 @@ public class UserEntity {
 		this.customUserSubTypeId = customUserSubTypeId;
 	}
 
-	public boolean isNeed2FA() {
+	public String getNeed2FA() {
 		return need2FA;
 	}
 
-	public void setNeed2FA(boolean need2fa) {
+	public void setNeed2FA(String need2fa) {
 		need2FA = need2fa;
 	}
 
-	public boolean isNeedTNC() {
+	public String getNeedTNC() {
 		return needTNC;
 	}
 
-	public void setNeedTNC(boolean needTNC) {
+	public void setNeedTNC(String needTNC) {
 		this.needTNC = needTNC;
 	}
 

@@ -87,10 +87,10 @@ public interface UserModel {
 	void setCustomUserTypeId(String customUserTypeId);
 	String getCustomUserSubTypeId();
 	void setCustomUserSubTypeId(String customUserSubTypeId);
-	boolean isNeed2FA();
-	void setNeed2FA(boolean need2fa);
-	boolean isNeedTNC();
-	void setNeedTNC(boolean needTNC);
+	String getNeed2FA();
+	void setNeed2FA(String need2fa);
+	String getNeedTNC();
+	void setNeedTNC(String needTNC);
 	String getAccountStatus();
 	void setAccountStatus(String accountStatus) ;
 	String getAgentCode();
