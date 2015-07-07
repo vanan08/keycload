@@ -14,7 +14,7 @@ import java.io.Serializable;
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
  * @version $Revision: 1 $
- * HieuHN Test
+ * HieuHN
  */
 @NamedQueries({
         @NamedQuery(name="hasScope", query="select m from ScopeMappingEntity m where m.client = :client and m.role = :role"),
