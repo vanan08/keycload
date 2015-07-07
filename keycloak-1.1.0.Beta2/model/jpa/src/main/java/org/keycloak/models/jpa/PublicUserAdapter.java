@@ -449,29 +449,7 @@ public class PublicUserAdapter implements UserModel {
 		
 	}
 
-	@Override
-	public boolean isNeed2FA() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void setNeed2FA(boolean need2fa) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isNeedTNC() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void setNeedTNC(boolean needTNC) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	@Override
 	public String getAccountStatus() {
@@ -505,6 +483,30 @@ public class PublicUserAdapter implements UserModel {
 
 	@Override
 	public void setAgency(String agency) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getNeed2FA() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setNeed2FA(String need2fa) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getNeedTNC() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setNeedTNC(String needTNC) {
 		// TODO Auto-generated method stub
 		
 	}
