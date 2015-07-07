@@ -24,7 +24,17 @@
     <![endif]-->
 <%
 	ModuleRepresentation reqmode = ModuleService.getModuleByApp("REPMODE");
-	System.out.println(reqmode.getName());
+	ModuleRepresentation salesmo = ModuleService.getModuleByApp("SALESMO");
+	ModuleRepresentation sgsmode = ModuleService.getModuleByApp("SGSMODE");
+	ModuleRepresentation pruraise = ModuleService.getModuleByApp("PRURAISE");
+	ModuleRepresentation ifileclai = ModuleService.getModuleByApp("IFILECLAI");
+	ModuleRepresentation idoc = ModuleService.getModuleByApp("IDOC");
+	ModuleRepresentation iact = ModuleService.getModuleByApp("IACT");
+	ModuleRepresentation pruinfo = ModuleService.getModuleByApp("PRUINFO");
+	ModuleRepresentation qualityb = ModuleService.getModuleByApp("QUALITYB");
+	ModuleRepresentation prugrad = ModuleService.getModuleByApp("PRUGRAD");
+	ModuleRepresentation prucoac = ModuleService.getModuleByApp("PRUCOAC");
+	ModuleRepresentation logout = ModuleService.getModuleByApp("LOGOUT");
 %>
 </head>
 <body class="landing-page">
@@ -44,7 +54,7 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
         <li><a href="#">John Malkovich</a></li>
-        <li><a href="#">Logout</a></li>
+        <li><a href="<%=(logout == null ? "#" : logout.getFullpath()) %>">Logout</a></li>
       </ul>
       </div>
       </div>
@@ -68,13 +78,13 @@
       <div class=" clearfix">
       <div class="btn-sec-banner">
    <div class="col-md-4 col-sm-4 col-xs-4">
-   <a class="btn btn-default btn-banner" href="#" >REP <span>MODE</span></a>
+   <a class="btn btn-default btn-banner" href="<%=(reqmode == null ? "#" : reqmode.getFullpath()) %>" >REP <span>MODE</span></a>
    </div>
     <div class="col-md-4 col-sm-4 col-xs-4">
-   <a class="btn btn-default btn-banner" href="#">SALES <span>MODE</span></a>
+   <a class="btn btn-default btn-banner" href="<%=(salesmo == null ? "#" : salesmo.getFullpath()) %>">SALES <span>MODE</span></a>
    </div> 
     <div class="col-md-4 col-sm-4 col-xs-4">
-   <a class="btn btn-default btn-banner" href="#">SQS <span>MODE</span></a>
+   <a class="btn btn-default btn-banner" href="<%=(sgsmode == null ? "#" : sgsmode.getFullpath()) %>">SQS <span>MODE</span></a>
    </div>
    </div>
    </div>
@@ -120,7 +130,7 @@
     <div class="isuite-img ifileclaims">
     </div>
     <div class="isuite-details">
-      <a class="" href="" ><h4 class="ico-hd-suite">i<span>FileClaims</span></h4></a>
+      <a class="" href="<%=(ifileclai == null ? "#" : ifileclai.getFullpath()) %>" ><h4 class="ico-hd-suite">i<span>FileClaims</span></h4></a>
     <p>Your Claim Transactions</p>
     </div>
     </div>
@@ -130,7 +140,7 @@
     <div class="isuite-img idocs">
     </div>
     <div class="isuite-details">
-    <a class="" href="" ><h4 class="ico-hd-suite">i<span>Doc</span></h4></a>
+    <a class="" href="<%=(idoc == null ? "#" : idoc.getFullpath()) %>" ><h4 class="ico-hd-suite">i<span>Doc</span></h4></a>
     <p>Your Document Management System</p>
     </div>
     </div>
@@ -141,7 +151,7 @@
     <div class="isuite-img iacts">
     </div>
     <div class="isuite-details">
-     <a class="iact-img" href="" > <img src="images/iact-texts.png"/></a>
+     <a class="iact-img" href="<%=(iact == null ? "#" : iact.getFullpath()) %>" > <img src="images/iact-texts.png"/></a>
     <p>Your To-Do List</p>
     </div>
     </div>
@@ -185,16 +195,16 @@
     <div class="buttons-area clearfix">
     <div class="col-lg-8 col-md-10 col-sm-12 col-xs-12 col-centered">
      <div class="col-md-3 col-sm-3 col-xs-6">
-     <a class="btn-footer pruinfo" href="#">PRU<span>INFO</span></a>
+     <a class="btn-footer pruinfo" href="<%=(pruinfo == null ? "#" : pruinfo.getFullpath()) %>">PRU<span>INFO</span></a>
     </div>
       <div class="col-md-3 col-sm-3 col-xs-6">
-     <a class="btn-footer qualitybuisness" href="#">QUALITY<span>BUISNESS</span></a>
+     <a class="btn-footer qualitybuisness" href="<%=(qualityb == null ? "#" : qualityb.getFullpath()) %>">QUALITY<span>BUISNESS</span></a>
     </div>
       <div class="col-md-3 col-sm-3 col-xs-6">
-     <a class="btn-footer prugrade" href="#">PRU<span>GRADE</span></a>
+     <a class="btn-footer prugrade" href="<%=(prugrad == null ? "#" : prugrad.getFullpath()) %>">PRU<span>GRADE</span></a>
     </div>
       <div class="col-md-3 col-sm-3 col-xs-6">
-     <a class="btn-footer prucoach" href="#">PRU<span>COACH</span></a>
+     <a class="btn-footer prucoach" href="<%=(prucoac == null ? "#" : prucoac.getFullpath()) %>">PRU<span>COACH</span></a>
     </div>
     </div>
     </div>

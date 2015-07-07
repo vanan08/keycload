@@ -17,7 +17,7 @@
             <artifactId>jboss-servlet-api_3.0_spec</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!-- <dependency>
+        <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
         </dependency>
@@ -32,7 +32,7 @@
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-jaxrs</artifactId>
-        </dependency> -->
+        </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-core</artifactId>

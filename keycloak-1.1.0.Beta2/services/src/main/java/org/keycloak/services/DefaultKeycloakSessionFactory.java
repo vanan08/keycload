@@ -38,8 +38,7 @@ public class DefaultKeycloakSessionFactory implements KeycloakSessionFactory {
 
                 factories.put(factory.getId(), factory);
 
-                //log.debugv("Loaded SPI {0} (provider = {1})", spi.getName(), provider);
-                log.info("Loaded SPI "+spi.getName()+" (provider = "+provider+")");
+                log.debugv("Loaded SPI {0} (provider = {1})", spi.getName(), provider);
             } else {
                 for (ProviderFactory factory : ServiceLoader.load(spi.getProviderFactoryClass())) {
                     Config.Scope scope = Config.scope(spi.getName(), factory.getId());
@@ -52,11 +51,9 @@ public class DefaultKeycloakSessionFactory implements KeycloakSessionFactory {
                     provider = factories.values().iterator().next().getId();
                     this.provider.put(spi.getProviderClass(), provider);
 
-                    //log.debugv("Loaded SPI {0}  (provider = {1})", spi.getName(), provider);
-                    log.info("Loaded SPI "+spi.getName()+" (provider = "+provider+")");
+                    log.debugv("Loaded SPI {0}  (provider = {1})", spi.getName(), provider);
                 } else {
-                    //log.debugv("Loaded SPI {0} (providers = {1})", spi.getName(), factories.keySet());
-                    log.info("Loaded SPI "+spi.getName()+" (providers = "+factories.keySet()+")");
+                    log.debugv("Loaded SPI {0} (providers = {1})", spi.getName(), factories.keySet());
                 }
             }
         }
@@ -86,7 +83,6 @@ public class DefaultKeycloakSessionFactory implements KeycloakSessionFactory {
 
     @Override
     public <T extends Provider> ProviderFactory<T> getProviderFactory(Class<T> clazz, String id) {
-    	log.info("factoriesMap.size="+factoriesMap.size());
          return factoriesMap.get(clazz).get(id);
     }
 

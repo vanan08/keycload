@@ -170,6 +170,14 @@ public class UsersResource {
         user.setEnabled(rep.isEnabled());
         user.setTotp(rep.isTotp());
         user.setEmailVerified(rep.isEmailVerified());
+        
+    	user.setCustomUserTypeId(rep.getCustomUserTypeId());
+    	user.setCustomUserSubTypeId(rep.getCustomUserSubTypeId());
+    	user.setNeed2FA(rep.isNeed2FA());
+    	user.setNeedTNC(rep.isNeedTNC());
+    	user.setAccountStatus(rep.getAccountStatus());
+    	user.setAgentCode(rep.getAgentCode());
+    	user.setAgency(rep.getAgency());
 
         List<String> reqActions = rep.getRequiredActions();
 
@@ -739,5 +747,5 @@ public class UsersResource {
             return Flows.errors().error("Failed to send email", Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
 }

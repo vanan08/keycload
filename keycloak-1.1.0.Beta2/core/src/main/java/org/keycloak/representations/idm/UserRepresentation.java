@@ -29,6 +29,14 @@ public class UserRepresentation {
     protected List<String> realmRoles;
     protected Map<String, List<String>> applicationRoles;
 
+	protected String customUserTypeId;
+	protected String customUserSubTypeId;
+	protected boolean need2FA;
+	protected boolean needTNC;
+	protected String accountStatus;
+	protected String agentCode;
+	protected String agency;
+
     public String getSelf() {
         return self;
     }
@@ -179,4 +187,60 @@ public class UserRepresentation {
     public void setFederationLink(String federationLink) {
         this.federationLink = federationLink;
     }
+
+	public String getCustomUserTypeId() {
+		return customUserTypeId;
+	}
+
+	public void setCustomUserTypeId(String customUserTypeId) {
+		this.customUserTypeId = customUserTypeId;
+	}
+
+	public String getCustomUserSubTypeId() {
+		return customUserSubTypeId;
+	}
+
+	public void setCustomUserSubTypeId(String customUserSubTypeId) {
+		this.customUserSubTypeId = customUserSubTypeId;
+	}
+
+	public boolean isNeed2FA() {
+		return need2FA;
+	}
+
+	public void setNeed2FA(boolean need2fa) {
+		need2FA = need2fa;
+	}
+
+	public boolean isNeedTNC() {
+		return needTNC;
+	}
+
+	public void setNeedTNC(boolean needTNC) {
+		this.needTNC = needTNC;
+	}
+
+	public String getAccountStatus() {
+		return accountStatus;
+	}
+
+	public void setAccountStatus(String accountStatus) {
+		this.accountStatus = accountStatus;
+	}
+
+	public String getAgentCode() {
+		return agentCode;
+	}
+
+	public void setAgentCode(String agentCode) {
+		this.agentCode = agentCode;
+	}
+
+	public String getAgency() {
+		return agency;
+	}
+
+	public void setAgency(String agency) {
+		this.agency = agency;
+	}
 }

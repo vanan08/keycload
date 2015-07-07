@@ -238,14 +238,12 @@ public class CacheModuleAdapter implements ModuleModel {
 
 	@Override
 	public String getBaseUrl() {
-		// TODO Auto-generated method stub
-		return null;
+		return updated.getBaseUrl();
 	}
 
 	@Override
 	public String getFullpath() {
-		// TODO Auto-generated method stub
-		return null;
+		return updated.getFullpath();
 	}
 
 }

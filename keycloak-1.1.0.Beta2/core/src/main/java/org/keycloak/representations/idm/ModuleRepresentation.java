@@ -1,18 +1,15 @@
 package org.keycloak.representations.idm;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-
-@JsonIgnoreProperties(ignoreUnknown=true)
 public class ModuleRepresentation {
 	protected String id;
     protected String name;
     protected String url;
     protected String description;
     protected String [] roles;
-    protected boolean isActive;
-    protected String start_date;
-    protected String end_date;
-    protected String full_path;
+    protected boolean active;
+    protected String startdate;
+    protected String enddate;
+    protected String fullpath;
     
     public String getId() {
 		return id;
@@ -45,11 +42,11 @@ public class ModuleRepresentation {
 	}
 	
 	public String getFullpath() {
-		return full_path;
+		return fullpath;
 	}
 	
-	public void setFullpath(String full_path) {
-		this.full_path = full_path;
+	public void setFullpath(String fullpath) {
+		this.fullpath = fullpath;
 	}
 
 	public String getDescription() {
@@ -75,27 +72,27 @@ public class ModuleRepresentation {
 	}
 	
 	public boolean isActive() {
-		return isActive;
+		return active;
 	}
 
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	public String getStartdate() {
-		return start_date;
+		return startdate;
 	}
 
-	public void setStartdate(String start_date) {
-		this.start_date = start_date;
+	public void setStartdate(String startdate) {
+		this.startdate = startdate;
 	}
 
 	public String getEnddate() {
-		return end_date;
+		return enddate;
 	}
 	
-	public void setEnddate(String end_date) {
-		this.end_date = end_date;
+	public void setEnddate(String enddate) {
+		this.enddate = enddate;
 	}
 	
 	@Override

@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
+/*Test HieuHN*/
 @Entity
 @Table(name = "CUSTOM_USER")
 public class CustomUserEntity {
@@ -17,7 +17,7 @@ public class CustomUserEntity {
 	@Id
     @Column(name="CUSTOM_USER_ID", length = 36)
 	private String id;
-	
+	//nahung test
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID")
 	private UserEntity user;

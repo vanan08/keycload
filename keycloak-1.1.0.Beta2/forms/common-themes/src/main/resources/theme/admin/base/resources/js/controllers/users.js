@@ -252,6 +252,10 @@ module.controller('UserListCtrl', function($scope, realm, User) {
 module.controller('UserDetailCtrl', function($scope, realm, user, User, UserFederationInstances, $location, Dialog, Notifications) {
     $scope.realm = realm;
     $scope.user = angular.copy(user);
+    //TODO get userTypeList userSubTypeList from server.
+    //$scope.userTypeList = angular.copy(useTypeList);
+    //$scope.userSubTypeList = angular.copy(userSubTypeList);
+
     $scope.create = !user.username;
 
     if ($scope.create) {
@@ -276,6 +280,20 @@ module.controller('UserDetailCtrl', function($scope, realm, user, User, UserFede
         {id: "UPDATE_PROFILE", text: "Update Profile"},
         {id: "CONFIGURE_TOTP", text: "Configure Totp"},
         {id: "UPDATE_PASSWORD", text: "Update Password"}
+    ];
+
+    //TODO get userTypeList userSubTypeList from server.
+    $scope.userTypeList = [
+        {customUserTypeId: "1", userType: "Secretary"},
+        {customUserTypeId: "2", userType: "Banker"}
+    ];
+
+    //TODO get userTypeList userSubTypeList from server.
+    $scope.userSubTypeList = [
+        {customUserSubTypeId: "1", customUserTypeId: "1", userSubType: "Sub Secretary1"},
+        {customUserSubTypeId: "2", customUserTypeId: "2", userSubType: "Sub Banker1"},
+        {customUserSubTypeId: "3", customUserTypeId: "1", userSubType: "Sub Secretary2"},
+        {customUserSubTypeId: "4", customUserTypeId: "2", userSubType: "Sub Banker2"}
     ];
 
     $scope.$watch('user', function() {
@@ -755,4 +773,303 @@ module.controller('LDAPCtrl', function($scope, $location, Notifications, Dialog,
     }
 
 });
+/*Start add new by HieuDM*/  
+module.controller('UserTypeCtrl', function($scope, realm, User) {
+    $scope.realm = realm;
+    $scope.page = 0;
 
+    $scope.query = {
+        realm: realm.realm,
+        max : 5,
+        first : 0
+    }
+
+    $scope.firstPage = function() {
+        $scope.query.first = 0;
+        $scope.searchQuery();
+    }
+
+    $scope.previousPage = function() {
+        $scope.query.first -= parseInt($scope.query.max);
+        if ($scope.query.first < 0) {
+            $scope.query.first = 0;
+        }
+        $scope.searchQuery();
+    }
+
+    $scope.nextPage = function() {
+        $scope.query.first += parseInt($scope.query.max);
+        $scope.searchQuery();
+    }
+
+    $scope.searchQuery = function() {
+        console.log("query.search: " + $scope.query.search);
+        $scope.searchLoaded = false;
+
+        $scope.users = User.query($scope.query, function() {
+            $scope.searchLoaded = true;
+            $scope.lastSearch = $scope.query.search;
+        });
+    };
+});
+
+module.controller('UserTypeDetailCtrl', function($scope, realm, application, userType, UserType, UserFederationInstances, $location, Dialog, Notifications, $http, application, roles, MyApplicationRole, AppliationRoleMapping) {
+	$scope.realm = realm;
+    $scope.user = angular.copy(user);
+    $scope.create = !user.username;
+    
+    /*Start add more for region application role*/
+    $scope.roles = roles;
+    $scope.application = application;
+    $scope.realmRoles = [];
+    $scope.selectedRealmRoles = [];
+    $scope.selectedApplicationRoles = [];
+    $scope.applicationRoles = [];
+    $scope.myApplicationRolesComposite = new Array();
+    
+    $scope.$watch('realmRoles', function(oldvalue, newvalue) {
+		console.log("watch realmRoles: "+JSON.stringify(newvalue));
+	});
+    
+    $scope.$watch('userTypeRoles', function(oldvalue, newvalue) {
+		console.log("watch userTypeRoles: "+JSON.stringify(newvalue));
+		
+	});
+    
+    $scope.$watch('userTypeRolesComposite', function() {
+		console.log("userTypeRolesComposite: "+JSON.stringify($scope.myApplicationRolesComposite));
+	});
+    
+    $scope.realmRoles = RealmRoles.query({ realm : realm.realm }, function(updated) {
+    	for(var i = 0; i < $scope.realmRoles.length; i++){
+			console.log("filter item name: "+ $scope.realmRoles[i].name);
+			for(var j = 0; j < $scope.applicationRoles.length; j++){
+				console.log("filter name: "+ $scope.applicationRoles[j].name);
+				if ($scope.applicationRoles[j].name.trim() == $scope.realmRoles[i].name.trim()){
+					console.log("remove name: "+$scope.realmRoles[i].name);
+					$scope.realmRoles.splice(i, 1);
+				}
+			}
+		}
+    });
+
+    $scope.applicationRoles = AppliationRoleMapping.query({ realm : realm.realm, application: $scope.application.id }, function(updated) {
+    	console.log('*******************');
+    	console.log($scope.application.id);
+    	console.log('*******************');
+    	for(var i = 0; i < $scope.realmRoles.length; i++) {
+            console.log("filter item name: " + $scope.realmRoles[i].name);
+            for (var j = 0; j < $scope.applicationRoles.length; j++) {
+                console.log("filter name: " + $scope.applicationRoles[j].name);
+                if ($scope.applicationRoles[j].name.trim() == $scope.realmRoles[i].name.trim()) {
+                    console.log("remove name: " + $scope.realmRoles[i].name);
+                    $scope.realmRoles.splice(i, 1);
+                }
+            }
+        }
+    	if($scope.applicationRoles != []) 
+    		$scope.myApplicationRolesComposite = $scope.applicationRoles;
+    });
+    /*End add more for region application role*/
+
+    if ($scope.create) {
+        $scope.user.enabled = true;
+    } else {
+        if(user.federationLink) {
+            console.log("federationLink is not null");
+            UserFederationInstances.get({realm : realm.realm, instance: user.federationLink}, function(link) {
+                $scope.federationLinkName = link.displayName;
+                $scope.federationLink = "#/realms/" + realm.realm + "/user-federation/providers/" + link.providerName + "/" + link.id;
+            })
+        } else {
+            console.log("federationLink is null");
+        }
+    }
+
+    $scope.changed = false; // $scope.create;
+
+    // ID - Name map for required actions. IDs are enum names.
+    $scope.userReqActionList = [
+        {id: "VERIFY_EMAIL", text: "Verify Email"},
+        {id: "UPDATE_PROFILE", text: "Update Profile"},
+        {id: "CONFIGURE_TOTP", text: "Configure Totp"},
+        {id: "UPDATE_PASSWORD", text: "Update Password"}
+    ];
+
+    $scope.$watch('user', function() {
+        if (!angular.equals($scope.user, user)) {
+            $scope.changed = true;
+        }
+    }, true);
+
+    $scope.save = function() {
+        if ($scope.create) {
+            User.save({
+                realm: realm.realm
+            }, $scope.user, function () {
+                $scope.changed = false;
+                user = angular.copy($scope.user);
+
+                $location.url("/realms/" + realm.realm + "/users/" + $scope.user.username);
+                Notifications.success("The user has been created.");
+            });
+        } else {
+            User.update({
+                realm: realm.realm,
+                userId: $scope.user.username
+            }, $scope.user, function () {
+                $scope.changed = false;
+                user = angular.copy($scope.user);
+                Notifications.success("Your changes have been saved to the user.");
+            });
+        }
+    };
+
+    $scope.reset = function() {
+        $scope.user = angular.copy(user);
+        $scope.changed = false;
+    };
+
+    $scope.cancel = function() {
+        $location.url("/realms/" + realm.realm + "/users");
+    };
+
+    $scope.remove = function() {
+        Dialog.confirmDelete($scope.user.username, 'user', function() {
+            $scope.user.$remove({
+                realm : realm.realm,
+                userId : $scope.user.username
+            }, function() {
+                $location.url("/realms/" + realm.realm + "/users");
+                Notifications.success("The user has been deleted.");
+            }, function() {
+                Notifications.error("User couldn't be deleted");
+            });
+        });
+    };
+});
+
+/*Start add more for user sub type screen*/
+module.controller('UserSubTypeCtrl', function($scope, realm, User) {
+    $scope.realm = realm;
+    $scope.page = 0;
+
+    $scope.query = {
+        realm: realm.realm,
+        max : 5,
+        first : 0
+    }
+
+    $scope.firstPage = function() {
+        $scope.query.first = 0;
+        $scope.searchQuery();
+    }
+
+    $scope.previousPage = function() {
+        $scope.query.first -= parseInt($scope.query.max);
+        if ($scope.query.first < 0) {
+            $scope.query.first = 0;
+        }
+        $scope.searchQuery();
+    }
+
+    $scope.nextPage = function() {
+        $scope.query.first += parseInt($scope.query.max);
+        $scope.searchQuery();
+    }
+
+    $scope.searchQuery = function() {
+        console.log("query.search: " + $scope.query.search);
+        $scope.searchLoaded = false;
+
+        $scope.users = User.query($scope.query, function() {
+            $scope.searchLoaded = true;
+            $scope.lastSearch = $scope.query.search;
+        });
+    };
+});
+
+module.controller('UserSubTypeDetailCtrl', function($scope, realm, user, User, UserFederationInstances, $location, Dialog, Notifications) {
+    $scope.realm = realm;
+    $scope.user = angular.copy(user);
+    $scope.create = !user.username;
+
+    if ($scope.create) {
+        $scope.user.enabled = true;
+    } else {
+        if(user.federationLink) {
+            console.log("federationLink is not null");
+            UserFederationInstances.get({realm : realm.realm, instance: user.federationLink}, function(link) {
+                $scope.federationLinkName = link.displayName;
+                $scope.federationLink = "#/realms/" + realm.realm + "/user-federation/providers/" + link.providerName + "/" + link.id;
+            })
+        } else {
+            console.log("federationLink is null");
+        }
+    }
+
+    $scope.changed = false; // $scope.create;
+
+    // ID - Name map for required actions. IDs are enum names.
+    $scope.userReqActionList = [
+        {id: "VERIFY_EMAIL", text: "Verify Email"},
+        {id: "UPDATE_PROFILE", text: "Update Profile"},
+        {id: "CONFIGURE_TOTP", text: "Configure Totp"},
+        {id: "UPDATE_PASSWORD", text: "Update Password"}
+    ];
+
+    $scope.$watch('user', function() {
+        if (!angular.equals($scope.user, user)) {
+            $scope.changed = true;
+        }
+    }, true);
+
+    $scope.save = function() {
+        if ($scope.create) {
+            User.save({
+                realm: realm.realm
+            }, $scope.user, function () {
+                $scope.changed = false;
+                user = angular.copy($scope.user);
+
+                $location.url("/realms/" + realm.realm + "/users/" + $scope.user.username);
+                Notifications.success("The user has been created.");
+            });
+        } else {
+            User.update({
+                realm: realm.realm,
+                userId: $scope.user.username
+            }, $scope.user, function () {
+                $scope.changed = false;
+                user = angular.copy($scope.user);
+                Notifications.success("Your changes have been saved to the user.");
+            });
+        }
+    };
+
+    $scope.reset = function() {
+        $scope.user = angular.copy(user);
+        $scope.changed = false;
+    };
+
+    $scope.cancel = function() {
+        $location.url("/realms/" + realm.realm + "/users");
+    };
+
+    $scope.remove = function() {
+        Dialog.confirmDelete($scope.user.username, 'user', function() {
+            $scope.user.$remove({
+                realm : realm.realm,
+                userId : $scope.user.username
+            }, function() {
+                $location.url("/realms/" + realm.realm + "/users");
+                Notifications.success("The user has been deleted.");
+            }, function() {
+                Notifications.error("User couldn't be deleted");
+            });
+        });
+    };
+});
+/*End add more for user sub type screen*/
+
+/*End add more by HieuDM*/

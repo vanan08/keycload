@@ -15,11 +15,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
+import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.ModuleModel;
-import org.keycloak.models.UserModel;
-import org.keycloak.models.utils.KeycloakModelUtils;
+import org.keycloak.models.utils.ModelToRepresentation;
+import org.keycloak.representations.idm.ModuleRepresentation;
 import org.keycloak.services.managers.RealmManager;
 
 import com.client.ClientAPI;
@@ -31,6 +32,8 @@ import com.og.smssender.SMSSend;
 @Path("/modules")
 public class PublicModulesResource {
 
+	private static final Logger logger = Logger.getLogger(PublicModulesResource.class);
+	
 	public static final String FORM_USERNAME = "username";
 	// used for auth login
 	public static final String KEYCLOAK_IDENTITY_COOKIE = "KEYCLOAK_IDENTITY";
@@ -102,7 +105,7 @@ public class PublicModulesResource {
 		if (module == null) {
 			return null;
 		}
-		return module.getFullPath();
+		return module.getFullpath();
 	}
 
 	protected ClientAPI initClientAPI() throws KeyStoreException,
@@ -136,5 +139,19 @@ public class PublicModulesResource {
 		}
 
 		return prop.getProperty(value);
+	}
+	
+	@Path("{name}/info")
+	@GET
+    @NoCache
+    @Produces("application/json")
+	public ModuleRepresentation getModule(final @PathParam("name") String name) {
+		RealmManager moduleManager = new RealmManager(session);
+		ModuleModel module = moduleManager.getModuleByName(name);
+		if (module == null) {
+			return null;
+		}
+		
+		return ModelToRepresentation.toRepresentation(module);
 	}
 }

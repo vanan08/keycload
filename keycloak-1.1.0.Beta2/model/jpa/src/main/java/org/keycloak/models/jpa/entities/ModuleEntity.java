@@ -58,7 +58,7 @@ public class ModuleEntity {
 	
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
-	
+// Test 	
 //    @OneToMany(fetch = FetchType.LAZY, cascade ={})
 //    @JoinTable(name="MODULE_ROLE", joinColumns = { @JoinColumn(name="MODULE_ID")}, inverseJoinColumns = { @JoinColumn(name="ROLE_ID")})
 //    Collection<RoleEntity> roles = new ArrayList<RoleEntity>();
