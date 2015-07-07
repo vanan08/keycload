@@ -83,7 +83,20 @@ public interface UserModel {
     String getFederationLink();
     void setFederationLink(String link);
 
-
+    String getCustomUserTypeId();
+	void setCustomUserTypeId(String customUserTypeId);
+	String getCustomUserSubTypeId();
+	void setCustomUserSubTypeId(String customUserSubTypeId);
+	boolean isNeed2FA();
+	void setNeed2FA(boolean need2fa);
+	boolean isNeedTNC();
+	void setNeedTNC(boolean needTNC);
+	String getAccountStatus();
+	void setAccountStatus(String accountStatus) ;
+	String getAgentCode();
+	void setAgentCode(String agentCode) ;
+	String getAgency();
+	void setAgency(String agency);
 
     public static enum RequiredAction {
         VERIFY_EMAIL, UPDATE_PROFILE, CONFIGURE_TOTP, UPDATE_PASSWORD

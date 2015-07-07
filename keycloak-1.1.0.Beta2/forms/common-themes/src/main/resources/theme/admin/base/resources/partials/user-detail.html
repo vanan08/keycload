@@ -108,6 +108,61 @@
                     </div>
                     <span tooltip-placement="right" tooltip="Require an action when the user logs in. 'Verify email' sends an email to the user to verify their email address.  'Update profile' requires user to enter in new personal information.  'Update password' requires user to enter in a new password.  'Configure TOTP' requires setup of a mobile password generator." class="fa fa-info-circle"></span>
                 </div>
+
+                <div class="form-group clearfix">
+                    <label class="col-sm-2 control-label" for="userType">User Type</label>
+                    <div class="col-sm-5">
+                        <div class="select-kc">
+                            <select ng-model="user.customUserTypeId"  ng-options="o.customUserTypeId as o.userType for o in userTypeList" data-placeholder="Select an action..." required>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group clearfix">
+                    <label class="col-sm-2 control-label" for="userSubType">User Sub Type</label>
+                    <div class="col-sm-5">
+                        <div class="select-kc">
+                            <select ng-options="o.customUserSubTypeId as o.userSubType for o in userSubTypeList" ng-model="user.customUserSubTypeId" data-placeholder="Select an action..." required>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="need2FA">Need2FA</label>
+                    <div class="col-sm-5">
+                        <input onoffswitch name="need2FA" id="need2FA" data-ng-model="user.need2FA">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="needTnC">NeedTnC</label>
+                    <div class="col-sm-5">
+                        <input onoffswitch name="needTNC" id="needTNC" data-ng-model="user.needTNC">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="accountStatus">Account Status</label>
+                    <div class="col-sm-5">
+                        <input class="form-control" type="text" name="accountStatus" id="accountStatus" data-ng-model="user.accountStatus" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="agentCode">Agent Code</label>
+                    <div class="col-sm-5">
+                        <input class="form-control" type="text" name="agentCode" id="agentCode" data-ng-model="user.agentCode">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="agency">Agency</label>
+                    <div class="col-sm-5">
+                        <input class="form-control" type="text" name="agency" id="agency" data-ng-model="user.agency">
+                    </div>
+                </div>
             </fieldset>
             <div class="pull-right form-actions" data-ng-show="create && access.manageUsers">
                 <button kc-cancel data-ng-click="cancel()">Cancel</button>

@@ -301,7 +301,7 @@ public class UserAdapter implements UserModel {
 		getDelegateForUpdate();
 		updated.setMobile(mobile);
 	}
-
+	
 	@Override
 	public List<CustomUserModel> getCustomUsers() {
 		getDelegateForUpdate();
@@ -318,6 +318,76 @@ public class UserAdapter implements UserModel {
 	public void updateCustomUser(CustomUserModel customUserModel) {
 		getDelegateForUpdate();
 		updated.updateCustomUser(customUserModel);
+	}
+
+	@Override
+	public String getCustomUserTypeId() {
+		return updated.getCustomUserTypeId();
+	}
+
+	@Override
+	public void setCustomUserTypeId(String customUserTypeId) {
+		updated.setCustomUserTypeId(customUserTypeId);	
+	}
+
+	@Override
+	public String getCustomUserSubTypeId() {
+		return updated.getCustomUserSubTypeId();
+	}
+
+	@Override
+	public void setCustomUserSubTypeId(String customUserSubTypeId) {
+		updated.setCustomUserSubTypeId(customUserSubTypeId);
+	}
+
+	@Override
+	public boolean isNeed2FA() {
+		return updated.isNeed2FA();
+	}
+
+	@Override
+	public void setNeed2FA(boolean need2fa) {
+		updated.setNeed2FA(need2fa);
+	}
+
+	@Override
+	public boolean isNeedTNC() {
+		return updated.isNeedTNC();
+	}
+
+	@Override
+	public void setNeedTNC(boolean needTNC) {
+		updated.setNeedTNC(needTNC);		
+	}
+
+	@Override
+	public String getAccountStatus() {
+		return updated.getAccountStatus();
+	}
+
+	@Override
+	public void setAccountStatus(String accountStatus) {
+		updated.setAccountStatus(accountStatus);
+	}
+
+	@Override
+	public String getAgentCode() {
+		return updated.getAgentCode();
+	}
+
+	@Override
+	public void setAgentCode(String agentCode) {
+		updated.setAgentCode(agentCode);
+	}
+
+	@Override
+	public String getAgency() {
+		return updated.getAgency();
+	}
+
+	@Override
+	public void setAgency(String agency) {
+		updated.setAgency(agency);
 	}
     
 }

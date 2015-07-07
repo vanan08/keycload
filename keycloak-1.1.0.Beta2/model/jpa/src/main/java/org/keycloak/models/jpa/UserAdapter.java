@@ -429,7 +429,7 @@ public class UserAdapter implements UserModel {
     public int hashCode() {
         return getId().hashCode();
     }
-
+	
 	@Override
 	public List<CustomUserModel> getCustomUsers() {
 		List<CustomUserModel> customUsers = new ArrayList<CustomUserModel>();
@@ -450,6 +450,77 @@ public class UserAdapter implements UserModel {
 	public void updateCustomUser(CustomUserModel customUserModel) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public String getCustomUserTypeId() {
+		return user.getCustomUserTypeId();
+	}
+
+	@Override
+	public void setCustomUserTypeId(String customUserTypeId) {
+		user.setCustomUserTypeId(customUserTypeId);	
+	}
+
+	@Override
+	public String getCustomUserSubTypeId() {
+		return user.getCustomUserSubTypeId();
+	}
+
+	@Override
+	public void setCustomUserSubTypeId(String customUserSubTypeId) {
+		user.setCustomUserSubTypeId(customUserSubTypeId);
+	}
+
+	@Override
+	public boolean isNeed2FA() {
+		return user.isNeed2FA();
+	}
+
+	@Override
+	public void setNeed2FA(boolean need2fa) {
+		user.setNeed2FA(need2fa);
+	}
+
+	@Override
+	public boolean isNeedTNC() {
+		return user.isNeedTNC();
+	}
+
+	@Override
+	public void setNeedTNC(boolean needTNC) {
+		user.setNeedTNC(needTNC);		
+	}
+
+	@Override
+	public String getAccountStatus() {
+		return user.getAccountStatus();
+	}
+
+	@Override
+	public void setAccountStatus(String accountStatus) {
+		user.setAccountStatus(accountStatus);
+	}
+
+	@Override
+	public String getAgentCode() {
+		return user.getAgentCode();
+	}
+
+	@Override
+	public void setAgentCode(String agentCode) {
+		user.setAgentCode(agentCode);
+	}
+
+	@Override
+	public String getAgency() {
+		return user.getAgency();
+	}
+
+	@Override
+	public void setAgency(String agency) {
+		user.setAgency(agency);
 	}
 
 }

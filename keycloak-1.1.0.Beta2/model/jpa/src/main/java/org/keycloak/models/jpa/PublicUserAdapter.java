@@ -425,4 +425,88 @@ public class PublicUserAdapter implements UserModel {
 		}
 	}
 
+	@Override
+	public String getCustomUserTypeId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setCustomUserTypeId(String customUserTypeId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getCustomUserSubTypeId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setCustomUserSubTypeId(String customUserSubTypeId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isNeed2FA() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setNeed2FA(boolean need2fa) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isNeedTNC() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setNeedTNC(boolean needTNC) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getAccountStatus() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setAccountStatus(String accountStatus) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getAgentCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setAgentCode(String agentCode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getAgency() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setAgency(String agency) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

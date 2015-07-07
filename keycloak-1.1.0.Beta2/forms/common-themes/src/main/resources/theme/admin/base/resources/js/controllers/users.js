@@ -252,6 +252,10 @@ module.controller('UserListCtrl', function($scope, realm, User) {
 module.controller('UserDetailCtrl', function($scope, realm, user, User, UserFederationInstances, $location, Dialog, Notifications) {
     $scope.realm = realm;
     $scope.user = angular.copy(user);
+    //TODO get userTypeList userSubTypeList from server.
+    //$scope.userTypeList = angular.copy(useTypeList);
+    //$scope.userSubTypeList = angular.copy(userSubTypeList);
+
     $scope.create = !user.username;
 
     if ($scope.create) {
@@ -276,6 +280,20 @@ module.controller('UserDetailCtrl', function($scope, realm, user, User, UserFede
         {id: "UPDATE_PROFILE", text: "Update Profile"},
         {id: "CONFIGURE_TOTP", text: "Configure Totp"},
         {id: "UPDATE_PASSWORD", text: "Update Password"}
+    ];
+
+    //TODO get userTypeList userSubTypeList from server.
+    $scope.userTypeList = [
+        {customUserTypeId: "1", userType: "Secretary"},
+        {customUserTypeId: "2", userType: "Banker"}
+    ];
+
+    //TODO get userTypeList userSubTypeList from server.
+    $scope.userSubTypeList = [
+        {customUserSubTypeId: "1", customUserTypeId: "1", userSubType: "Sub Secretary1"},
+        {customUserSubTypeId: "2", customUserTypeId: "2", userSubType: "Sub Banker1"},
+        {customUserSubTypeId: "3", customUserTypeId: "1", userSubType: "Sub Secretary2"},
+        {customUserSubTypeId: "4", customUserTypeId: "2", userSubType: "Sub Banker2"}
     ];
 
     $scope.$watch('user', function() {
