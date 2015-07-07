@@ -36,6 +36,7 @@ import org.keycloak.login.LoginFormsProvider;
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.ClientModel;
 import org.keycloak.models.ClientSessionModel;
+import org.keycloak.models.CustomUserModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RequiredCredentialModel;
@@ -678,7 +679,12 @@ public class AuthenticationManager {
 			System.out.println("KeyCloack: processLogin need_tnc: "+need_tnc);
 			if(need_tnc.equalsIgnoreCase("Y")){
 				//Update to database
-				
+				UserModel model = session.users().getUserByUsername(username);
+				CustomUserModel customUserModel = model.getCustomUsers().get(0);
+				logger.debug("AcceptedTNC ="+customUserModel.getAcceptedTNC());
+				customUserModel.setAcceptedTNC("Y");
+				model.updateCustomUser(customUserModel);
+				logger.debug("Updated acceptedTNC");
 				//go to landing page
 				return AuthenticationStatus.SUCCESS;
 			}else{
@@ -831,7 +837,14 @@ public class AuthenticationManager {
 							String needTNC = "Y";
 							String acceptedTNC = "Y";
 							
-							if(needTNC.equals("Y") && acceptedTNC.equals("N")){
+							UserModel userModel = session.users().getUserByUsername(username);
+							CustomUserModel customUserModel = userModel.getCustomUsers().get(0);
+							acceptedTNC = customUserModel.getAcceptedTNC();
+//							needTNC = customUserModel.getNeedTNC();
+							logger.debug("Check TNC conditions: acceptedTNC="+acceptedTNC);
+							logger.debug("Check TNC conditions: needTNC="+needTNC);
+							
+							if(needTNC.equalsIgnoreCase("Y") && acceptedTNC.equalsIgnoreCase("N")){
 								return AuthenticationStatus.TNC;
 							}
 							
