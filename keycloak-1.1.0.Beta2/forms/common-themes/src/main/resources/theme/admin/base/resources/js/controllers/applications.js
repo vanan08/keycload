@@ -479,6 +479,9 @@ module.controller('ModuleDetailCtrl', function($scope, Loader, realm, applicatio
 	$scope.applicationComposite=[];
 	$scope.module = angular.copy(module);
 	
+	$scope.module.startdate = "1/1/2015";
+	$scope.module.active = 'true';
+	
 	$scope.create = !module.name;
 	$scope.changed = $scope.create;
 	
@@ -501,7 +504,7 @@ module.controller('ModuleDetailCtrl', function($scope, Loader, realm, applicatio
 		$scope.applicationModuleRoles = ModuleRoleMapping.query({ realm : realm.realm, application: $scope.application.id, module: $scope.module.name });
 		$scope.applicationComposite = $scope.applicationModuleRoles;
 	} else {
-		$scope.module.startdate = "1/1/2015";
+		
 		$scope.availableModuleRoleMappings = AppliationRoleMapping.query({ realm : realm.realm, application: $scope.application.id });
 	}
 	
