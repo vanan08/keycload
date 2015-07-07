@@ -65,8 +65,8 @@ public class ApplianceBootstrap {
         password.setValue("admin");
         session.users().updateCredential(realm, adminUser, password);
         adminUser.addRequiredAction(UserModel.RequiredAction.UPDATE_PASSWORD);
-        adminUser.setNeed2FA(false);
-        adminUser.setNeedTNC(false);
+        adminUser.setNeed2FA("N");
+        adminUser.setNeedTNC("N");
         RoleModel adminRole = realm.getRole(AdminRoles.ADMIN);
         adminUser.grantRole(adminRole);
 
