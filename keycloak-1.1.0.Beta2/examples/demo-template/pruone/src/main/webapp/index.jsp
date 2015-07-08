@@ -35,6 +35,7 @@
 	ModuleRepresentation prugrad = ModuleService.getModuleByApp("PRUGRAD");
 	ModuleRepresentation prucoac = ModuleService.getModuleByApp("PRUCOAC");
 	ModuleRepresentation logout = ModuleService.getModuleByApp("LOGOUT");
+	ModuleRepresentation eapprov = ModuleService.getModuleByApp("EAPPROV");
 %>
 </head>
 <body class="landing-page">
@@ -104,8 +105,8 @@
     <div class="ico-por pruraise">
       
     </div>
-    <div class="ico-details">
-    <h4 class="ico-hd">PRU<span>RAISe</span></h4>
+    <div class="ico-details"><a class="" href="<%=(pruraise == null ? "#" : pruraise.getFullpath()) %>">
+    <h4 class="ico-hd">PRU<span>RAISe</span></h4></a>
     <p>Your Enquiry portal for post<br/> sales activities</p>
     </div>
     </div>
@@ -115,7 +116,7 @@
        <div class="ico-por eapproval">
     </div>
     <div class="ico-details">
-    <h4 class="ico-hd">e<span>Approval</span></h4>
+    <a class="" href="<%=(eapprov == null ? "#" : eapprov.getFullpath()) %>"><h4 class="ico-hd">e<span>Approval</span></h4></a>
     <p>Find all your Outstanding<br/>  Approvals</p>
     </div>
     </div>
