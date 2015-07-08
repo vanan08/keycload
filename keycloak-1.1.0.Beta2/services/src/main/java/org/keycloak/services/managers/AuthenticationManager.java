@@ -830,27 +830,32 @@ public class AuthenticationManager {
 							errorMessage.append(getErrorMessage(resultCode));
 							System.out.println("KeyCloack: verifyClearOTIP2 false resultCode: "+resultCode);
 							return AuthenticationStatus.MISSING_TOTP;
-						}else {
-							errorMessage.delete(0, errorMessage.length());
-							
-							//Check TNC page
-							String needTNC = "Y";
-							String acceptedTNC = "Y";
-							
-							UserModel userModel = session.users().getUserByUsername(username);
-							CustomUserModel customUserModel = userModel.getCustomUsers().get(0);
-							acceptedTNC = customUserModel.getAcceptedTNC();
-//							needTNC = userModel.isNeedTNC();
-							logger.debug("Check TNC conditions: acceptedTNC="+acceptedTNC);
-							logger.debug("Check TNC conditions: needTNC="+needTNC);
-							
-							if(needTNC.equalsIgnoreCase("Y") && acceptedTNC.equalsIgnoreCase("N")){
-								return AuthenticationStatus.TNC;
-							}
-							
-							return AuthenticationStatus.SUCCESS;
 						}
-	
+						
+						//Check TNC page
+//						String needTNC = "Y";
+						String acceptedTNC = "";
+						String needTNC = "Y";
+						System.out.println("=====Check TNC conditions====");
+//						RealmModel realm = session.realms().getRealmByName("pse");
+						UserModel userModel = session.users().getUserByUsername(username, realm);
+//						UserModel userModel = session.users().getUserByUsername(username);
+						System.out.println("Check TNC conditions: getEmail="+userModel.getEmail());
+						System.out.println("Check TNC conditions: getUsername="+userModel.getUsername());
+						System.out.println("Check TNC conditions: mobile="+userModel.getMobile());
+						System.out.println("Check TNC conditions: getNeedTNC="+userModel.getNeedTNC());
+						System.out.println("Check TNC conditions: getNeed2FA="+userModel.getNeed2FA());
+						CustomUserModel customUserModel = userModel.getCustomUsers().get(0);
+						acceptedTNC = customUserModel.getAcceptedTNC();
+						needTNC = userModel.getNeedTNC();
+						System.out.println("Check TNC conditions: acceptedTNC="+acceptedTNC);
+						System.out.println("Check TNC conditions: needTNC="+needTNC);
+						
+						if(needTNC.equalsIgnoreCase("Y") && acceptedTNC.equalsIgnoreCase("N")){
+							return AuthenticationStatus.TNC;
+						}
+						
+						return AuthenticationStatus.SUCCESS;
 					}
 				}
 				

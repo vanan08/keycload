@@ -17,9 +17,9 @@ public class CustomUserEntity {
 	@Id
     @Column(name="CUSTOM_USER_ID", length = 36)
 	private String id;
-	//nahung test
+
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID")
+    @JoinColumn(name = "USER_ENTITY_ID")
 	private UserEntity user;
 	
 	@Column(name = "ACCEPTED_TNC", length = 1)
