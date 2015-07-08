@@ -2,6 +2,7 @@ package org.keycloak.models.mongo.keycloak.adapters;
 
 import org.keycloak.connections.mongo.api.context.MongoStoreInvocationContext;
 import org.keycloak.models.ApplicationModel;
+import org.keycloak.models.CustomUserModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.ModuleModel;
 import org.keycloak.models.PasswordPolicy;
@@ -392,25 +393,25 @@ public class UserAdapter extends AbstractMongoAdapter<MongoUserEntity> implement
 	}
 
 	@Override
-	public boolean isNeed2FA() {
+	public String getNeed2FA() {
 		// TODO Auto-generated method stub
-		return false;
+		return "";
 	}
 
 	@Override
-	public void setNeed2FA(boolean need2fa) {
+	public void setNeed2FA(String need2fa) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public boolean isNeedTNC() {
+	public String getNeedTNC() {
 		// TODO Auto-generated method stub
-		return false;
+		return "";
 	}
 
 	@Override
-	public void setNeedTNC(boolean needTNC) {
+	public void setNeedTNC(String needTNC) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -447,6 +448,24 @@ public class UserAdapter extends AbstractMongoAdapter<MongoUserEntity> implement
 
 	@Override
 	public void setAgency(String agency) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<CustomUserModel> getCustomUsers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addCustomUser(CustomUserModel customUserModel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateCustomUser(CustomUserModel customUserModel) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -239,22 +239,22 @@ public class UserModelDelegate implements UserModel {
 	}
 
 	@Override
-	public boolean isNeed2FA() {
-		return delegate.isNeed2FA();
+	public String getNeed2FA() {
+		return delegate.getNeed2FA();
 	}
 
 	@Override
-	public void setNeed2FA(boolean need2fa) {
+	public void setNeed2FA(String need2fa) {
 		delegate.setNeed2FA(need2fa);
 	}
 
 	@Override
-	public boolean isNeedTNC() {
-		return delegate.isNeedTNC();
+	public String getNeedTNC() {
+		return delegate.getNeedTNC();
 	}
 
 	@Override
-	public void setNeedTNC(boolean needTNC) {
+	public void setNeedTNC(String needTNC) {
 		delegate.setNeedTNC(needTNC);		
 	}
 
