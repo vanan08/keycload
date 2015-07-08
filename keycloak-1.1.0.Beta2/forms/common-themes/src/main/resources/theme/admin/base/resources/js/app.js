@@ -988,6 +988,19 @@ module.config([ '$routeProvider', function($routeProvider) {
         })
         
         /*End add more for user sub type screen*/
+        
+       /*HieuDM start add more for reports*/
+        .when('/realms/:realm/reports', {
+            templateUrl : 'partials/reports.html',
+            resolve : {
+                realm : function(RealmLoader) {
+                    return RealmLoader();
+                }
+            },
+            controller : ''
+        })
+       /*HieuDM end add more for reports*/ 
+        
      /*End add more by HieuDM. Add controller for user types page*/
         .when('/logout', {
             templateUrl : 'partials/home.html',

@@ -1158,7 +1158,7 @@ module.factory('UserType', function($resource) {
 });
 
 module.factory('UserTypeRole', function($resource) {
-    return $resource(authUrl + '/admin/realms/:realm/userTypes/:userTypeId', {
+    return $resource(authUrl + '/admin/realms/:realm/userTypeRoles/:userTypeId', {
         realm : '@realm',
         usertype : "@usertype",
         role : '@role'
@@ -1170,7 +1170,7 @@ module.factory('UserTypeRole', function($resource) {
 });
 
 module.factory('UserSubType', function($resource) {
-    return $resource(authUrl + '/admin/realms/:realm/userTypes/:userSubTypeId', {
+    return $resource(authUrl + '/admin/realms/:realm/userSubTypes/:userSubTypeId', {
         realm : '@realm',
         userId : '@userSubTypeId'
     }, {

@@ -9,6 +9,10 @@
     </li>
     <li data-ng-show="access.viewUsers" data-ng-class="(path[2] == 'users' || path[1] == 'user') && 'active'"><a href="#/realms/{{realm.realm}}/users">Users</a>
     </li>
+    <!-- HieuDM start add more menu -->
+    <li data-ng-show="access.viewUsers" data-ng-class="(path[2] == 'userTypes' || path[1] == 'userType') && 'active'"><a href="#/realms/{{realm.realm}}/user-types">User Types</a></li>
+    <li data-ng-show="access.viewUsers" data-ng-class="(path[2] == 'userSubTypes' || path[1] == 'userSubType') && 'active'"><a href="#/realms/{{realm.realm}}/user-sub-types">User Sub Types</a></li>
+    <!-- HieuDM end add more menu -->
     <li data-ng-show="access.viewRealm" data-ng-class="(path[2] == 'roles' || (path[1] == 'role' && path[3] != 'applications')) && 'active'"><a href="#/realms/{{realm.realm}}/roles">Roles</a>
     </li>
     <li data-ng-show="access.viewApplications" data-ng-class="(path[2] == 'applications' || path[1] == 'application' || path[3] == 'applications') && 'active'"><a href="#/realms/{{realm.realm}}/applications">Applications</a></li>
@@ -16,5 +20,8 @@
     <li data-ng-show="access.viewRealm" data-ng-class="(path[2] == 'sessions' || path[2] == 'token-settings') && 'active'"><a href="#/realms/{{realm.realm}}/sessions/realm">Sessions and Tokens</a></li>
     <li data-ng-show="access.viewRealm" data-ng-class="(path[2] == 'defense') && 'active'"><a href="#/realms/{{realm.realm}}/defense/headers">Security Defenses</a></li>
     <li data-ng-show="access.viewEvents" data-ng-class="(path[2] == 'events' || path[2] == 'events-settings') && 'active'"><a href="#/realms/{{realm.realm}}/events">Events</a></li>
+    <!-- HieuDM start add more menu -->
+    <li data-ng-show="access.viewUsers" data-ng-class="(path[2] == 'reports' || path[1] == 'report') && 'active'"><a href="#/realms/{{realm.realm}}/reports">Reports</a></li>
+    <!-- HieuDM end add more menu -->
     <li data-ng-show="access.viewTest" data-ng-class="(path[2] == 'test' || path[2] == 'test') && 'active'"><a href="test">Test menu</a></li>
 </ul>
