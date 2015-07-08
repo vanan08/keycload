@@ -3,7 +3,6 @@ package com.prudential;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
@@ -16,7 +15,7 @@ import org.keycloak.util.JsonSerialization;
 
 public class ModuleService {
 	
-	private final static Log log = LogFactory.getLog(ModuleService.class); 
+	//private final static Log log = LogFactory.getLog(ModuleService.class); 
 	
 	/*public static class Failure extends Exception {
         private int status;
@@ -32,8 +31,9 @@ public class ModuleService {
 	
 	public static ModuleRepresentation getModuleByApp(String moduleName) {
 		HttpClient client = new HttpClientBuilder().disableTrustManager().build();
-		HttpGet get = new HttpGet("https://localhost:8443/auth/modules/"+moduleName+"/info");
+		
 		try {
+			HttpGet get = new HttpGet("https://localhost:8443/auth/modules/"+moduleName+"/info");
 			HttpResponse response = client.execute(get);
 			
 			if (response.getStatusLine().getStatusCode() != 200) {
@@ -54,7 +54,7 @@ public class ModuleService {
 	        }
 	       
 	        //finally convert StringBuffer object to String!
-	        log.info(sbfFileContents.toString());
+	        //log.info(sbfFileContents.toString());
 			
 			try {
 	            return JsonSerialization.readValue(sbfFileContents.toString(), ModuleRepresentation.class);
