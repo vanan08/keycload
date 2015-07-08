@@ -63,7 +63,7 @@ import com.og.smssender.SMSSend;
 
 /**
  * Stateless object that manages authentication
- *
+ * 
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
  * @version $Revision: 1 $
  */
@@ -92,17 +92,18 @@ public class AuthenticationManager {
 
 	public static boolean isSessionValid(RealmModel realm,
 			UserSessionModel userSession) {
-		
-		System.out.println("CHecking by session:================================");
-		
+
+		System.out
+				.println("CHecking by session:================================");
+
 		if (userSession == null) {
 			logger.debug("No user session");
 			return false;
 		}
-		
-		System.out.println("CHecking by session username :"+userSession.getLoginUsername());
-		
-		
+
+		System.out.println("CHecking by session username :"
+				+ userSession.getLoginUsername());
+
 		int currentTime = Time.currentTime();
 		int max = userSession.getStarted() + realm.getSsoSessionMaxLifespan();
 		return userSession != null
@@ -138,43 +139,50 @@ public class AuthenticationManager {
 
 		session.sessions().removeUserSession(realm, userSession);
 	}
-	
-	public static void logoutLLO(KeycloakSession session, RealmModel realm, UserSessionModel userSession, 
-    		UriInfo uriInfo, ClientConnection connection, ClientModel app) {
-        if (userSession == null) return;
-        UserModel user = userSession.getUser();
-        
-        logger.debugv("Logging out: {0} ({1})", user.getUsername(), userSession.getId());
-        ClientSessionModel clnt = null;
-        int size = userSession.getClientSessions().size();
-        for (ClientSessionModel clientSession : userSession.getClientSessions()) {
-            ClientModel client = clientSession.getClient();
-            if (client instanceof ApplicationModel) {
-            	if (app.getClientId().equals(client.getClientId())) {
-            		String authMethod = clientSession.getAuthMethod();
-                    if (authMethod == null) continue; // must be a keycloak service like account
-                    LoginProtocol protocol = session.getProvider(LoginProtocol.class, authMethod);
-                    protocol.setRealm(realm)
-                            .setUriInfo(uriInfo);
-                    protocol.backchannelLogout(userSession, clientSession);
-                    
-                    clnt = clientSession;
-            	}
-            }
-        }
-        
-        if (size == 0) {
-        	expireIdentityCookie(realm, uriInfo, connection);
-            expireRememberMeCookie(realm, uriInfo, connection);
-            session.sessions().removeUserSessions(realm, userSession.getUser());
-        } else {
-        	if (clnt != null) {
-        		logger.info("delete a session user to application \""+app.getClientId()+"\"");
-//        		 session.sessions().removeUserSessions(realm, userSession.getUser());
-        		session.sessions().removeUserSession(realm, user, clnt.getClient());
-        	}
-        }
-    }
+
+	public static void logoutLLO(KeycloakSession session, RealmModel realm,
+			UserSessionModel userSession, UriInfo uriInfo,
+			ClientConnection connection, ClientModel app) {
+		if (userSession == null)
+			return;
+		UserModel user = userSession.getUser();
+
+		logger.debugv("Logging out: {0} ({1})", user.getUsername(),
+				userSession.getId());
+		ClientSessionModel clnt = null;
+		int size = userSession.getClientSessions().size();
+		for (ClientSessionModel clientSession : userSession.getClientSessions()) {
+			ClientModel client = clientSession.getClient();
+			if (client instanceof ApplicationModel) {
+				if (app.getClientId().equals(client.getClientId())) {
+					String authMethod = clientSession.getAuthMethod();
+					if (authMethod == null)
+						continue; // must be a keycloak service like account
+					LoginProtocol protocol = session.getProvider(
+							LoginProtocol.class, authMethod);
+					protocol.setRealm(realm).setUriInfo(uriInfo);
+					protocol.backchannelLogout(userSession, clientSession);
+
+					clnt = clientSession;
+				}
+			}
+		}
+
+		if (size == 0) {
+			expireIdentityCookie(realm, uriInfo, connection);
+			expireRememberMeCookie(realm, uriInfo, connection);
+			session.sessions().removeUserSessions(realm, userSession.getUser());
+		} else {
+			if (clnt != null) {
+				logger.info("delete a session user to application \""
+						+ app.getClientId() + "\"");
+				// session.sessions().removeUserSessions(realm,
+				// userSession.getUser());
+				session.sessions().removeUserSession(realm, user,
+						clnt.getClient());
+			}
+		}
+	}
 
 	public static AccessToken createIdentityToken(RealmModel realm,
 			UserModel user, UserSessionModel session) {
@@ -334,7 +342,8 @@ public class AuthenticationManager {
 		if (authResult != null) {
 			UserModel user = authResult.getUser();
 			UserSessionModel userSession = authResult.getSession();
-			TokenManager.attachClientSession(userSession, clientSession, request);
+			TokenManager.attachClientSession(userSession, clientSession,
+					request);
 			event.user(user).session(userSession)
 					.detail(Details.AUTH_METHOD, "sso");
 			return nextActionAfterAuthentication(session, userSession,
@@ -386,9 +395,9 @@ public class AuthenticationManager {
 			ClientSessionModel clientSession,
 			ClientConnection clientConnection, HttpRequest request,
 			UriInfo uriInfo, EventBuilder event) {
-		
+
 		System.out.println("KeyCloack: nextActionAfterAuthentication ");
-		
+
 		RealmModel realm = clientSession.getRealm();
 		UserModel user = userSession.getUser();
 		isTotpConfigurationRequired(realm, user);
@@ -398,7 +407,7 @@ public class AuthenticationManager {
 		boolean isResource = client instanceof ApplicationModel;
 		ClientSessionCode accessCode = new ClientSessionCode(realm,
 				clientSession);
-		
+
 		System.out.println("processAccessCode");
 		logger.debugv("processAccessCode: isResource: {0}", isResource);
 		logger.debugv("processAccessCode: go to oauth page?: {0}", !isResource);
@@ -520,7 +529,6 @@ public class AuthenticationManager {
 				return AuthenticationStatus.ACCOUNT_TEMPORARILY_DISABLED;
 			}
 		}
-		
 
 		AuthenticationStatus status = authenticateInternal(session, realm,
 				formData, username, errorMessage);
@@ -529,9 +537,10 @@ public class AuthenticationManager {
 		System.out.println("KeyCloack: realm name=" + realm.getName());
 		System.out.println("Keycloack: username:" + username);
 		System.out.println("Keycloack: auth status:" + status);
-		System.out.println("Keycloack: auth isBruteForceProtected: "+realm.isBruteForceProtected());
+		System.out.println("Keycloack: auth isBruteForceProtected: "
+				+ realm.isBruteForceProtected());
 		if (realm.isBruteForceProtected()) {
-			
+
 			switch (status) {
 			case SUCCESS:
 				protector.successfulLogin(realm, username, clientConnection);
@@ -555,12 +564,13 @@ public class AuthenticationManager {
 
 	protected AuthenticationStatus authenticateInternal(
 			KeycloakSession session, RealmModel realm,
-			MultivaluedMap<String, String> formData, String username, StringBuilder errorMessage) {
+			MultivaluedMap<String, String> formData, String username,
+			StringBuilder errorMessage) {
 
 		String realmName = realm.getName();
 
 		System.out.println("KeyCloack Authentication Realm: " + realmName);
-		
+
 		if (realmName.equals("master")) {
 			return this.authenticateInternalMaster(session, realm, formData,
 					username);
@@ -672,44 +682,50 @@ public class AuthenticationManager {
 
 	protected AuthenticationStatus authenticateInternalNoneMaster(
 			KeycloakSession session, RealmModel realm,
-			MultivaluedMap<String, String> formData, String username, StringBuilder errorMessage) {
-		
+			MultivaluedMap<String, String> formData, String username,
+			StringBuilder errorMessage) {
+
 		String need_tnc = formData.getFirst("need_tnc");
-		if(need_tnc != null){
-			System.out.println("KeyCloack: processLogin need_tnc: "+need_tnc);
-			if(need_tnc.equalsIgnoreCase("Y")){
-				//Update to database
+		if (need_tnc != null) {
+			System.out.println("KeyCloack: processLogin need_tnc: " + need_tnc);
+			if (need_tnc.equalsIgnoreCase("Y")) {
+				// Update to database
 				UserModel model = session.users().getUserByUsername(username);
 				CustomUserModel customUserModel = model.getCustomUsers().get(0);
-				logger.debug("AcceptedTNC ="+customUserModel.getAcceptedTNC());
+				logger.debug("AcceptedTNC =" + customUserModel.getAcceptedTNC());
 				customUserModel.setAcceptedTNC("Y");
 				model.updateCustomUser(customUserModel);
 				logger.debug("Updated acceptedTNC");
-				//go to landing page
+				// go to landing page
 				return AuthenticationStatus.SUCCESS;
-			}else{
+			} else {
 				// forward to 1fa
 				return AuthenticationStatus.INVALID_USER;
 			}
 		}
-		
-//		formData.add("mobile", "0984352423");
-		
-		//Uncomment for hard code rediret to TOTP screen
-//		return AuthenticationStatus.MISSING_TOTP;
+
+		// formData.add("mobile", "0984352423");
+
+		// Uncomment for hard code rediret to TOTP screen
+		// return AuthenticationStatus.MISSING_TOTP;
 		ClientAPI clientAPI = null;
 		int domain = 0;
-		boolean enable2fa=true;
+		boolean enable2fa = true;
+		String enable2faConfigValue = null;
 		try {
-			enable2fa=Boolean.valueOf(getPropAuthenticationValues("enable2fa"));
+			enable2faConfigValue = getPropAuthenticationValues("enable2fa");
 		} catch (Exception e1) {
-			System.out.println("Unable to retirve enable2fa configuration. enable2fa wil be anable by default");
+			System.out
+					.println("Unable to retirve enable2fa configuration. enable2fa wil be anable by default");
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		logger.debug("enable2fa ="+enable2fa);
+
+		System.out.println("KeyCloack: ------ enable2faConfigValue: "+enable2faConfigValue);
+		
 		UserModel user = KeycloakModelUtils.findUserByNameOrEmail(session,
 				realm, username);
+
 		logger.debug("TEST : Go inside this method");
 		if (user == null) {
 			// logger.de
@@ -721,9 +737,9 @@ public class AuthenticationManager {
 			return AuthenticationStatus.ACCOUNT_DISABLED;
 		}
 
-		//TODO: Just for testing
-//		user.setTotp(true);
-		
+		// TODO: Just for testing
+		// user.setTotp(true);
+
 		Set<String> types = new HashSet<String>();
 
 		for (RequiredCredentialModel credential : realm
@@ -732,6 +748,7 @@ public class AuthenticationManager {
 		}
 
 		if (types.contains(CredentialRepresentation.PASSWORD)) {
+
 			List<UserCredentialModel> credentials = new LinkedList<UserCredentialModel>();
 
 			String password = formData
@@ -771,8 +788,6 @@ public class AuthenticationManager {
 			System.out.println("KeyCloack encryptedBlock & randomKey:"
 					+ encryptedBlock + " - " + randomKey);
 
-			
-
 			try {
 				clientAPI = initClientAPI();
 				domain = Integer
@@ -798,8 +813,7 @@ public class AuthenticationManager {
 										encryptedBlockBytes.length);
 						System.out.println("KeyCloack: Returned Code= "
 								+ returnCode);
-						
-						
+
 						// returnCode = 0;
 
 					} catch (Exception e) {
@@ -813,58 +827,98 @@ public class AuthenticationManager {
 						System.out.println("KeyCloack: Return false...");
 						return AuthenticationStatus.FAILED;
 					}
-				}else{
-					if(enable2fa) {
+				} else {
+
+					System.out.println("KeyCloack: enable2faConfigValue="
+							+ enable2faConfigValue);
+
+					UserModel userModel = session.users().getUserByUsername(
+							username, realm);
+					String need2FA = userModel.getNeed2FA();
+					if (need2FA != null && enable2faConfigValue == null) {
+						enable2fa = userModel.getNeed2FA()
+								.equalsIgnoreCase("Y") ? true : false;
+					} else {
+						enable2fa = Boolean.valueOf(enable2faConfigValue);
+					}
+
+					System.out.println("KeyCloack: enable2fa=" + enable2fa);
+
+					if (enable2fa) {
 						// Second level authentication: validate token
 						System.out
 								.println("KeyCloack: Second Level of authentication");
-						
-						int resultCode = clientAPI.verifyClearOTIP2(EMPTY_BYTES,
-								username, domain, EMPTY_BYTES, totp.getBytes(),
-								totp.length());
-						
-						System.out.println("KeyCloack: verifyClearOTIP2 resultCode: "+resultCode);
-						
+
+						int resultCode = clientAPI.verifyClearOTIP2(
+								EMPTY_BYTES, username, domain, EMPTY_BYTES,
+								totp.getBytes(), totp.length());
+
+						System.out
+								.println("KeyCloack: verifyClearOTIP2 resultCode: "
+										+ resultCode);
+
 						if (!(resultCode == 0 || resultCode == 2051)) {
 							errorMessage.delete(0, errorMessage.length());
 							errorMessage.append(getErrorMessage(resultCode));
-							System.out.println("KeyCloack: verifyClearOTIP2 false resultCode: "+resultCode);
+							System.out
+									.println("KeyCloack: verifyClearOTIP2 false resultCode: "
+											+ resultCode);
 							return AuthenticationStatus.MISSING_TOTP;
 						}
-						
-						//Check TNC page
-//						String needTNC = "Y";
+
+						// Check TNC page
 						String acceptedTNC = "";
 						String needTNC = "Y";
 						System.out.println("=====Check TNC conditions====");
-//						RealmModel realm = session.realms().getRealmByName("pse");
-						UserModel userModel = session.users().getUserByUsername(username, realm);
-//						UserModel userModel = session.users().getUserByUsername(username);
-						System.out.println("Check TNC conditions: getEmail="+userModel.getEmail());
-						System.out.println("Check TNC conditions: getUsername="+userModel.getUsername());
-						System.out.println("Check TNC conditions: mobile="+userModel.getMobile());
-						System.out.println("Check TNC conditions: getNeedTNC="+userModel.getNeedTNC());
-						System.out.println("Check TNC conditions: getNeed2FA="+userModel.getNeed2FA());
-						CustomUserModel customUserModel = userModel.getCustomUsers().get(0);
+						System.out.println("Check TNC conditions: getEmail="
+								+ userModel.getEmail());
+						System.out.println("Check TNC conditions: getUsername="
+								+ userModel.getUsername());
+						System.out.println("Check TNC conditions: mobile="
+								+ userModel.getMobile());
+						System.out.println("Check TNC conditions: getNeedTNC="
+								+ userModel.getNeedTNC());
+						System.out.println("Check TNC conditions: getNeed2FA="
+								+ userModel.getNeed2FA());
+						CustomUserModel customUserModel = userModel
+								.getCustomUsers().get(0);
 						acceptedTNC = customUserModel.getAcceptedTNC();
 						needTNC = userModel.getNeedTNC();
-						System.out.println("Check TNC conditions: acceptedTNC="+acceptedTNC);
-						System.out.println("Check TNC conditions: needTNC="+needTNC);
-						
-						if(needTNC.equalsIgnoreCase("Y") && acceptedTNC.equalsIgnoreCase("N")){
+						System.out.println("Check TNC conditions: acceptedTNC="
+								+ acceptedTNC);
+						System.out.println("Check TNC conditions: needTNC="
+								+ needTNC);
+
+						if (needTNC.equalsIgnoreCase("Y")
+								&& acceptedTNC.equalsIgnoreCase("N")) {
 							return AuthenticationStatus.TNC;
 						}
-						
+
 						return AuthenticationStatus.SUCCESS;
 					}
 				}
-				
-				System.out.println("KeyCloack: isTotp: "+user.isTotp());
-				System.out.println("KeyCloack: Totp: "+totp);
-				System.out.println("KeyCloack: enable2fa: "+enable2fa);
-				
+
+				System.out.println("KeyCloack: get UserModel");
+				UserModel userModel = session.users().getUserByUsername(
+						username, realm);
+				if (userModel != null) {
+					String need2FA = userModel.getNeed2FA();
+					if (need2FA != null && enable2faConfigValue == null) {
+						enable2fa = userModel.getNeed2FA()
+								.equalsIgnoreCase("Y") ? true : false;
+					} else {
+						enable2fa = Boolean.valueOf(enable2faConfigValue);
+					}
+				}
+
+				System.out.println("KeyCloack: enable2faConfigValue="
+						+ enable2faConfigValue);
+				System.out.println("KeyCloack: isTotp: " + user.isTotp());
+				System.out.println("KeyCloack: Totp: " + totp);
+				System.out.println("KeyCloack: enable2fa: " + enable2fa);
+
 				// username & password is valid then check totp
-				if (user.isTotp() && totp == null&&enable2fa) {
+				if (user.isTotp() && totp == null && enable2fa) {
 					System.out
 							.println("Username and Password is valid.Then send out OTP code");
 
@@ -872,7 +926,7 @@ public class AuthenticationManager {
 					// delete expiry token
 					int resultCode = clientAPI.deleteTokenEx(EMPTY_BYTES,
 							username, domain, SERIAL_NO, mediaType, 1);
-					
+
 					// if delete is successfull then generate new token
 					if (resultCode == 0 || resultCode == 789) {
 						String propertiesPath = getPropAuthenticationValues("propertiesPath");
@@ -907,7 +961,7 @@ public class AuthenticationManager {
 					return AuthenticationStatus.MISSING_TOTP;
 
 				}
-		// end updating by izeno- 25 Mar 2015
+				// end updating by izeno- 25 Mar 2015
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -917,10 +971,11 @@ public class AuthenticationManager {
 
 			}
 
-//			 if (!session.users().validCredentials(realm, user, credentials)&enable2fa)
-//			 {
-//			 return AuthenticationStatus.INVALID_CREDENTIALS;
-//			 }
+			// if (!session.users().validCredentials(realm, user,
+			// credentials)&enable2fa)
+			// {
+			// return AuthenticationStatus.INVALID_CREDENTIALS;
+			// }
 
 			if (!user.getRequiredActions().isEmpty()) {
 				return AuthenticationStatus.ACTIONS_REQUIRED;
@@ -985,8 +1040,7 @@ public class AuthenticationManager {
 	}
 
 	public enum AuthenticationStatus {
-		SUCCESS, ACCOUNT_TEMPORARILY_DISABLED, ACCOUNT_DISABLED, ACTIONS_REQUIRED, INVALID_USER, INVALID_CREDENTIALS, MISSING_PASSWORD, MISSING_TOTP, 
-		FAILED, TNC
+		SUCCESS, ACCOUNT_TEMPORARILY_DISABLED, ACCOUNT_DISABLED, ACTIONS_REQUIRED, INVALID_USER, INVALID_CREDENTIALS, MISSING_PASSWORD, MISSING_TOTP, FAILED, TNC
 	}
 
 	public class AuthResult {
@@ -1013,52 +1067,62 @@ public class AuthenticationManager {
 			return token;
 		}
 	}
-	
+
 	private static String randomString(int length) {
-        String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVW1234567890";
-        Random r = new Random();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            char c = chars.charAt(r.nextInt(chars.length()));
-            sb.append(c);
-        }
-        return sb.toString();
-    }
-	
-	public String getTotpSecretEncoded(String totpSecret, String totpSecretEncoded) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < totpSecretEncoded.length(); i += 4) {
-            sb.append(totpSecretEncoded.substring(i, i + 4 < totpSecretEncoded.length() ? i + 4 : totpSecretEncoded.length()));
-            if (i + 4 < totpSecretEncoded.length()) {
-                sb.append(" ");
-            }
-        }
-        return sb.toString();
-    }
+		String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVW1234567890";
+		Random r = new Random();
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < length; i++) {
+			char c = chars.charAt(r.nextInt(chars.length()));
+			sb.append(c);
+		}
+		return sb.toString();
+	}
+
+	public String getTotpSecretEncoded(String totpSecret,
+			String totpSecretEncoded) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < totpSecretEncoded.length(); i += 4) {
+			sb.append(totpSecretEncoded.substring(i, i + 4 < totpSecretEncoded
+					.length() ? i + 4 : totpSecretEncoded.length()));
+			if (i + 4 < totpSecretEncoded.length()) {
+				sb.append(" ");
+			}
+		}
+		return sb.toString();
+	}
 
 	public static String getErrorMessage(int errorCode) {
-        String hexErrorCode = Integer.toHexString(errorCode);
-        String errorMessage = "System is unable to process your request. Try again later or contact PRUONE service desk for assistance. (" + hexErrorCode + ")";
+		String hexErrorCode = Integer.toHexString(errorCode);
+		String errorMessage = "System is unable to process your request. Try again later or contact PRUONE service desk for assistance. ("
+				+ hexErrorCode + ")";
 
-        if ("301,306,307,308,703,704,705,706,708,803".indexOf(hexErrorCode) != -1 && hexErrorCode.length() == 3) {
-            errorMessage = "Invalid Login ID/PIN. (" + hexErrorCode + ")";
-        }
-        if ("302,303,311,313,602,603,604,606,607,701,702".indexOf(hexErrorCode) != -1 && hexErrorCode.length() == 3) {
-            errorMessage = "Invalid Login Credentials. (" + hexErrorCode + ")";
-        }
-        if ("801".indexOf(hexErrorCode) != -1 && hexErrorCode.length() == 3) {
-            errorMessage = "Exceeded Maximum Password Change. (" + hexErrorCode + ")";
-        }
-        if ("802".indexOf(hexErrorCode) != -1 && hexErrorCode.length() == 3) {
-            errorMessage = "Password recently used. Please try another one. (" + hexErrorCode + ")";
-        }
-        if ("707".indexOf(hexErrorCode) != -1 && hexErrorCode.length() == 3) {
-            errorMessage = "Your PIN has expired, please click on 'Forgot PIN' now. (" + hexErrorCode + ")";
-        }
-        if ("8,309,605,901,902,903,2011".indexOf(hexErrorCode) != -1 && hexErrorCode.length() == 3) {
-            errorMessage = "Invalid request. Try again later. (" + hexErrorCode + ")";
-        }
+		if ("301,306,307,308,703,704,705,706,708,803".indexOf(hexErrorCode) != -1
+				&& hexErrorCode.length() == 3) {
+			errorMessage = "Invalid Login ID/PIN. (" + hexErrorCode + ")";
+		}
+		if ("302,303,311,313,602,603,604,606,607,701,702".indexOf(hexErrorCode) != -1
+				&& hexErrorCode.length() == 3) {
+			errorMessage = "Invalid Login Credentials. (" + hexErrorCode + ")";
+		}
+		if ("801".indexOf(hexErrorCode) != -1 && hexErrorCode.length() == 3) {
+			errorMessage = "Exceeded Maximum Password Change. (" + hexErrorCode
+					+ ")";
+		}
+		if ("802".indexOf(hexErrorCode) != -1 && hexErrorCode.length() == 3) {
+			errorMessage = "Password recently used. Please try another one. ("
+					+ hexErrorCode + ")";
+		}
+		if ("707".indexOf(hexErrorCode) != -1 && hexErrorCode.length() == 3) {
+			errorMessage = "Your PIN has expired, please click on 'Forgot PIN' now. ("
+					+ hexErrorCode + ")";
+		}
+		if ("8,309,605,901,902,903,2011".indexOf(hexErrorCode) != -1
+				&& hexErrorCode.length() == 3) {
+			errorMessage = "Invalid request. Try again later. (" + hexErrorCode
+					+ ")";
+		}
 
-        return errorMessage;
-    }
+		return errorMessage;
+	}
 }

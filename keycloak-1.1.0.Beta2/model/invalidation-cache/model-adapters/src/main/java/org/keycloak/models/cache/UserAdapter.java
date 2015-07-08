@@ -342,21 +342,27 @@ public class UserAdapter implements UserModel {
 
 	@Override
 	public String getNeed2FA() {
+		
+		
+		getDelegateForUpdate();
 		return updated.getNeed2FA();
 	}
 
 	@Override
 	public void setNeed2FA(String need2fa) {
+		getDelegateForUpdate();
 		updated.setNeed2FA(need2fa);
 	}
 
 	@Override
 	public String getNeedTNC() {
+		getDelegateForUpdate();
 		return updated.getNeedTNC();
 	}
 
 	@Override
 	public void setNeedTNC(String needTNC) {
+		getDelegateForUpdate();
 		updated.setNeedTNC(needTNC);		
 	}
 
