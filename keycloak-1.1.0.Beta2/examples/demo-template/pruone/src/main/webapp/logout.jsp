@@ -4,12 +4,11 @@
 <%@ page import="javax.servlet.http.Cookie" %>
 <% 
 session.invalidate();
-String url= request.getContextPath() + "?landingPage=true";
 %>
 <html>
 <head>
 <title>PicketLink Example Application</title>
-<META HTTP-EQUIV="refresh" CONTENT="1;URL=<%= url %>">
+<META HTTP-EQUIV="refresh" CONTENT="1;URL=<%= request.getContextPath() %>">
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 <link rel="StyleSheet" href="css/idp.css" type="text/css">
 </head>

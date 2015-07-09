@@ -22,7 +22,9 @@ import org.keycloak.models.utils.Pbkdf2PasswordEncoder;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -435,20 +437,34 @@ public class UserAdapter implements UserModel {
 		List<CustomUserModel> customUsers = new ArrayList<CustomUserModel>();
 		Collection<CustomUserEntity> entities = user.getCustomUsers();
 		for (CustomUserEntity entity : entities) {
-			CustomUserModel customUserModel = new CustomUserAdapter(entity);
+			CustomUserModel customUserModel = new CustomUserAdapter(em, entity);
 			customUsers.add(customUserModel);
 		}
 		return customUsers;
 	}
 
 	@Override
-	public void addCustomUser(CustomUserModel customUserModel) {
-		// TODO Auto-generated method stub
+	public CustomUserModel addCustomUser(String acceptedTNC) {
+		CustomUserEntity entity = new CustomUserEntity();
+		entity.setId(KeycloakModelUtils.generateId());
+		entity.setAcceptedTNC(acceptedTNC);
+		entity.setAcceptedTNCdatetime(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		entity.setCreatedby(user.getUsername());
+		entity.setCreateddate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		entity.setUser(user);
+		
+		em.persist(entity);
+		em.flush();
+		
+		user.getCustomUsers().add(entity);
+		
+		em.flush();
+		
+		return new CustomUserAdapter(em, entity);
 	}
 
 	@Override
 	public void updateCustomUser(CustomUserModel customUserModel) {
-		// TODO Auto-generated method stub
 		
 	}
 

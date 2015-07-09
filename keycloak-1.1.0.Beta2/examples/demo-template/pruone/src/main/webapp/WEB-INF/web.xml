@@ -18,10 +18,10 @@
 			<param-name>ROLES</param-name>
 			<param-value>PRUONE</param-value>
 		</init-param>
-		<!-- <init-param>
+		<init-param>
 			<param-name>PRUONE</param-name>
-			<param-value>?SSO&souce=PSE</param-value>
-		</init-param> -->
+			<param-value><![CDATA[?SSO&souce=PSE]]></param-value>
+		</init-param>
 		
 	</filter>
 	<filter-mapping>

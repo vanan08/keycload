@@ -1,5 +1,3 @@
-<%@page import="com.prudential.ModuleService"%>
-<%@page import="org.keycloak.representations.idm.ModuleRepresentation"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -22,20 +20,6 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-<%
-	ModuleRepresentation reqmode = ModuleService.getModuleByApp("REPMODE");
-	ModuleRepresentation salesmo = ModuleService.getModuleByApp("SALESMO");
-	ModuleRepresentation sgsmode = ModuleService.getModuleByApp("SGSMODE");
-	ModuleRepresentation pruraise = ModuleService.getModuleByApp("PRURAISE");
-	ModuleRepresentation ifileclai = ModuleService.getModuleByApp("IFILECLAI");
-	ModuleRepresentation idoc = ModuleService.getModuleByApp("IDOC");
-	ModuleRepresentation iact = ModuleService.getModuleByApp("IACT");
-	ModuleRepresentation pruinfo = ModuleService.getModuleByApp("PRUINFO");
-	ModuleRepresentation qualityb = ModuleService.getModuleByApp("QUALITYB");
-	ModuleRepresentation prugrad = ModuleService.getModuleByApp("PRUGRAD");
-	ModuleRepresentation prucoac = ModuleService.getModuleByApp("PRUCOAC");
-	ModuleRepresentation logout = ModuleService.getModuleByApp("LOGOUT");
-%>
 </head>
 <body class="landing-page">
 <div class="container-fluid">
@@ -54,7 +38,7 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
         <li><a href="#">John Malkovich</a></li>
-        <li><a href="<%=(logout == null ? "#" : logout.getFullpath()) %>">Logout</a></li>
+        <li><a href="?GLO=true">Logout</a></li>
       </ul>
       </div>
       </div>
@@ -78,13 +62,13 @@
       <div class=" clearfix">
       <div class="btn-sec-banner">
    <div class="col-md-4 col-sm-4 col-xs-4">
-   <a class="btn btn-default btn-banner" href="<%=(reqmode == null ? "#" : reqmode.getFullpath()) %>" >REP <span>MODE</span></a>
+   <a class="btn btn-default btn-banner" href="javascript:getModuleByName('REPMODE');" >REP <span>MODE</span></a>
    </div>
     <div class="col-md-4 col-sm-4 col-xs-4">
-   <a class="btn btn-default btn-banner" href="<%=(salesmo == null ? "#" : salesmo.getFullpath()) %>">SALES <span>MODE</span></a>
+   <a class="btn btn-default btn-banner" href="javascript:getModuleByName('SALESMO');">SALES <span>MODE</span></a>
    </div> 
     <div class="col-md-4 col-sm-4 col-xs-4">
-   <a class="btn btn-default btn-banner" href="<%=(sgsmode == null ? "#" : sgsmode.getFullpath()) %>">SQS <span>MODE</span></a>
+   <a class="btn btn-default btn-banner" href="javascript:getModuleByName('SGSMODE');">SQS <span>MODE</span></a>
    </div>
    </div>
    </div>
@@ -104,8 +88,8 @@
     <div class="ico-por pruraise">
       
     </div>
-    <div class="ico-details">
-    <h4 class="ico-hd">PRU<span>RAISe</span></h4>
+    <div class="ico-details"><a class="" href="javascript:getModuleByName('PRURAISE');">
+    <h4 class="ico-hd">PRU<span>RAISe</span></h4></a>
     <p>Your Enquiry portal for post<br/> sales activities</p>
     </div>
     </div>
@@ -115,7 +99,7 @@
        <div class="ico-por eapproval">
     </div>
     <div class="ico-details">
-    <h4 class="ico-hd">e<span>Approval</span></h4>
+    <a class="" href="javascript:getModuleByName('EAPPROV');"><h4 class="ico-hd">e<span>Approval</span></h4></a>
     <p>Find all your Outstanding<br/>  Approvals</p>
     </div>
     </div>
@@ -130,7 +114,7 @@
     <div class="isuite-img ifileclaims">
     </div>
     <div class="isuite-details">
-      <a class="" href="<%=(ifileclai == null ? "#" : ifileclai.getFullpath()) %>" ><h4 class="ico-hd-suite">i<span>FileClaims</span></h4></a>
+      <a class="" href="javascript:getModuleByName('IFILECLAI');" ><h4 class="ico-hd-suite">i<span>FileClaims</span></h4></a>
     <p>Your Claim Transactions</p>
     </div>
     </div>
@@ -140,7 +124,7 @@
     <div class="isuite-img idocs">
     </div>
     <div class="isuite-details">
-    <a class="" href="<%=(idoc == null ? "#" : idoc.getFullpath()) %>" ><h4 class="ico-hd-suite">i<span>Doc</span></h4></a>
+    <a class="" href="javascript:getModuleByName('IDOC');" ><h4 class="ico-hd-suite">i<span>Doc</span></h4></a>
     <p>Your Document Management System</p>
     </div>
     </div>
@@ -151,7 +135,7 @@
     <div class="isuite-img iacts">
     </div>
     <div class="isuite-details">
-     <a class="iact-img" href="<%=(iact == null ? "#" : iact.getFullpath()) %>" > <img src="images/iact-texts.png"/></a>
+     <a class="iact-img" href="javascript:getModuleByName('IACT');" > <img src="images/iact-texts.png"/></a>
     <p>Your To-Do List</p>
     </div>
     </div>
@@ -195,16 +179,16 @@
     <div class="buttons-area clearfix">
     <div class="col-lg-8 col-md-10 col-sm-12 col-xs-12 col-centered">
      <div class="col-md-3 col-sm-3 col-xs-6">
-     <a class="btn-footer pruinfo" href="<%=(pruinfo == null ? "#" : pruinfo.getFullpath()) %>">PRU<span>INFO</span></a>
+     <a class="btn-footer pruinfo" href="javascript:getModuleByName('PRUINFO');">PRU<span>INFO</span></a>
     </div>
       <div class="col-md-3 col-sm-3 col-xs-6">
-     <a class="btn-footer qualitybuisness" href="<%=(qualityb == null ? "#" : qualityb.getFullpath()) %>">QUALITY<span>BUISNESS</span></a>
+     <a class="btn-footer qualitybuisness" href="javascript:getModuleByName('QUALITYB');">QUALITY<span>BUISNESS</span></a>
     </div>
       <div class="col-md-3 col-sm-3 col-xs-6">
-     <a class="btn-footer prugrade" href="<%=(prugrad == null ? "#" : prugrad.getFullpath()) %>">PRU<span>GRADE</span></a>
+     <a class="btn-footer prugrade" href="javascript:getModuleByName('PRUGRAD');">PRU<span>GRADE</span></a>
     </div>
       <div class="col-md-3 col-sm-3 col-xs-6">
-     <a class="btn-footer prucoach" href="<%=(prucoac == null ? "#" : prucoac.getFullpath()) %>">PRU<span>COACH</span></a>
+     <a class="btn-footer prucoach" href="javascript:getModuleByName('PRUCOAC');">PRU<span>COACH</span></a>
     </div>
     </div>
     </div>
@@ -230,7 +214,23 @@
  <script src="js/jquery.matchHeight-min.js"></script>
   <script src="js/jquery.stickyfooter.js"></script>
  
+ <script type="text/javascript">
+
+function getModuleByName(name) {
+	$.get("/auth/modules/"+name, function(data, status){
+		if(status == 'success'){
+			console.log(data);
+			window.open(data, "_blank");
+			//window.location.href = data;
+	}else{
+		console.log(status);
+	}
+  });
+} 
+
+
  
+ </script>
 
     <script type="text/javascript">
 	
@@ -238,8 +238,6 @@
 	$(window).load(function() {
     $("#bottom-button").stickyFooter();
 });
-
-
 
     </script>
     

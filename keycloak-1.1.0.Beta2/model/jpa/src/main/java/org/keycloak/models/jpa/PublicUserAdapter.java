@@ -1,8 +1,6 @@
 package org.keycloak.models.jpa;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -390,23 +388,24 @@ public class PublicUserAdapter implements UserModel {
 		List<CustomUserModel> customUsers = new ArrayList<CustomUserModel>();
 		Collection<CustomUserEntity> entities = user.getCustomUsers();
 		for (CustomUserEntity entity : entities) {
-			CustomUserModel customUserModel = new CustomUserAdapter(entity);
+			CustomUserModel customUserModel = new CustomUserAdapter(em, entity);
 			customUsers.add(customUserModel);
 		}
 		return customUsers;
 	}
 
 	@Override
-	public void addCustomUser(CustomUserModel customUserModel) {
+	public CustomUserModel addCustomUser(String acceptedTNC) {
 		// TODO Auto-generated method stub
 		CustomUserEntity entity = new CustomUserEntity();
 		entity.setId(KeycloakModelUtils.generateId());
-		entity.setAcceptedTNC(customUserModel.getAcceptedTNC());
-		entity.setCreateddate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-		entity.setUpdatedby(user.getUsername());
+		entity.setAcceptedTNC(acceptedTNC);
 		em.persist(entity);
 		em.flush();
+		
 		user.getCustomUsers().add(entity);
+		
+		return new CustomUserAdapter(em, entity);
 	}
 
 	@Override

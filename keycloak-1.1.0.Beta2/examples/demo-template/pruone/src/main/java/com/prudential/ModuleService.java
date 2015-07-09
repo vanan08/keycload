@@ -3,8 +3,6 @@ package com.prudential;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -33,7 +31,7 @@ public class ModuleService {
 		HttpClient client = new HttpClientBuilder().disableTrustManager().build();
 		
 		try {
-			HttpGet get = new HttpGet("https://localhost:8443/auth/modules/"+moduleName+"/info");
+			HttpGet get = new HttpGet("https://ssopoc.prudential.com.sg/auth/modules/"+moduleName+"/info");
 			HttpResponse response = client.execute(get);
 			
 			if (response.getStatusLine().getStatusCode() != 200) {

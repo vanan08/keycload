@@ -8,8 +8,13 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 /*Test HieuHN*/
+@NamedQueries({
+    @NamedQuery(name="deleteCustomUserByUser", query="delete from CustomUserEntity where user = :user")
+})
 @Entity
 @Table(name = "CUSTOM_USER")
 public class CustomUserEntity {

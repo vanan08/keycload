@@ -309,9 +309,9 @@ public class UserAdapter implements UserModel {
 	}
 
 	@Override
-	public void addCustomUser(CustomUserModel customUserModel) {
+	public CustomUserModel addCustomUser(String acceptedTNC) {
 		getDelegateForUpdate();
-		updated.addCustomUser(customUserModel);
+		return updated.addCustomUser(acceptedTNC);
 	}
 
 	@Override
