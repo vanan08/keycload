@@ -222,6 +222,12 @@ module.config([ '$routeProvider', function($routeProvider) {
                 realm : function(RealmLoader) {
                     return RealmLoader();
                 },
+                userTypes : function(UserTypeListLoader) {
+                    return UserTypeListLoader();
+                },
+                userSubTypes : function(UserSubTypeListLoader) {
+                    return UserSubTypeListLoader();
+                },
                 user : function() {
                     return {};
                 }
@@ -234,12 +240,111 @@ module.config([ '$routeProvider', function($routeProvider) {
                 realm : function(RealmLoader) {
                     return RealmLoader();
                 },
+                userTypes : function(UserTypeListLoader) {
+                    return UserTypeListLoader();
+                },
+                userSubTypes : function(UserSubTypeListLoader) {
+                    return UserSubTypeListLoader();
+                },
                 user : function(UserLoader) {
                     return UserLoader();
                 }
             },
             controller : 'UserDetailCtrl'
         })
+        /*Start add more by HieuDM. Add controller for user types page*/
+        .when('/realms/:realm/user-types', {
+            templateUrl : 'partials/user-type-list.html',
+            resolve : {
+                realm : function(RealmLoader) {
+                    return RealmLoader();
+                }
+            },
+            controller : 'UserTypeListCtrl'
+        })
+        .when('/create/user-type/:realm', {
+            templateUrl : 'partials/user-type-detail.html',
+            resolve : {
+                realm : function(RealmLoader) {
+                    return RealmLoader();
+                },
+                userType : function() {
+                    console.log("##### Create User Type in app.js   #####");
+                    return {};
+                },
+            },
+            controller : 'UserTypeDetailCtrl'
+        })
+        .when('/realms/:realm/user-types/:usertype', {
+            templateUrl : 'partials/user-type-detail.html',
+            resolve : {
+                realm : function(RealmLoader) {
+                    return RealmLoader();
+                },
+                userType : function(UserTypeLoader) {
+                    console.log("##### Edit User Type in app.js   #####");
+                    return UserTypeLoader();
+                },
+            },
+            controller : 'UserTypeDetailCtrl'
+        })
+        /*Start add more for user sub type screen*/
+        .when('/realms/:realm/user-sub-types', {
+            templateUrl : 'partials/user-sub-type-list.html',
+            resolve : {
+                realm : function(RealmLoader) {
+                    return RealmLoader();
+                }
+            },
+            controller : 'UserSubTypeListCtrl'
+        })
+        .when('/create/user-sub-type/:realm', {
+            templateUrl : 'partials/user-sub-type-detail.html',
+            resolve : {
+                realm : function(RealmLoader) {
+                    return RealmLoader();
+                },
+                userTypes : function(UserTypeListLoader) {
+                    return UserTypeListLoader();
+                },
+                userSubType : function() {
+                    console.log("##### Create User Type in app.js   #####");
+                    return {};
+                },
+            },
+            controller : 'UserSubTypeDetailCtrl'
+        })
+        .when('/realms/:realm/user-sub-types/:usersubtype', {
+            templateUrl : 'partials/user-sub-type-detail.html',
+            resolve : {
+                realm : function(RealmLoader) {
+                    return RealmLoader();
+                },
+                userTypes : function(UserTypeListLoader) {
+                    return UserTypeListLoader();
+                },
+                userSubType : function(UserSubTypeLoader) {
+                    console.log("##### Edit User Type in app.js   #####");
+                    return UserSubTypeLoader();
+                },
+            },
+            controller : 'UserSubTypeDetailCtrl'
+        })
+
+        /*End add more for user sub type screen*/
+
+        /*HieuDM start add more for reports*/
+        .when('/realms/:realm/reports', {
+            templateUrl : 'partials/reports.html',
+            resolve : {
+                realm : function(RealmLoader) {
+                    return RealmLoader();
+                }
+            },
+            controller : ''
+        })
+        /*HieuDM end add more for reports*/
+        /*End add more by HieuDM. Add controller for user types page*/
         .when('/realms/:realm/users/:user/user-credentials', {
             templateUrl : 'partials/user-credentials.html',
             resolve : {
@@ -908,100 +1013,6 @@ module.config([ '$routeProvider', function($routeProvider) {
             },
             controller : 'RealmBruteForceCtrl'
         })
-        /*Start add more by HieuDM. Add controller for user types page*/
-        .when('/realms/:realm/user-types', {
-            templateUrl : 'partials/user-type-list.html',
-            resolve : {
-                realm : function(RealmLoader) {
-                    return RealmLoader();
-                }
-            },
-            controller : 'UserTypeCtrl'
-        })
-        .when('/create/user-type/:realm', {
-            templateUrl : 'partials/user-type-detail.html',
-            resolve : {
-                realm : function(RealmLoader) {
-                    return RealmLoader();
-                },
-                usertype : function() {
-                    console.log("##### Create User Type in app.js   #####");
-                    return {};
-                },
-                roles : function(UserTypeRoleListLoader) {
-                    return UserTypeRoleListLoader();
-                }
-            },
-            controller : 'UserTypeDetailCtrl'
-        })
-        .when('/realms/:realm/user-types/:userType', {
-            templateUrl : 'partials/user-type-detail.html',
-            resolve : {
-                realm : function(RealmLoader) {
-                    return RealmLoader();
-                },
-                usertype : function(UserTypeLoader) {
-                	console.log("##### Edit User Type in app.js   #####");
-                    return UserTypeLoader();
-                },
-                roles : function(UserTypeRoleListLoader) {
-                    return UserTypeRoleListLoader();
-                }
-            },
-            controller : 'UserTypeDetailCtrl'
-        })
-        /*Start add more for user sub type screen*/
-        .when('/realms/:realm/user-sub-types', {
-            templateUrl : 'partials/user-sub-type-list.html',
-            resolve : {
-                realm : function(RealmLoader) {
-                    return RealmLoader();
-                }
-            },
-            controller : 'UserSubTypeListCtrl'
-        })
-        .when('/create/user-sub-type/:realm', {
-            templateUrl : 'partials/user-sub-type-detail.html',
-            resolve : {
-                realm : function(RealmLoader) {
-                    return RealmLoader();
-                },
-                userSubType : function() {
-                    console.log("##### Create User Type in app.js   #####");
-                    return {};
-                },
-            },
-            controller : 'UserSubTypeDetailCtrl'
-        })
-        .when('/realms/:realm/user-sub-types/:usersubtype', {
-            templateUrl : 'partials/user-sub-type-detail.html',
-            resolve : {
-                realm : function(RealmLoader) {
-                    return RealmLoader();
-                },
-                userSubType : function(UserSubTypeLoader) {
-                	console.log("##### Edit User Type in app.js   #####");
-                    return UserSubTypeLoader();
-                },
-            },
-            controller : 'UserSubTypeDetailCtrl'
-        })
-        
-        /*End add more for user sub type screen*/
-        
-       /*HieuDM start add more for reports*/
-        .when('/realms/:realm/reports', {
-            templateUrl : 'partials/reports.html',
-            resolve : {
-                realm : function(RealmLoader) {
-                    return RealmLoader();
-                }
-            },
-            controller : ''
-        })
-       /*HieuDM end add more for reports*/ 
-        
-     /*End add more by HieuDM. Add controller for user types page*/
         .when('/logout', {
             templateUrl : 'partials/home.html',
             controller : 'LogoutCtrl'

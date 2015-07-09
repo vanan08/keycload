@@ -249,7 +249,7 @@ module.controller('UserListCtrl', function($scope, realm, User) {
 
 
 
-module.controller('UserDetailCtrl', function($scope, realm, user, User, UserFederationInstances, $location, Dialog, Notifications) {
+module.controller('UserDetailCtrl', function($scope, realm, user, User, userTypes, userSubTypes, UserFederationInstances, $location, Dialog, Notifications) {
     $scope.realm = realm;
     $scope.user = angular.copy(user);
     //TODO get userTypeList userSubTypeList from server.
@@ -283,18 +283,10 @@ module.controller('UserDetailCtrl', function($scope, realm, user, User, UserFede
     ];
 
     //TODO get userTypeList userSubTypeList from server.
-    $scope.userTypeList = [
-        {customUserTypeId: "1", userType: "Secretary"},
-        {customUserTypeId: "2", userType: "Banker"}
-    ];
+    $scope.userTypeList = angular.copy(userTypes);
 
     //TODO get userTypeList userSubTypeList from server.
-    $scope.userSubTypeList = [
-        {customUserSubTypeId: "1", customUserTypeId: "1", userSubType: "Sub Secretary1"},
-        {customUserSubTypeId: "2", customUserTypeId: "2", userSubType: "Sub Banker1"},
-        {customUserSubTypeId: "3", customUserTypeId: "1", userSubType: "Sub Secretary2"},
-        {customUserSubTypeId: "4", customUserTypeId: "2", userSubType: "Sub Banker2"}
-    ];
+    $scope.userSubTypeList = angular.copy(userSubTypes);
 
     $scope.$watch('user', function() {
         if (!angular.equals($scope.user, user)) {
@@ -774,7 +766,7 @@ module.controller('LDAPCtrl', function($scope, $location, Notifications, Dialog,
 
 });
 /*Start add new by HieuDM*/  
-module.controller('UserTypeCtrl', function($scope, realm, User) {
+module.controller('UserTypeListCtrl', function($scope, realm, UserType) {
     $scope.realm = realm;
     $scope.page = 0;
 
@@ -806,141 +798,65 @@ module.controller('UserTypeCtrl', function($scope, realm, User) {
         console.log("query.search: " + $scope.query.search);
         $scope.searchLoaded = false;
 
-        $scope.users = User.query($scope.query, function() {
+        $scope.userTypes = UserType.query($scope.query, function() {
             $scope.searchLoaded = true;
             $scope.lastSearch = $scope.query.search;
         });
     };
 });
 
-module.controller('UserTypeDetailCtrl', function($scope, realm, application, userType, UserType, UserFederationInstances, $location, Dialog, Notifications, $http, application, roles, MyApplicationRole, AppliationRoleMapping) {
-	$scope.realm = realm;
-    $scope.user = angular.copy(user);
-    $scope.create = !user.username;
-    
-    /*Start add more for region application role*/
-    $scope.roles = roles;
-    $scope.application = application;
-    $scope.realmRoles = [];
-    $scope.selectedRealmRoles = [];
-    $scope.selectedApplicationRoles = [];
-    $scope.applicationRoles = [];
-    $scope.myApplicationRolesComposite = new Array();
-    
-    $scope.$watch('realmRoles', function(oldvalue, newvalue) {
-		console.log("watch realmRoles: "+JSON.stringify(newvalue));
-	});
-    
-    $scope.$watch('userTypeRoles', function(oldvalue, newvalue) {
-		console.log("watch userTypeRoles: "+JSON.stringify(newvalue));
-		
-	});
-    
-    $scope.$watch('userTypeRolesComposite', function() {
-		console.log("userTypeRolesComposite: "+JSON.stringify($scope.myApplicationRolesComposite));
-	});
-    
-    $scope.realmRoles = RealmRoles.query({ realm : realm.realm }, function(updated) {
-    	for(var i = 0; i < $scope.realmRoles.length; i++){
-			console.log("filter item name: "+ $scope.realmRoles[i].name);
-			for(var j = 0; j < $scope.applicationRoles.length; j++){
-				console.log("filter name: "+ $scope.applicationRoles[j].name);
-				if ($scope.applicationRoles[j].name.trim() == $scope.realmRoles[i].name.trim()){
-					console.log("remove name: "+$scope.realmRoles[i].name);
-					$scope.realmRoles.splice(i, 1);
-				}
-			}
-		}
-    });
-
-    $scope.applicationRoles = AppliationRoleMapping.query({ realm : realm.realm, application: $scope.application.id }, function(updated) {
-    	console.log('*******************');
-    	console.log($scope.application.id);
-    	console.log('*******************');
-    	for(var i = 0; i < $scope.realmRoles.length; i++) {
-            console.log("filter item name: " + $scope.realmRoles[i].name);
-            for (var j = 0; j < $scope.applicationRoles.length; j++) {
-                console.log("filter name: " + $scope.applicationRoles[j].name);
-                if ($scope.applicationRoles[j].name.trim() == $scope.realmRoles[i].name.trim()) {
-                    console.log("remove name: " + $scope.realmRoles[i].name);
-                    $scope.realmRoles.splice(i, 1);
-                }
-            }
-        }
-    	if($scope.applicationRoles != []) 
-    		$scope.myApplicationRolesComposite = $scope.applicationRoles;
-    });
-    /*End add more for region application role*/
-
-    if ($scope.create) {
-        $scope.user.enabled = true;
-    } else {
-        if(user.federationLink) {
-            console.log("federationLink is not null");
-            UserFederationInstances.get({realm : realm.realm, instance: user.federationLink}, function(link) {
-                $scope.federationLinkName = link.displayName;
-                $scope.federationLink = "#/realms/" + realm.realm + "/user-federation/providers/" + link.providerName + "/" + link.id;
-            })
-        } else {
-            console.log("federationLink is null");
-        }
-    }
+module.controller('UserTypeDetailCtrl', function($scope, realm, userType, UserType, $location, Dialog, Notifications) {
+    $scope.realm = realm;
+    $scope.userType = angular.copy(userType);
+    $scope.create = !userType.name;
 
     $scope.changed = false; // $scope.create;
 
-    // ID - Name map for required actions. IDs are enum names.
-    $scope.userReqActionList = [
-        {id: "VERIFY_EMAIL", text: "Verify Email"},
-        {id: "UPDATE_PROFILE", text: "Update Profile"},
-        {id: "CONFIGURE_TOTP", text: "Configure Totp"},
-        {id: "UPDATE_PASSWORD", text: "Update Password"}
-    ];
-
-    $scope.$watch('user', function() {
-        if (!angular.equals($scope.user, user)) {
+    $scope.$watch('userType', function() {
+        if (!angular.equals($scope.userType, userType)) {
             $scope.changed = true;
         }
     }, true);
 
     $scope.save = function() {
         if ($scope.create) {
-            User.save({
+            UserType.save({
                 realm: realm.realm
-            }, $scope.user, function () {
+            }, $scope.userType, function () {
                 $scope.changed = false;
-                user = angular.copy($scope.user);
+                userType = angular.copy($scope.userType);
 
-                $location.url("/realms/" + realm.realm + "/users/" + $scope.user.username);
-                Notifications.success("The user has been created.");
+                $location.url("/realms/" + realm.realm + "/user-types/" + $scope.userType.name);
+                Notifications.success("The user type has been created.");
             });
         } else {
-            User.update({
+            UserType.update({
                 realm: realm.realm,
-                userId: $scope.user.username
-            }, $scope.user, function () {
+                userType: $scope.userType.id
+            }, $scope.userType, function () {
                 $scope.changed = false;
-                user = angular.copy($scope.user);
-                Notifications.success("Your changes have been saved to the user.");
+                userType = angular.copy($scope.userType);
+                Notifications.success("Your changes have been saved to the user type.");
             });
         }
     };
 
     $scope.reset = function() {
-        $scope.user = angular.copy(user);
+        $scope.userType = angular.copy(userType);
         $scope.changed = false;
     };
 
     $scope.cancel = function() {
-        $location.url("/realms/" + realm.realm + "/users");
+        $location.url("/realms/" + realm.realm + "/user-types");
     };
 
     $scope.remove = function() {
-        Dialog.confirmDelete($scope.user.username, 'user', function() {
-            $scope.user.$remove({
+        Dialog.confirmDelete($scope.userType.id, 'userType', function() {
+            $scope.userType.$remove({
                 realm : realm.realm,
-                userId : $scope.user.username
+                userType : $scope.userType.id
             }, function() {
-                $location.url("/realms/" + realm.realm + "/users");
+                $location.url("/realms/" + realm.realm + "/user-types");
                 Notifications.success("The user has been deleted.");
             }, function() {
                 Notifications.error("User couldn't be deleted");
@@ -989,7 +905,7 @@ module.controller('UserSubTypeListCtrl', function($scope, realm, UserSubType) {
     };
 });
 
-module.controller('UserSubTypeDetailCtrl', function($scope, realm, userSubType, UserSubType, $location, Dialog, Notifications) {
+module.controller('UserSubTypeDetailCtrl', function($scope, realm, userSubType, UserSubType, userTypes, $location, Dialog, Notifications) {
     $scope.realm = realm;
     $scope.userSubType = angular.copy(userSubType);
     $scope.create = !userSubType.name;
@@ -1003,11 +919,7 @@ module.controller('UserSubTypeDetailCtrl', function($scope, realm, userSubType, 
     }, true);
 
     //TODO get userTypeList userSubTypeList from server.
-    $scope.userTypes = [
-        {id: "1", name: "type1"},
-        {id: "2", name: "type2"}
-    ];
-
+    $scope.userTypes =  angular.copy(userTypes);
     $scope.save = function() {
         if ($scope.create) {
             UserSubType.save({

@@ -6,7 +6,6 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserSubTypeContainerModel;
 import org.keycloak.models.UserSubTypeModel;
 import org.keycloak.models.jpa.entities.UserSubTypeEntity;
-import org.keycloak.models.jpa.entities.UserTypeEntity;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -44,6 +43,7 @@ public class UserSubTypeAdapter implements UserSubTypeModel {
 
 	@Override
 	public void setName(String name) {
+		System.out.println("#### jpa setName: " + name);
 		userSubType.setName(name);
 	}
 
@@ -51,16 +51,14 @@ public class UserSubTypeAdapter implements UserSubTypeModel {
 	public String getUserType() {
 		if (userSubType.getUserType() == null)
 			return "";
-		return userSubType.getUserType().getId();
+		return userSubType.getUserType();
 	}
 
 	@Override
 	public void setUserType(String userType) {
 		System.out.println("#### set usertype: " + userType);
 		//TODO: get real user type from DB
-		/*UserTypeEntity newUserType = new UserTypeEntity(userType);
-		newUserType.setId(userType);
-		userSubType.setUserType(newUserType);*/
+		userSubType.setUserType(userType);
 	}
 
 	@Override

@@ -113,7 +113,7 @@
                     <label class="col-sm-2 control-label" for="userType">User Type</label>
                     <div class="col-sm-5">
                         <div class="select-kc">
-                            <select ng-model="user.customUserTypeId"  ng-options="o.customUserTypeId as o.userType for o in userTypeList" data-placeholder="Select an action..." >
+                            <select ng-model="user.customUserTypeId"  ng-options="o.id as o.name for o in userTypeList" data-placeholder="Select an action..." >
                             </select>
                         </div>
                     </div>
@@ -123,7 +123,7 @@
                     <label class="col-sm-2 control-label" for="userSubType">User Sub Type</label>
                     <div class="col-sm-5">
                         <div class="select-kc">
-                            <select ng-options="o.customUserSubTypeId as o.userSubType for o in userSubTypeList" ng-model="user.customUserSubTypeId" data-placeholder="Select an action..." >
+                            <select ng-options="o.id as o.name for o in userSubTypeList" ng-model="user.customUserSubTypeId" data-placeholder="Select an action..." >
                             </select>
                         </div>
                     </div>

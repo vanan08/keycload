@@ -1,5 +1,7 @@
 package org.keycloak.models.cache;
 
+import java.util.List;
+
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.ModuleModel;
@@ -8,8 +10,7 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.models.RealmProvider;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserSubTypeModel;
-
-import java.util.List;
+import org.keycloak.models.UserTypeModel;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -54,6 +55,10 @@ public class NoCacheRealmProvider implements CacheRealmProvider {
     
     @Override
     public void registerUserSubTypeInvalidation(String id) {
+    }
+    
+    @Override
+    public void registerUserTypeInvalidation(String id) {
     }
 
     @Override
@@ -124,5 +129,10 @@ public class NoCacheRealmProvider implements CacheRealmProvider {
 	@Override
 	public UserSubTypeModel getUserSubTypeById(String id, RealmModel realm) {
 		return getDelegate().getUserSubTypeById(id, realm);
+	}
+	
+	@Override
+	public UserTypeModel getUserTypeById(String id, RealmModel realm) {
+		return getDelegate().getUserTypeById(id, realm);
 	}
 }

@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.keycloak.Config;
@@ -22,6 +23,7 @@ import org.keycloak.models.RequiredCredentialModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserFederationProviderModel;
 import org.keycloak.models.UserSubTypeModel;
+import org.keycloak.models.UserTypeModel;
 import org.keycloak.models.cache.entities.CachedRealm;
 import org.keycloak.models.utils.KeycloakModelUtils;
 
@@ -835,63 +837,163 @@ public class RealmAdapter implements RealmModel {
         return roles;
     }
 
-    // KIEN START
+    // KIEN START cached adapter function for user type
     @Override
-    public Set<UserSubTypeModel> getUserSubTypes() {
-        if (updated != null) return updated.getUserSubTypes();
+    public Set<UserTypeModel> getUserTypes() {
+        if (updated != null) return updated.getUserTypes();
 
-        Set<UserSubTypeModel> userSubTypes = new HashSet<UserSubTypeModel>();
-        for (String id : cached.getRealmUserSubTypes().values()) {
-            UserSubTypeModel roleById = cacheSession.getUserSubTypeById(id, this);
+        Set<UserTypeModel> UserTypes = new HashSet<UserTypeModel>();
+        for (String id : cached.getRealmUserTypes().values()) {
+            UserTypeModel roleById = cacheSession.getUserTypeById(id, this);
             if (roleById == null) continue;
-            userSubTypes.add(roleById);
+            UserTypes.add(roleById);
         }
-        return userSubTypes;
+        return UserTypes;
     }
     @Override
-    public UserSubTypeModel getUserSubTypeById(String id) {
-        if (updated != null) return updated.getUserSubTypeById(id);
-        return cacheSession.getUserSubTypeById(id, this);
+    public UserTypeModel getUserTypeById(String id) {
+        if (updated != null) return updated.getUserTypeById(id);
+        return cacheSession.getUserTypeById(id, this);
     }
     
     @Override
-    public UserSubTypeModel getUserSubType(String name) {
-        if (updated != null) return updated.getUserSubType(name);
-        String id = cached.getRealmUserSubTypes().get(name);
+    public UserTypeModel getUserType(String name) {
+        if (updated != null) return updated.getUserType(name);
+        String id = cached.getRealmUserTypes().get(name);
         if (id == null) return null;
-        return cacheSession.getUserSubTypeById(id, this);
+        return cacheSession.getUserTypeById(id, this);
     }
 
     @Override
-    public UserSubTypeModel addUserSubType(String name) {
+    public UserTypeModel addUserType(String name) {
         getDelegateForUpdate();
-        UserSubTypeModel userSubType = updated.addUserSubType(name);
-        cacheSession.registerUserSubTypeInvalidation(userSubType.getId());
-        return userSubType;
+        UserTypeModel UserType = updated.addUserType(name);
+        cacheSession.registerUserTypeInvalidation(UserType.getId());
+        return UserType;
     }
 
     @Override
-    public UserSubTypeModel addUserSubType(String id, String name) {
+    public UserTypeModel addUserType(String id, String name) {
         getDelegateForUpdate();
-        UserSubTypeModel userSubType =  updated.addUserSubType(id, name);
-        cacheSession.registerUserSubTypeInvalidation(userSubType.getId());
-        return userSubType;
+        UserTypeModel UserType =  updated.addUserType(id, name);
+        cacheSession.registerUserTypeInvalidation(UserType.getId());
+        return UserType;
     }
 
     @Override
-    public boolean removeUserSubType(UserSubTypeModel userSubType) {
-        cacheSession.registerUserSubTypeInvalidation(userSubType.getId());
+    public boolean removeUserType(UserTypeModel UserType) {
+        cacheSession.registerUserTypeInvalidation(UserType.getId());
         getDelegateForUpdate();
-        return updated.removeUserSubType(userSubType);
+        return updated.removeUserType(UserType);
     }    
+
+	@Override
+	public boolean removeUserTypeById(String id) {
+		cacheSession.registerUserTypeInvalidation(id);
+	        getDelegateForUpdate();
+	    return updated.removeUserTypeById(id);
+	}
+    
+	public void refreshRealmUserTypesCache(String id, String name) {
+		System.out.println("###### prefreshRealmUserTypesCache" + id  + ", " + name);
+		if(cached.getRealmUserTypes().containsValue(id)){
+			for (Entry<String, String> entry : cached.getRealmUserTypes().entrySet()) {
+				System.out.println("###### entry: " + entry.getValue()  + ", " + entry.getKey());
+				if(entry.getValue().equals(id)){
+					System.out.println("###### remove: " + entry.getValue() + ", " + entry.getKey());
+					cached.getRealmUserTypes().remove(entry);
+				}
+			}
+		}else{
+			for (Entry<String, String> entry : cached.getRealmUserTypes().entrySet()) {
+				System.out.println("###### False entry: " + entry.getValue()  + ", " + entry.getKey());
+			}
+		}
+		cached.getRealmUserTypes().put(name, id);
+		System.out.println("###### put succesfully: " + cached.getRealmUserTypes().containsKey(name));
+	}
+	
+	// for user sub type
+	 public Set<UserSubTypeModel> getUserSubTypes() {
+		if (updated != null)
+			return updated.getUserSubTypes();
+
+		Set<UserSubTypeModel> userSubTypes = new HashSet<UserSubTypeModel>();
+		for (String id : cached.getRealmUserSubTypes().values()) {
+			UserSubTypeModel roleById = cacheSession.getUserSubTypeById(id,
+					this);
+			if (roleById == null)
+				continue;
+			userSubTypes.add(roleById);
+		}
+		return userSubTypes;
+	}
+
+	@Override
+	public UserSubTypeModel getUserSubTypeById(String id) {
+		if (updated != null)
+			return updated.getUserSubTypeById(id);
+		return cacheSession.getUserSubTypeById(id, this);
+	}
+
+	@Override
+	public UserSubTypeModel getUserSubType(String name) {
+		if (updated != null)
+			return updated.getUserSubType(name);
+		String id = cached.getRealmUserSubTypes().get(name);
+		if (id == null)
+			return null;
+		return cacheSession.getUserSubTypeById(id, this);
+	}
+
+	@Override
+	public UserSubTypeModel addUserSubType(String name) {
+		getDelegateForUpdate();
+		UserSubTypeModel userSubType = updated.addUserSubType(name);
+		cacheSession.registerUserSubTypeInvalidation(userSubType.getId());
+		return userSubType;
+	}
+
+	@Override
+	public UserSubTypeModel addUserSubType(String id, String name) {
+		getDelegateForUpdate();
+		UserSubTypeModel userSubType = updated.addUserSubType(id, name);
+		cacheSession.registerUserSubTypeInvalidation(userSubType.getId());
+		return userSubType;
+	}
+
+	@Override
+	public boolean removeUserSubType(UserSubTypeModel userSubType) {
+		cacheSession.registerUserSubTypeInvalidation(userSubType.getId());
+		getDelegateForUpdate();
+		return updated.removeUserSubType(userSubType);
+	}
 
 	@Override
 	public boolean removeUserSubTypeById(String id) {
 		cacheSession.registerUserSubTypeInvalidation(id);
-	        getDelegateForUpdate();
-	    return updated.removeUserSubTypeById(id);
+		getDelegateForUpdate();
+		return updated.removeUserSubTypeById(id);
 	}
-    
+
+	public void refreshRealmUserSubTypesCache(String id, String name) {
+		System.out.println("###### refreshRealmUserSubTypesCache" + id  + ", " + name);
+		if(cached.getRealmUserSubTypes().containsValue(id)){
+			for (Entry<String, String> entry : cached.getRealmUserSubTypes().entrySet()) {
+				System.out.println("###### entry: " + entry.getValue()  + ", " + entry.getKey());
+				if(entry.getValue().equals(id)){
+					System.out.println("###### remove: " + entry.getValue() + ", " + entry.getKey());
+					cached.getRealmUserSubTypes().remove(entry);
+				}
+			}
+		}else{
+			for (Entry<String, String> entry : cached.getRealmUserSubTypes().entrySet()) {
+				System.out.println("###### False entry: " + entry.getValue()  + ", " + entry.getKey());
+			}
+		}
+		cached.getRealmUserSubTypes().put(name, id);
+		System.out.println("###### put succesfully: " + cached.getRealmUserSubTypes().containsKey(name));
+	}	
     // KIEN END 
     
     @Override

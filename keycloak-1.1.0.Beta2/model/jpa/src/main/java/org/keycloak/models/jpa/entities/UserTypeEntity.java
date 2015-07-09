@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -19,33 +20,38 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "custom_user_type")
-@NamedQuery(name = "getAllUserType", query = "SELECT c FROM UserTypeEntity c")
+@NamedQueries({
+	@NamedQuery(name = "getAllUserType", query = "SELECT c FROM UserTypeEntity c"),
+	@NamedQuery(name = "getUserTypeById", query = "SELECT c FROM UserTypeEntity c WHERE c.id = :id "),
+	@NamedQuery(name = "getUserTypeByName", query = "SELECT c FROM UserTypeEntity c WHERE c.name = :name ") })
 public class UserTypeEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "custom_user_type_id")
+	@Column(name = "CUSTOM_USER_TYPE_ID")
 	private String id;
-
-	@Column(name = "accepted_tnc")
+ 
+	@Column(name = "ACCEPTED_TNC")
 	private String acceptedTnc;
 
-	@Column(name = "created_by")
+	@Column(name = "CREATED_BY")
 	private String createdBy;
 
-	@Column(name = "created_date")
+	@Column(name = "CREATED_DATE")
 	private Timestamp createdDate;
 
-	@Column(name = "tnc_content")
-	private byte[] tncContent;
+	/*@Column(name = "TNC_CONTENT")
+	private byte[] tncContent;*/
+	@Column(name = "TNC_CONTENT")
+	private String tncContent;
 
-	@Column(name = "updated_by")
+	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 
-	@Column(name = "updated_date")
+	@Column(name = "UPDATED_DATE")
 	private Timestamp updatedDate;
 
-	@Column(name = "user_type")
+	@Column(name = "USER_TYPE")
 	private String name;
 
 	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "customUserType")
@@ -99,11 +105,11 @@ public class UserTypeEntity implements Serializable {
 		this.createdDate = createdDate;
 	}
 
-	public byte[] getTncContent() {
-		return this.tncContent;
+	public String getTncContent() {
+		return tncContent;
 	}
 
-	public void setTncContent(byte[] tncContent) {
+	public void setTncContent(String tncContent) {
 		this.tncContent = tncContent;
 	}
 

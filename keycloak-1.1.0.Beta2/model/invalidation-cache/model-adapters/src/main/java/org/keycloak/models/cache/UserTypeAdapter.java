@@ -1,23 +1,23 @@
 package org.keycloak.models.cache;
 
 import org.keycloak.models.RealmModel;
-import org.keycloak.models.UserSubTypeContainerModel;
-import org.keycloak.models.UserSubTypeModel;
-import org.keycloak.models.cache.entities.CachedUserSubType;
+import org.keycloak.models.UserTypeContainerModel;
+import org.keycloak.models.UserTypeModel;
+import org.keycloak.models.cache.entities.CachedUserType;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
  * @version $Revision: 1 $
  */
-public class UserSubTypeAdapter implements UserSubTypeModel {
+public class UserTypeAdapter implements UserTypeModel {
 
-    protected UserSubTypeModel updated;
-    protected CachedUserSubType cached;
+    protected UserTypeModel updated;
+    protected CachedUserType cached;
     protected RealmCache cache;
     protected CacheRealmProvider cacheSession;
     protected RealmModel realm;
 
-    public UserSubTypeAdapter(CachedUserSubType cached, RealmCache cache, CacheRealmProvider session, RealmModel realm) {
+    public UserTypeAdapter(CachedUserType cached, RealmCache cache, CacheRealmProvider session, RealmModel realm) {
         this.cached = cached;
         this.cache = cache;
         this.cacheSession = session;
@@ -26,8 +26,8 @@ public class UserSubTypeAdapter implements UserSubTypeModel {
 
     protected void getDelegateForUpdate() {
         if (updated == null) {
-            cacheSession.registerUserSubTypeInvalidation(getId());
-            updated = cacheSession.getDelegate().getUserSubTypeById(getId(), realm);
+            cacheSession.registerUserTypeInvalidation(getId());
+            updated = cacheSession.getDelegate().getUserTypeById(getId(), realm);
             if (updated == null) throw new IllegalStateException("Not found in database");
         }
     }
@@ -41,27 +41,21 @@ public class UserSubTypeAdapter implements UserSubTypeModel {
 
     @Override
     public void setName(String name) {
-    	System.out.println("###### cache setName : " + name);
         getDelegateForUpdate();
         updated.setName(name);
-        realm.refreshRealmUserSubTypesCache(getId(), name);
+        realm.refreshRealmUserTypesCache(getId(), name);
     }
     
 	@Override
-	public String getUserType(){
-		if (updated != null) return updated.getUserType();
-        return cached.getUserType();
+	public String getTncContent() {
+		if (updated != null) return updated.getTncContent();
+	    return cached.getTncContent();
 	}
 
 	@Override
-	public void setUserType(String userType) {
-		System.out.println("######cached: " + getUserType());
-		System.out.println("#########new: " + userType);
-		if(!userType.equals(getUserType())){
-			System.out.println("######### gotta update ");
-			getDelegateForUpdate();
-			updated.setUserType(userType);
-		}
+	public void setTncContent(String tncContent) {
+		getDelegateForUpdate();
+        updated.setTncContent(tncContent);
 	}
 	
     @Override
@@ -71,16 +65,16 @@ public class UserSubTypeAdapter implements UserSubTypeModel {
     }
 
     @Override
-    public UserSubTypeContainerModel getContainer() {
+    public UserTypeContainerModel getContainer() {
         return realm;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || !(o instanceof UserSubTypeModel)) return false;
+        if (o == null || !(o instanceof UserTypeModel)) return false;
 
-        UserSubTypeModel that = (UserSubTypeModel) o;
+        UserTypeModel that = (UserTypeModel) o;
         return that.getId().equals(getId());
     }
 
@@ -88,5 +82,6 @@ public class UserSubTypeAdapter implements UserSubTypeModel {
     public int hashCode() {
         return getId().hashCode();
     }
+
 
 }
