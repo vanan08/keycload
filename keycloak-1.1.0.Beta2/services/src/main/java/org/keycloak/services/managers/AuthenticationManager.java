@@ -532,6 +532,9 @@ public class AuthenticationManager {
 
 		AuthenticationStatus status = authenticateInternal(session, realm,
 				formData, username, errorMessage);
+		
+		/*AuthenticationStatus status = authenticateInternal(session, realm,
+				formData, username);*/
 
 		System.out.println("Keycloack: session =" + session);
 		System.out.println("KeyCloack: realm name=" + realm.getName());
@@ -580,6 +583,82 @@ public class AuthenticationManager {
 		}
 
 	}
+	
+	/*protected AuthenticationStatus authenticateInternal(KeycloakSession session, RealmModel realm, MultivaluedMap<String, String> formData, String username) {
+        UserModel user = KeycloakModelUtils.findUserByNameOrEmail(session, realm, username);
+
+        if (user == null) {
+            logger.debugv("User {0} not found", username);
+            return AuthenticationStatus.INVALID_USER;
+        }
+
+        if (!user.isEnabled()) {
+            return AuthenticationStatus.ACCOUNT_DISABLED;
+        }
+
+        Set<String> types = new HashSet<String>();
+
+        for (RequiredCredentialModel credential : realm.getRequiredCredentials()) {
+            types.add(credential.getType());
+        }
+
+        if (types.contains(CredentialRepresentation.PASSWORD)) {
+            List<UserCredentialModel> credentials = new LinkedList<UserCredentialModel>();
+
+            String password = formData.getFirst(CredentialRepresentation.PASSWORD);
+            if (password != null) {
+                credentials.add(UserCredentialModel.password(password));
+            }
+
+            String passwordToken = formData.getFirst(CredentialRepresentation.PASSWORD_TOKEN);
+            if (passwordToken != null) {
+                credentials.add(UserCredentialModel.passwordToken(passwordToken));
+            }
+
+            String totp = formData.getFirst(CredentialRepresentation.TOTP);
+            if (totp != null) {
+                credentials.add(UserCredentialModel.totp(totp));
+            }
+
+            if (password == null && passwordToken == null) {
+                logger.debug("Password not provided");
+                return AuthenticationStatus.MISSING_PASSWORD;
+            }
+
+            logger.debugv("validating password for user: {0}", username);
+
+            if (!session.users().validCredentials(realm, user, credentials)) {
+                return AuthenticationStatus.INVALID_CREDENTIALS;
+            }
+
+            if (user.isTotp() && totp == null) {
+                return AuthenticationStatus.MISSING_TOTP;
+            }
+
+            if (!user.getRequiredActions().isEmpty()) {
+                return AuthenticationStatus.ACTIONS_REQUIRED;
+            } else {
+                return AuthenticationStatus.SUCCESS;
+            }
+        } else if (types.contains(CredentialRepresentation.SECRET)) {
+            String secret = formData.getFirst(CredentialRepresentation.SECRET);
+            if (secret == null) {
+                logger.debug("Secret not provided");
+                return AuthenticationStatus.MISSING_PASSWORD;
+            }
+            if (!session.users().validCredentials(realm, user, UserCredentialModel.secret(secret))) {
+                return AuthenticationStatus.INVALID_CREDENTIALS;
+            }
+            if (!user.getRequiredActions().isEmpty()) {
+                return AuthenticationStatus.ACTIONS_REQUIRED;
+            } else {
+                return AuthenticationStatus.SUCCESS;
+            }
+        } else {
+            logger.warn("Do not know how to authenticate user");
+            return AuthenticationStatus.FAILED;
+        }
+    }*/
 
 	protected AuthenticationStatus authenticateInternalMaster(
 			KeycloakSession session, RealmModel realm,

@@ -31,7 +31,7 @@ public class ModuleService {
 		HttpClient client = new HttpClientBuilder().disableTrustManager().build();
 		
 		try {
-			HttpGet get = new HttpGet("https://localhost:8443/auth/modules/"+moduleName+"/info");
+			HttpGet get = new HttpGet("https://ssopoc.prudential.com.sg/auth/modules/"+moduleName+"/info");
 			HttpResponse response = client.execute(get);
 			
 			if (response.getStatusLine().getStatusCode() != 200) {
