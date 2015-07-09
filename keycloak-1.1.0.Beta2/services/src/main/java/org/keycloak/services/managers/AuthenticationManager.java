@@ -783,7 +783,7 @@ public class AuthenticationManager {
 				return AuthenticationStatus.SUCCESS;
 			} else {
 				// forward to 1fa
-				return AuthenticationStatus.INVALID_USER;
+				return AuthenticationStatus.TNC_CANCEL;
 			}
 		}
 
@@ -1133,7 +1133,8 @@ public class AuthenticationManager {
 	}
 
 	public enum AuthenticationStatus {
-		SUCCESS, ACCOUNT_TEMPORARILY_DISABLED, ACCOUNT_DISABLED, ACTIONS_REQUIRED, INVALID_USER, INVALID_CREDENTIALS, MISSING_PASSWORD, MISSING_TOTP, FAILED, TNC
+		SUCCESS, ACCOUNT_TEMPORARILY_DISABLED, ACCOUNT_DISABLED, ACTIONS_REQUIRED, INVALID_USER, INVALID_CREDENTIALS, MISSING_PASSWORD, MISSING_TOTP, FAILED, TNC,
+		TNC_CANCEL
 	}
 
 	public class AuthResult {

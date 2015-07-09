@@ -2,14 +2,18 @@ package org.keycloak.models.jpa;
 
 import java.sql.Timestamp;
 
+import javax.persistence.EntityManager;
+
 import org.keycloak.models.CustomUserModel;
 import org.keycloak.models.jpa.entities.CustomUserEntity;
 
 public class CustomUserAdapter implements CustomUserModel {
 
+	protected EntityManager em;
 	protected CustomUserEntity customUserEntity;
 	
-	public CustomUserAdapter(CustomUserEntity customUserEntity) {
+	public CustomUserAdapter(EntityManager em, CustomUserEntity customUserEntity) {
+		this.em = em;
 		this.customUserEntity = customUserEntity;
 	}
 	
@@ -81,6 +85,11 @@ public class CustomUserAdapter implements CustomUserModel {
 	@Override
 	public void setUpdateddate(Timestamp updateddate) {
 		customUserEntity.setUpdateddate(updateddate);
+	}
+	
+	@Override
+	public void updateCustomUser() {
+		em.flush();
 	}
 
 }
