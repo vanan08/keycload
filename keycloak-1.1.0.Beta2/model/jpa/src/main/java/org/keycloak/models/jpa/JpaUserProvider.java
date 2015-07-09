@@ -87,6 +87,7 @@ public class JpaUserProvider implements UserProvider {
     private void removeUser(UserEntity user) {
         em.createNamedQuery("deleteUserRoleMappingsByUser").setParameter("user", user).executeUpdate();
         em.createNamedQuery("deleteSocialLinkByUser").setParameter("user", user).executeUpdate();
+        em.createNamedQuery("deleteCustomUserByUser").setParameter("user", user).executeUpdate();
         em.remove(user);
     }
 
