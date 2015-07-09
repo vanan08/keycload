@@ -52,7 +52,7 @@
     </dependencies>
 
     <build>
-        <finalName>pruone</finalName>
+        <finalName>root</finalName>
         <plugins>
             <plugin>
                 <groupId>org.jboss.as.plugins</groupId>

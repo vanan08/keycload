@@ -38,7 +38,7 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
         <li><a href="#">John Malkovich</a></li>
-        <li><a href="javascript:getModuleByName('LOGOUT');">Logout</a></li>
+        <li><a href="?GLO=true">Logout</a></li>
       </ul>
       </div>
       </div>
@@ -220,7 +220,8 @@ function getModuleByName(name) {
 	$.get("/auth/modules/"+name, function(data, status){
 		if(status == 'success'){
 			console.log(data);
-			window.location.href = data;
+			window.open(data, "_blank");
+			//window.location.href = data;
 	}else{
 		console.log(status);
 	}

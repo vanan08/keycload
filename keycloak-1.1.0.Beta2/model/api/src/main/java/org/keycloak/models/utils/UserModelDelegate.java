@@ -209,8 +209,8 @@ public class UserModelDelegate implements UserModel {
 	}
 
 	@Override
-	public void addCustomUser(CustomUserModel customUserModel) {
-		delegate.addCustomUser(customUserModel);
+	public CustomUserModel addCustomUser(String acceptedTNC) {
+		return delegate.addCustomUser(acceptedTNC);
 	}
 
 	@Override

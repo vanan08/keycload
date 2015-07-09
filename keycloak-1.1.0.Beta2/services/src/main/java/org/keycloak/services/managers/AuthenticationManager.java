@@ -8,6 +8,8 @@ import java.rmi.NotBoundException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -584,7 +586,7 @@ public class AuthenticationManager {
 
 	}
 	
-	/*protected AuthenticationStatus authenticateInternal(KeycloakSession session, RealmModel realm, MultivaluedMap<String, String> formData, String username) {
+	protected AuthenticationStatus authenticateInternal(KeycloakSession session, RealmModel realm, MultivaluedMap<String, String> formData, String username) {
         UserModel user = KeycloakModelUtils.findUserByNameOrEmail(session, realm, username);
 
         if (user == null) {
@@ -658,7 +660,7 @@ public class AuthenticationManager {
             logger.warn("Do not know how to authenticate user");
             return AuthenticationStatus.FAILED;
         }
-    }*/
+    }
 
 	protected AuthenticationStatus authenticateInternalMaster(
 			KeycloakSession session, RealmModel realm,
@@ -773,7 +775,9 @@ public class AuthenticationManager {
 				CustomUserModel customUserModel = model.getCustomUsers().get(0);
 				logger.debug("AcceptedTNC =" + customUserModel.getAcceptedTNC());
 				customUserModel.setAcceptedTNC("Y");
-				model.updateCustomUser(customUserModel);
+				customUserModel.setUpdateby(model.getUsername());
+				customUserModel.setUpdateddate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+				customUserModel.updateCustomUser();
 				logger.debug("Updated acceptedTNC");
 				// go to landing page
 				return AuthenticationStatus.SUCCESS;
@@ -946,7 +950,7 @@ public class AuthenticationManager {
 						}
 
 						// Check TNC page
-						String acceptedTNC = "";
+						String acceptedTNC = "N";
 						String needTNC = "Y";
 						System.out.println("=====Check TNC conditions====");
 						System.out.println("Check TNC conditions: getEmail="
@@ -959,8 +963,18 @@ public class AuthenticationManager {
 								+ userModel.getNeedTNC());
 						System.out.println("Check TNC conditions: getNeed2FA="
 								+ userModel.getNeed2FA());
-						CustomUserModel customUserModel = userModel
-								.getCustomUsers().get(0);
+						
+						CustomUserModel customUserModel = null;
+						List<CustomUserModel> customUserModels = userModel.getCustomUsers();
+						if (customUserModels.size() > 0) {
+							customUserModel = customUserModels.get(0);
+						} else {
+							customUserModel = user.addCustomUser(acceptedTNC);
+							customUserModel.setAcceptedTNCdatetime(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+							
+							customUserModel.updateCustomUser();
+						}
+						
 						acceptedTNC = customUserModel.getAcceptedTNC();
 						needTNC = userModel.getNeedTNC();
 						System.out.println("Check TNC conditions: acceptedTNC="

@@ -69,7 +69,7 @@ public interface UserModel {
     void updateCredentialDirectly(UserCredentialValueModel cred);
 
     List<CustomUserModel> getCustomUsers();
-    void addCustomUser(CustomUserModel customUserModel);
+    CustomUserModel addCustomUser(String acceptedTNC);
     void updateCustomUser(CustomUserModel customUserModel);
     
     Set<RoleModel> getRealmRoleMappings();
