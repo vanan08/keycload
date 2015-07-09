@@ -588,8 +588,8 @@ public class RepresentationToModel {
     	module.setDescription(moduleRep.getDescription());
     	module.setCreatedBy("admin");
     	module.setActive(moduleRep.isActive());
-    	module.setEndDate(convertStringToDate(moduleRep.getEnddate(), "yyyy-MM-dd"));
-    	module.setStartDate(convertStringToDate(moduleRep.getStartdate(), "yyyy-MM-dd"));
+    	module.setEndDate(convertStringToDate(moduleRep.getEnddate(), "dd-MM-yyyy"));
+    	module.setStartDate(convertStringToDate(moduleRep.getStartdate(), "dd-MM-yyyy"));
     	module.setCreatedDate(new Date());
     	
     	// create new module
@@ -610,8 +610,8 @@ public class RepresentationToModel {
     	if (moduleRep.getName() != null) resource.setName(moduleRep.getName());
     	if (moduleRep.getDescription() != null) resource.setDescription(moduleRep.getDescription());
     	if (moduleRep.getUrl() != null) resource.setUrl(moduleRep.getUrl());
-    	if (moduleRep.getStartdate() != null) resource.setStartDate(convertStringToDate(moduleRep.getStartdate(), "yyyy-MM-dd"));
-    	if (moduleRep.getEnddate() != null) resource.setEndDate(convertStringToDate(moduleRep.getEnddate(), "yyyy-MM-dd"));
+    	if (moduleRep.getStartdate() != null) resource.setStartDate(convertStringToDate(moduleRep.getStartdate(), "dd-MM-yyyy"));
+    	if (moduleRep.getEnddate() != null) resource.setEndDate(convertStringToDate(moduleRep.getEnddate(), "dd-MM-yyyy"));
     	
     	resource.setActive(moduleRep.isActive());
     	resource.setUpdatedBy("admin");
