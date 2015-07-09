@@ -1,5 +1,13 @@
 package org.keycloak.models.utils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.ClaimMask;
 import org.keycloak.models.ClientModel;
@@ -14,6 +22,7 @@ import org.keycloak.models.UserCredentialModel;
 import org.keycloak.models.UserFederationProviderModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.UserSessionModel;
+import org.keycloak.models.UserSubTypeModel;
 import org.keycloak.representations.idm.ApplicationRepresentation;
 import org.keycloak.representations.idm.ClaimRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
@@ -26,14 +35,7 @@ import org.keycloak.representations.idm.SocialLinkRepresentation;
 import org.keycloak.representations.idm.UserFederationProviderRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.representations.idm.UserSessionRepresentation;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.keycloak.representations.idm.UserSubTypeRepresentation;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -86,6 +88,14 @@ public class ModelToRepresentation {
         return rep;
     }
 
+    public static UserSubTypeRepresentation toRepresentation(UserSubTypeModel userSubType) {
+        UserSubTypeRepresentation rep = new UserSubTypeRepresentation();
+           rep.setId(userSubType.getId());
+           rep.setName(userSubType.getName());
+           rep.setUserType(userSubType.getUserType());
+           return rep;
+    }
+    
     public static RealmRepresentation toRepresentation(RealmModel realm, boolean internal) {
         RealmRepresentation rep = new RealmRepresentation();
         rep.setId(realm.getId());

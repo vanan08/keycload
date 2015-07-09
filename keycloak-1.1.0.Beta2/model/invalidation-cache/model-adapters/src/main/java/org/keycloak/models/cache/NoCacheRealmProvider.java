@@ -7,6 +7,7 @@ import org.keycloak.models.OAuthClientModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RealmProvider;
 import org.keycloak.models.RoleModel;
+import org.keycloak.models.UserSubTypeModel;
 
 import java.util.List;
 
@@ -49,6 +50,10 @@ public class NoCacheRealmProvider implements CacheRealmProvider {
 
     @Override
     public void registerRoleInvalidation(String id) {
+    }
+    
+    @Override
+    public void registerUserSubTypeInvalidation(String id) {
     }
 
     @Override
@@ -114,5 +119,10 @@ public class NoCacheRealmProvider implements CacheRealmProvider {
 	@Override
 	public ModuleModel getModuleByName(String name) {
 		return getDelegate().getModuleByName(name);
+	}
+
+	@Override
+	public UserSubTypeModel getUserSubTypeById(String id, RealmModel realm) {
+		return getDelegate().getUserSubTypeById(id, realm);
 	}
 }

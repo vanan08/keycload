@@ -4,6 +4,7 @@ import org.keycloak.models.cache.entities.CachedApplication;
 import org.keycloak.models.cache.entities.CachedOAuthClient;
 import org.keycloak.models.cache.entities.CachedRealm;
 import org.keycloak.models.cache.entities.CachedRole;
+import org.keycloak.models.cache.entities.CachedUserSubType;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -44,6 +45,7 @@ public interface RealmCache {
 
     void addCachedRole(CachedRole role);
 
+
     void invalidateCachedRoleById(String id);
 
 
@@ -52,4 +54,16 @@ public interface RealmCache {
     boolean isEnabled();
 
     void setEnabled(boolean enabled);
+    
+    // Kien Start cached for usersubtype
+    void addCachedUserSubType(CachedUserSubType userSubType);
+
+	void invalidateCachedUserSubTypeById(String id);
+
+	void invalidateUserSubTypeById(String id);
+
+	void invalidateUserSubType(CachedUserSubType userSubType);
+
+	CachedUserSubType getUserSubType(String id);
+	// Kien End cached for usersubtype
 }

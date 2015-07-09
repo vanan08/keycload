@@ -1,5 +1,24 @@
 package org.keycloak.services.resources.admin;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.cache.NoCache;
 import org.jboss.resteasy.spi.NotFoundException;
@@ -29,24 +48,6 @@ import org.keycloak.services.managers.ResourceAdminManager;
 import org.keycloak.services.managers.UsersSyncManager;
 import org.keycloak.services.resources.flows.Flows;
 import org.keycloak.timer.TimerProvider;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Base resource class for the admin REST api of one realm
@@ -146,7 +147,30 @@ public class RealmAdminResource {
     public RoleContainerResource getRoleContainerResource() {
         return new RoleContainerResource(realm, auth, realm);
     }
-
+    
+    /** KIEN START
+     * Base path for managing userTypes in this realm.
+     *
+     * @return
+     */
+//    @Path("user-types")
+//    public UserTypeContainerResource userTypes() {
+//    	return new UserTypeContainerResource(realm, auth, tokenManager);
+//    }
+    
+    /**
+     * Base path for managing users in this realm.
+     *
+     * @return
+     */
+    @Path("user-sub-types")
+    public UserSubTypeContainerResource userSubTypes() {
+        return new UserSubTypeContainerResource(realm, auth, realm);
+    }
+    
+    /*
+     * KIEN END
+     */
     /**
      * Get the top-level representation of the realm.  It will not include nested information like User, Application, or OAuth
      * Client representations.
@@ -445,4 +469,6 @@ public class RealmAdminResource {
         boolean result = new LDAPConnectionTestManager().testLDAP(action, connectionUrl, bindDn, bindCredential);
         return result ? Response.noContent().build() : Flows.errors().error("LDAP test error", Response.Status.BAD_REQUEST);
     }
+    
+    
 }

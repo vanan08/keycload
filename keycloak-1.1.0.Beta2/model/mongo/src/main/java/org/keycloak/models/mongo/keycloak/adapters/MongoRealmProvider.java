@@ -13,6 +13,7 @@ import org.keycloak.models.OAuthClientModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RealmProvider;
 import org.keycloak.models.RoleModel;
+import org.keycloak.models.UserSubTypeModel;
 import org.keycloak.models.mongo.keycloak.entities.MongoApplicationEntity;
 import org.keycloak.models.mongo.keycloak.entities.MongoOAuthClientEntity;
 import org.keycloak.models.mongo.keycloak.entities.MongoRealmEntity;
@@ -132,6 +133,12 @@ public class MongoRealmProvider implements RealmProvider {
 
 	@Override
 	public ModuleModel getModuleByName(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserSubTypeModel getUserSubTypeById(String id, RealmModel realm) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -1,11 +1,12 @@
 package org.keycloak.models.cache;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.keycloak.models.cache.entities.CachedApplication;
 import org.keycloak.models.cache.entities.CachedOAuthClient;
 import org.keycloak.models.cache.entities.CachedRealm;
 import org.keycloak.models.cache.entities.CachedRole;
-
-import java.util.concurrent.ConcurrentHashMap;
+import org.keycloak.models.cache.entities.CachedUserSubType;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -18,6 +19,7 @@ public class MemoryRealmCache implements RealmCache {
     protected ConcurrentHashMap<String, CachedApplication> applicationCache = new ConcurrentHashMap<String, CachedApplication>();
     protected ConcurrentHashMap<String, CachedOAuthClient> clientCache = new ConcurrentHashMap<String, CachedOAuthClient>();
     protected ConcurrentHashMap<String, CachedRole> roleCache = new ConcurrentHashMap<String, CachedRole>();
+    protected ConcurrentHashMap<String, CachedUserSubType> userSubTypeCache = new ConcurrentHashMap<String, CachedUserSubType>();
     protected volatile boolean enabled = true;
 
     @Override
@@ -27,6 +29,7 @@ public class MemoryRealmCache implements RealmCache {
         applicationCache.clear();
         clientCache.clear();
         roleCache.clear();
+        userSubTypeCache.clear();
     }
 
     @Override
@@ -138,10 +141,40 @@ public class MemoryRealmCache implements RealmCache {
     public void addCachedRole(CachedRole role) {
         if (!enabled) return;
         roleCache.put(role.getId(), role);
-    }
+    }    
 
     @Override
     public void invalidateCachedRoleById(String id) {
         roleCache.remove(id);
     }
+    
+    // Kien Start cached for usersubtype
+    @Override
+    public CachedUserSubType getUserSubType(String id) {
+        if (!enabled) return null;
+        return userSubTypeCache.get(id);
+    }
+
+    @Override
+    public void invalidateUserSubType(CachedUserSubType userSubType) {
+        userSubTypeCache.remove(userSubType);
+    }
+
+    @Override
+    public void invalidateUserSubTypeById(String id) {
+        userSubTypeCache.remove(id);
+    }
+
+    @Override
+    public void addCachedUserSubType(CachedUserSubType userSubType) {
+        if (!enabled) return;
+        userSubTypeCache.put(userSubType.getId(), userSubType);
+    }    
+
+    @Override
+    public void invalidateCachedUserSubTypeById(String id) {
+        userSubTypeCache.remove(id);
+    }
+    
+    // Kien End cached for usersubtype
 }

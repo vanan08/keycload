@@ -9,6 +9,7 @@ import org.keycloak.models.RealmProvider;
 import org.keycloak.models.RequiredCredentialModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserFederationProviderModel;
+import org.keycloak.models.UserSubTypeModel;
 import org.keycloak.models.cache.RealmCache;
 
 import java.util.ArrayList;
@@ -77,6 +78,7 @@ public class CachedRealm {
     private Set<String> eventsListeners = new HashSet<String>();
     private List<String> defaultRoles = new LinkedList<String>();
     private Map<String, String> realmRoles = new HashMap<String, String>();
+    private Map<String, String> realmUserSubTypes = new HashMap<String, String>();
     private Map<String, String> applications = new HashMap<String, String>();
     private Map<String, String> clients = new HashMap<String, String>();
 
@@ -141,6 +143,12 @@ public class CachedRealm {
             CachedRole cachedRole = new CachedRealmRole(role, model);
             cache.addCachedRole(cachedRole);
         }
+        
+        for (UserSubTypeModel userSubType : model.getUserSubTypes()) {
+        	realmUserSubTypes.put(userSubType.getName(), userSubType.getId());
+            CachedUserSubType cachedUserSubType = new CachedRealmUserSubType(userSubType, model);
+            cache.addCachedUserSubType(cachedUserSubType);
+        }
 
         for (ApplicationModel app : model.getApplications()) {
             applications.put(app.getName(), app.getId());
@@ -175,6 +183,10 @@ public class CachedRealm {
 
     public Map<String, String> getRealmRoles() {
         return realmRoles;
+    }
+    
+    public Map<String, String> getRealmUserSubTypes() {
+        return realmUserSubTypes;
     }
 
     public Map<String, String> getApplications() {

@@ -1,5 +1,11 @@
 package org.keycloak.models.cache;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakTransaction;
@@ -8,18 +14,15 @@ import org.keycloak.models.OAuthClientModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RealmProvider;
 import org.keycloak.models.RoleModel;
+import org.keycloak.models.UserSubTypeModel;
 import org.keycloak.models.cache.entities.CachedApplication;
 import org.keycloak.models.cache.entities.CachedApplicationRole;
 import org.keycloak.models.cache.entities.CachedOAuthClient;
 import org.keycloak.models.cache.entities.CachedRealm;
 import org.keycloak.models.cache.entities.CachedRealmRole;
+import org.keycloak.models.cache.entities.CachedRealmUserSubType;
 import org.keycloak.models.cache.entities.CachedRole;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.keycloak.models.cache.entities.CachedUserSubType;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -35,12 +38,14 @@ public class DefaultCacheRealmProvider implements CacheRealmProvider {
     protected Set<String> realmInvalidations = new HashSet<String>();
     protected Set<String> appInvalidations = new HashSet<String>();
     protected Set<String> roleInvalidations = new HashSet<String>();
+    protected Set<String> userSubTypeInvalidations = new HashSet<String>();
     protected Set<String> clientInvalidations = new HashSet<String>();
     protected Set<String> userInvalidations = new HashSet<String>();
     protected Map<String, RealmModel> managedRealms = new HashMap<String, RealmModel>();
     protected Map<String, ApplicationModel> managedApplications = new HashMap<String, ApplicationModel>();
     protected Map<String, OAuthClientModel> managedClients = new HashMap<String, OAuthClientModel>();
     protected Map<String, RoleModel> managedRoles = new HashMap<String, RoleModel>();
+    protected Map<String, UserSubTypeModel> managedUserSubTypes = new HashMap<String, UserSubTypeModel>();
 
     protected boolean clearAll;
 
@@ -83,7 +88,12 @@ public class DefaultCacheRealmProvider implements CacheRealmProvider {
     public void registerRoleInvalidation(String id) {
         roleInvalidations.add(id);
     }
-
+    
+    @Override
+    public void registerUserSubTypeInvalidation(String id) {
+    	userSubTypeInvalidations.add(id);
+    }
+    
     @Override
     public void registerOAuthClientInvalidation(String id) {
         clientInvalidations.add(id);
@@ -100,6 +110,9 @@ public class DefaultCacheRealmProvider implements CacheRealmProvider {
         }
         for (String id : roleInvalidations) {
             cache.invalidateRoleById(id);
+        }
+        for (String id : userSubTypeInvalidations) {
+        	cache.invalidateUserSubTypeById(id);
         }
         for (String id : appInvalidations) {
             cache.invalidateCachedApplicationById(id);
@@ -321,6 +334,32 @@ public class DefaultCacheRealmProvider implements CacheRealmProvider {
 	@Override
 	public ModuleModel getModuleByName(String name) {
 		return getDelegate().getModuleByName(name);
+	}
+
+	@Override
+	public UserSubTypeModel getUserSubTypeById(String id, RealmModel realm) {
+		if (!cache.isEnabled()) return getDelegate().getUserSubTypeById(id, realm);
+        CachedUserSubType cached = cache.getUserSubType(id);
+        if (cached != null && !cached.getRealm().equals(realm.getId())) {
+            cached = null;
+        }
+
+        if (cached == null) {
+            UserSubTypeModel model = getDelegate().getUserSubTypeById(id, realm);
+            if (model == null) return null;
+            if (userSubTypeInvalidations.contains(id)) return model;
+            cached = new CachedRealmUserSubType(model, realm);
+            cache.addCachedUserSubType(cached);
+
+        } else if (userSubTypeInvalidations.contains(id)) {
+            return getDelegate().getUserSubTypeById(id, realm);
+        } else if (managedUserSubTypes.containsKey(id)) {
+            return managedUserSubTypes.get(id);
+        }
+        
+        UserSubTypeAdapter adapter = new UserSubTypeAdapter(cached, cache, this, realm);
+        managedUserSubTypes.put(id, adapter);
+        return adapter;
 	}
 
 }

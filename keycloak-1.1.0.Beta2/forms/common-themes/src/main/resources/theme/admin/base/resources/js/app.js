@@ -958,7 +958,7 @@ module.config([ '$routeProvider', function($routeProvider) {
                     return RealmLoader();
                 }
             },
-            controller : 'UserSubTypeCtrl'
+            controller : 'UserSubTypeListCtrl'
         })
         .when('/create/user-sub-type/:realm', {
             templateUrl : 'partials/user-sub-type-detail.html',
@@ -966,7 +966,7 @@ module.config([ '$routeProvider', function($routeProvider) {
                 realm : function(RealmLoader) {
                     return RealmLoader();
                 },
-                usersubtype : function() {
+                userSubType : function() {
                     console.log("##### Create User Type in app.js   #####");
                     return {};
                 },
@@ -979,7 +979,7 @@ module.config([ '$routeProvider', function($routeProvider) {
                 realm : function(RealmLoader) {
                     return RealmLoader();
                 },
-                usersubtype : function(UserSubTypeLoader) {
+                userSubType : function(UserSubTypeLoader) {
                 	console.log("##### Edit User Type in app.js   #####");
                     return UserSubTypeLoader();
                 },

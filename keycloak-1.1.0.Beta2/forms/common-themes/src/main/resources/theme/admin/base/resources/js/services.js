@@ -1147,9 +1147,9 @@ module.factory('PasswordPolicy', function() {
 
 /*Start add more by HieuDM*/
 module.factory('UserType', function($resource) {
-    return $resource(authUrl + '/admin/realms/:realm/userTypes/:userTypeId', {
+    return $resource(authUrl + '/admin/realms/:realm/user-types/:userTypeId', {
         realm : '@realm',
-        userId : '@userTypeId'
+        userTypeId : '@userTypeId'
     }, {
         update : {
             method : 'PUT'
@@ -1158,9 +1158,9 @@ module.factory('UserType', function($resource) {
 });
 
 module.factory('UserTypeRole', function($resource) {
-    return $resource(authUrl + '/admin/realms/:realm/userTypeRoles/:userTypeId', {
+    return $resource(authUrl + '/admin/realms/:realm/user-type-roles/:userTypeId', {
         realm : '@realm',
-        usertype : "@usertype",
+        userTypeId : "@userTypeId",
         role : '@role'
     },  {
         update : {
@@ -1170,9 +1170,9 @@ module.factory('UserTypeRole', function($resource) {
 });
 
 module.factory('UserSubType', function($resource) {
-    return $resource(authUrl + '/admin/realms/:realm/userSubTypes/:userSubTypeId', {
+    return $resource(authUrl + '/admin/realms/:realm/user-sub-types/:userSubType', {
         realm : '@realm',
-        userId : '@userSubTypeId'
+        userSubType : '@userSubType'
     }, {
         update : {
             method : 'PUT'

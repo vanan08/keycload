@@ -20,6 +20,9 @@
         <class>org.keycloak.models.jpa.entities.ModuleEntity</class>
         <class>org.keycloak.models.jpa.entities.ModuleRoleMappingEntity</class>
         <class>org.keycloak.models.jpa.entities.CustomUserEntity</class>
+        <class>org.keycloak.models.jpa.entities.UserSubTypeEntity</class>
+        <class>org.keycloak.models.jpa.entities.UserTypeEntity</class>
+        <class>org.keycloak.models.jpa.entities.UserTypeAppRoleEntity</class>
 
         <!-- JpaUserSessionProvider -->
         <class>org.keycloak.models.sessions.jpa.entities.ClientSessionEntity</class>
