@@ -1,28 +1,5 @@
 package org.keycloak.models.jpa;
 
-import org.keycloak.enums.SslRequired;
-import org.keycloak.models.ApplicationModel;
-import org.keycloak.models.ClientModel;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.ModuleModel;
-import org.keycloak.models.OAuthClientModel;
-import org.keycloak.models.PasswordPolicy;
-import org.keycloak.models.RealmModel;
-import org.keycloak.models.RequiredCredentialModel;
-import org.keycloak.models.RoleModel;
-import org.keycloak.models.UserFederationProviderModel;
-import org.keycloak.models.jpa.entities.ApplicationEntity;
-import org.keycloak.models.jpa.entities.OAuthClientEntity;
-import org.keycloak.models.jpa.entities.RealmAttributeEntity;
-import org.keycloak.models.jpa.entities.RealmEntity;
-import org.keycloak.models.jpa.entities.RequiredCredentialEntity;
-import org.keycloak.models.jpa.entities.RoleEntity;
-import org.keycloak.models.jpa.entities.UserFederationProviderEntity;
-import org.keycloak.models.utils.KeycloakModelUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
 import java.security.Key;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -38,6 +15,31 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
+import org.keycloak.enums.SslRequired;
+import org.keycloak.models.ApplicationModel;
+import org.keycloak.models.ClientModel;
+import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
+import org.keycloak.models.OAuthClientModel;
+import org.keycloak.models.PasswordPolicy;
+import org.keycloak.models.RealmModel;
+import org.keycloak.models.RequiredCredentialModel;
+import org.keycloak.models.RoleModel;
+import org.keycloak.models.UserFederationProviderModel;
+import org.keycloak.models.UserSubTypeModel;
+import org.keycloak.models.jpa.entities.ApplicationEntity;
+import org.keycloak.models.jpa.entities.OAuthClientEntity;
+import org.keycloak.models.jpa.entities.RealmAttributeEntity;
+import org.keycloak.models.jpa.entities.RealmEntity;
+import org.keycloak.models.jpa.entities.RequiredCredentialEntity;
+import org.keycloak.models.jpa.entities.RoleEntity;
+import org.keycloak.models.jpa.entities.UserFederationProviderEntity;
+import org.keycloak.models.jpa.entities.UserSubTypeEntity;
+import org.keycloak.models.utils.KeycloakModelUtils;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -1021,7 +1023,77 @@ public class RealmAdapter implements RealmModel {
         if (role == null) return false;
         return role.getContainer().removeRole(role);
     }
+    
+    
+    // KIEN START implement adaper function
 
+    @Override
+    public Set<UserSubTypeModel> getUserSubTypes() {
+        Set<UserSubTypeModel> list = new HashSet<UserSubTypeModel>();
+        TypedQuery<UserSubTypeEntity> query = em.createNamedQuery("getAllUserSubType", UserSubTypeEntity.class);
+        List<UserSubTypeEntity> userSubTypes = query.getResultList();
+        if (userSubTypes == null) return list;
+        for (UserSubTypeEntity entity : userSubTypes) {
+            list.add(new UserSubTypeAdapter(this, em, entity));
+        }
+        return list;
+    }
+
+    @Override
+    public UserSubTypeModel getUserSubTypeById(String id) {
+    	UserSubTypeEntity entity = em.find(UserSubTypeEntity.class, id);
+		if (entity == null)
+			return null;
+		return new UserSubTypeAdapter(this, em, entity);
+    }
+
+    @Override
+    public UserSubTypeModel getUserSubType(String name) {
+        TypedQuery<UserSubTypeEntity> query = em.createNamedQuery("getUserSubTypeByName", UserSubTypeEntity.class);
+        query.setParameter("name", name);
+        List<UserSubTypeEntity> userSubTypes = query.getResultList();
+        if (userSubTypes.size() == 0) return null;
+        return new UserSubTypeAdapter(this, em, userSubTypes.get(0));
+    }
+
+    @Override
+    public UserSubTypeModel addUserSubType(String name) {
+        return this.addUserSubType(KeycloakModelUtils.generateId(), name);
+    }
+
+    @Override
+    public UserSubTypeModel addUserSubType(String id, String name) {
+        UserSubTypeEntity entity = new UserSubTypeEntity();
+        entity.setId(id);
+        entity.setName(name);
+        em.persist(entity);
+        em.flush();
+        return new UserSubTypeAdapter(this, em, entity);
+    }
+
+    @Override
+    public boolean removeUserSubType(UserSubTypeModel userSubType) {
+        if (userSubType == null) {
+            return false;
+        }
+        
+        if (!userSubType.getContainer().equals(this)) return false;
+        UserSubTypeEntity userSubTypeEntity = UserSubTypeAdapter.toUserSubTypeEntity(userSubType, em);
+        //em.createNativeQuery("delete from COMPOSITE_ROLE where CHILD_ROLE = :userSubType").setParameter("userSubType", userSubTypeEntity).executeUpdate();
+        //em.createNamedQuery("deleteScopeMappingByUserSubType").setParameter("userSubType", userSubTypeEntity).executeUpdate();
+        em.remove(userSubTypeEntity);
+
+        return true;
+    }
+
+    @Override
+    public boolean removeUserSubTypeById(String id) {
+        UserSubTypeModel userSubType = getUserSubTypeById(id);
+        if (userSubType == null) return false;
+        return userSubType.getContainer().removeUserSubType(userSubType);
+    }
+	// KIEN END implement adaper function
+    
     @Override
     public PasswordPolicy getPasswordPolicy() {
         if (passwordPolicy == null) {
@@ -1139,5 +1211,4 @@ public class RealmAdapter implements RealmModel {
         realm.setMasterAdminApp(appEntity);
         em.flush();
     }
-
 }

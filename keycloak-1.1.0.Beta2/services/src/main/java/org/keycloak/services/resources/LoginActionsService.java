@@ -398,6 +398,12 @@ public class LoginActionsService {
                         .setFormData(formData)
                         .setClientSessionCode(clientCode.getCode())
                         .createLogin();
+            case TNC_CANCEL:
+//                event.error(Errors.USER_NOT_FOUND);
+                return Flows.forms(this.session, realm, client, uriInfo)
+                        .setFormData(formData)
+                        .setClientSessionCode(clientCode.getCode())
+                        .createLogin();
             default:
                 event.error(Errors.INVALID_USER_CREDENTIALS);
                 return Flows.forms(this.session, realm, client, uriInfo).setError(Messages.INVALID_USER)

@@ -33,6 +33,18 @@
 		        }
 		    });
 		}
+		
+		function getModuleByName(name) {
+			$.get("/auth/modules/"+name, function(data, status){
+				if(status == 'success'){
+					console.log(data);
+					window.open(data, "_blank");
+					//window.location.href = data;
+			}else{
+				console.log(status);
+			}
+		  });
+		} 
 	</script>
    
     <#if properties.meta?has_content>
@@ -80,28 +92,28 @@
 	  <div class="col-md-8 col-sm-6"></div>
 	  <div class="col-md-4 col-sm-6">
 	  <div class="cls-content-sm panel">
-	   		<#if displayMessage && message?has_content>
-                <div id="kc-feedback" class="feedback-${message.type} ${properties.kcFeedBackClass!}">
-                    <div id="kc-feedback-wrapper">
-                        <span class="kc-feedback-text">${message.summary}</span>
-                    </div>
-                </div>
-            </#if>
+	   		
 				<div class="panel-body">
 				<p class="pad-btm"></p>
 					
 					<#nested "form">
-					
+					<#if displayMessage && message?has_content>
+		                <div id="kc-feedback" class="feedback-${message.type} ${properties.kcFeedBackClass!}">
+		                    <div id="kc-feedback-wrapper">
+		                        <span class="kc-feedback-text">${message.summary}</span>
+		                    </div>
+		                </div>
+		            </#if>
                     <div class="links_sec clearfix">
                     <div class="form-group clearfix">
                     <div class="col-md-6 col-sm-6">
                     <a class="link_btn" href="javascript:forgetPasswordLink();">&raquo; <span>FORGOT PASSWORD ?</span> </a>
                     </div>
-                     <div class="col-md-6 col-sm-6"><a class="link_btn" href="#">&raquo; <span>TERMS &amp; CONDITIONS </span></a></div>
+                     <div class="col-md-6 col-sm-6"><a class="link_btn" href="javascript:getModuleByName('TNC');">&raquo; <span>TERMS &amp; CONDITIONS </span></a></div>
                     </div>
                     </div>
                        <div class="form-group clearfix">
-                    <div class="col-md-6 col-sm-6"><a class="link_btn" href="#">&raquo; <span>SECURITY &amp; YOU</span> </a></div>
+                    <div class="col-md-6 col-sm-6"><a class="link_btn" href="javascript:getModuleByName('SECURITYNYOU');">&raquo; <span>SECURITY &amp; YOU</span> </a></div>
                      <div class="col-md-6 col-sm-6"></div>
                     </div>
                     </div>

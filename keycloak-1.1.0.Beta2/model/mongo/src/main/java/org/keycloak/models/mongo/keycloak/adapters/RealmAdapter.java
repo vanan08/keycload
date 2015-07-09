@@ -2,6 +2,7 @@ package org.keycloak.models.mongo.keycloak.adapters;
 
 import com.mongodb.DBObject;
 import com.mongodb.QueryBuilder;
+
 import org.jboss.logging.Logger;
 import org.keycloak.connections.mongo.api.context.MongoStoreInvocationContext;
 import org.keycloak.enums.SslRequired;
@@ -15,6 +16,7 @@ import org.keycloak.models.RealmProvider;
 import org.keycloak.models.RequiredCredentialModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserFederationProviderModel;
+import org.keycloak.models.UserSubTypeModel;
 import org.keycloak.models.entities.RequiredCredentialEntity;
 import org.keycloak.models.entities.UserFederationProviderEntity;
 import org.keycloak.models.mongo.keycloak.entities.MongoApplicationEntity;
@@ -987,6 +989,48 @@ public class RealmAdapter extends AbstractMongoAdapter<MongoRealmEntity> impleme
     public int hashCode() {
         return getId().hashCode();
     }
+
+	@Override
+	public UserSubTypeModel getUserSubType(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserSubTypeModel getUserSubTypeById(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserSubTypeModel addUserSubType(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserSubTypeModel addUserSubType(String id, String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean removeUserSubType(UserSubTypeModel userSubType) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Set<UserSubTypeModel> getUserSubTypes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean removeUserSubTypeById(String id) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 
 }

@@ -14,7 +14,7 @@ import java.util.Set;
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
  * @version $Revision: 1 $
  */
-public interface RealmModel extends RoleContainerModel {
+public interface RealmModel extends RoleContainerModel, UserSubTypeContainerModel{
 
     String getId();
 
@@ -227,5 +227,5 @@ public interface RealmModel extends RoleContainerModel {
     void setMasterAdminApp(ApplicationModel app);
 
     ClientModel findClientById(String id);
-
+   
 }

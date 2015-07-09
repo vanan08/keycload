@@ -1,18 +1,5 @@
 package org.keycloak.models.cache;
 
-import org.keycloak.Config;
-import org.keycloak.enums.SslRequired;
-import org.keycloak.models.ApplicationModel;
-import org.keycloak.models.ClientModel;
-import org.keycloak.models.OAuthClientModel;
-import org.keycloak.models.PasswordPolicy;
-import org.keycloak.models.RealmModel;
-import org.keycloak.models.RequiredCredentialModel;
-import org.keycloak.models.RoleModel;
-import org.keycloak.models.UserFederationProviderModel;
-import org.keycloak.models.cache.entities.CachedRealm;
-import org.keycloak.models.utils.KeycloakModelUtils;
-
 import java.security.Key;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -23,6 +10,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.keycloak.Config;
+import org.keycloak.enums.SslRequired;
+import org.keycloak.models.ApplicationModel;
+import org.keycloak.models.ClientModel;
+import org.keycloak.models.OAuthClientModel;
+import org.keycloak.models.PasswordPolicy;
+import org.keycloak.models.RealmModel;
+import org.keycloak.models.RequiredCredentialModel;
+import org.keycloak.models.RoleModel;
+import org.keycloak.models.UserFederationProviderModel;
+import org.keycloak.models.UserSubTypeModel;
+import org.keycloak.models.cache.entities.CachedRealm;
+import org.keycloak.models.utils.KeycloakModelUtils;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -834,13 +835,72 @@ public class RealmAdapter implements RealmModel {
         return roles;
     }
 
+    // KIEN START
     @Override
-    public ClientModel findClientById(String id) {
-        ClientModel model = getApplicationById(id);
-        if (model != null) return model;
-        return getOAuthClientById(id);
+    public Set<UserSubTypeModel> getUserSubTypes() {
+        if (updated != null) return updated.getUserSubTypes();
+
+        Set<UserSubTypeModel> userSubTypes = new HashSet<UserSubTypeModel>();
+        for (String id : cached.getRealmUserSubTypes().values()) {
+            UserSubTypeModel roleById = cacheSession.getUserSubTypeById(id, this);
+            if (roleById == null) continue;
+            userSubTypes.add(roleById);
+        }
+        return userSubTypes;
+    }
+    @Override
+    public UserSubTypeModel getUserSubTypeById(String id) {
+        if (updated != null) return updated.getUserSubTypeById(id);
+        return cacheSession.getUserSubTypeById(id, this);
+    }
+    
+    @Override
+    public UserSubTypeModel getUserSubType(String name) {
+        if (updated != null) return updated.getUserSubType(name);
+        String id = cached.getRealmUserSubTypes().get(name);
+        if (id == null) return null;
+        return cacheSession.getUserSubTypeById(id, this);
     }
 
+    @Override
+    public UserSubTypeModel addUserSubType(String name) {
+        getDelegateForUpdate();
+        UserSubTypeModel userSubType = updated.addUserSubType(name);
+        cacheSession.registerUserSubTypeInvalidation(userSubType.getId());
+        return userSubType;
+    }
+
+    @Override
+    public UserSubTypeModel addUserSubType(String id, String name) {
+        getDelegateForUpdate();
+        UserSubTypeModel userSubType =  updated.addUserSubType(id, name);
+        cacheSession.registerUserSubTypeInvalidation(userSubType.getId());
+        return userSubType;
+    }
+
+    @Override
+    public boolean removeUserSubType(UserSubTypeModel userSubType) {
+        cacheSession.registerUserSubTypeInvalidation(userSubType.getId());
+        getDelegateForUpdate();
+        return updated.removeUserSubType(userSubType);
+    }    
+
+	@Override
+	public boolean removeUserSubTypeById(String id) {
+		cacheSession.registerUserSubTypeInvalidation(id);
+	        getDelegateForUpdate();
+	    return updated.removeUserSubTypeById(id);
+	}
+    
+    // KIEN END 
+    
+    @Override
+    public ClientModel findClientById(String id) {
+    	ClientModel model = getApplicationById(id);
+    	if (model != null) return model;
+    	return getOAuthClientById(id);
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

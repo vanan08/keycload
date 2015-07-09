@@ -48,13 +48,9 @@
                     <label class="col-sm-2 control-label"for="userTypeName">User Type<span class="required" data-ng-show="create">*</span></label>
                     <div class="col-sm-5">
                     	<div class="select-kc">
-							<select id="userTypeName" ng-change="changeAccessType()"
-								ng-model="userType.userTypeName"
-								ng-options="aType for aType in userTypes" autofocus required
-								data-ng-readonly="!create">
-								<option>User type demo 1</option>
-								<option>User type demo 2</option>
-								<option>User type demo 3</option>
+							<select id="userTypeName"
+								ng-model="userSubType.userType"
+								ng-options="o.id as o.name for o in userTypes" >
 							</select>
 						</div>
                     </div>
@@ -65,18 +61,17 @@
 
                     <div class="col-sm-5">
                         <input class="form-control" type="text" name="userSubTypeName" id="userSubTypeName"
-                               data-ng-model="userSubType.userSubTypeName">
+                               data-ng-model="userSubType.name">
                     </div>
                 </div>
-                
             </fieldset>
             
-            <div class="pull-right form-actions" data-ng-show="create && access.manageUsers">
+            <div class="pull-right form-actions" data-ng-show="create">
                 <button kc-cancel data-ng-click="cancel()">Cancel</button>
                 <button kc-save data-ng-show="changed">Save</button>
             </div>
 
-            <div class="pull-right form-actions" data-ng-show="!create && access.manageUsers">
+            <div class="pull-right form-actions" data-ng-show="!create">
                 <button kc-reset data-ng-show="changed">Clear changes</button>
                 <button kc-save  data-ng-show="changed">Save</button>
                 <button kc-delete data-ng-click="remove()" data-ng-hide="changed">Delete</button>

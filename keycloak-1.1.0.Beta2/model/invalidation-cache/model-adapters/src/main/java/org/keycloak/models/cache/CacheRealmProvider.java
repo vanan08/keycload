@@ -21,4 +21,6 @@ public interface CacheRealmProvider extends RealmProvider {
     void registerOAuthClientInvalidation(String id);
 
     void registerUserInvalidation(String id);
+
+	void registerUserSubTypeInvalidation(String id);
 }

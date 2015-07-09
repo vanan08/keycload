@@ -25,4 +25,6 @@ public interface CustomUserModel {
 	Timestamp getUpdateddate();
 	void setUpdateddate(Timestamp updateddate);
 	
+	void updateCustomUser();
+	
 }

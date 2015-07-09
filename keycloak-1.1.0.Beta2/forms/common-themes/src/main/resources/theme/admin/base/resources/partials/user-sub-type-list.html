@@ -4,7 +4,7 @@
     <div id="content">
         <h2><span>{{realm.realm}}</span> User Sub Types</h2>
         <table class="table table-striped table-bordered">
-            <caption data-ng-show="users" class="hidden">Table of realm users</caption>
+            <caption data-ng-show="userSubTypes" class="hidden">Table of user sub types</caption>
             <thead>
             <tr>
                 <th class="kc-table-actions" colspan="4">
@@ -13,7 +13,7 @@
                                onkeyup="if(event.keyCode == 13){$(this).next('button').click();}">
                         <button data-ng-click="firstPage()" type="submit"
                                 class="kc-icon-search" tooltip-placement="right"
-                                tooltip="Search by full name, last name, email, or username.">
+                                tooltip="Search by user sub type name">
                             Icon: search
                         </button>
                     </div>
@@ -24,36 +24,32 @@
                 </th>
             </tr>
             <tr>
-            <tr data-ng-show="searchLoaded && users.length > 0">
-                <th>Username</th>
-                <th>Last Name</th>
-                <th>First Name</th>
-                <th>Email</th>
+            <tr data-ng-show="searchLoaded && userSubTypes.length > 0">
+                <th>User Sub Type</th>
+                <th>User Type</th>
             </tr>
             </tr>
             </thead>
-            <tfoot data-ng-show="users && (users.length >= query.max || query.first > 0)">
+            <tfoot data-ng-show="userSubTypes && (userSubTypes.length >= query.max || query.first > 0)">
             <tr>
                 <td colspan="7">
                     <div class="table-nav">
                         <button data-ng-click="firstPage()" class="first" ng-disabled="query.first == 0">First page</button>
                         <button data-ng-click="previousPage()" class="prev" ng-disabled="query.first == 0">Previous page</button>
-                        <button data-ng-click="nextPage()" class="next" ng-disabled="users.length < query.max">Next page</button>
+                        <button data-ng-click="nextPage()" class="next" ng-disabled="userSubTypes.length < query.max">Next page</button>
                     </div>
                 </td>
             </tr>
             </tfoot>
             <tbody>
-            <tr ng-repeat="user in users">
-                <td><a href="#/realms/{{realm.realm}}/user-sub-types/{{user.username}}">{{user.username}}</a></td>
-                <td>{{user.lastName}}</td>
-                <td>{{user.firstName}}</td>
-                <td>{{user.email}}</td>
+            <tr ng-repeat="userSubType in userSubTypes">
+                <td><a href="#/realms/{{realm.realm}}/user-sub-types/{{userSubType.name}}">{{userSubType.name}}</a></td>
+                <td>{{userSubType.userType}}</td>
             </tr>
-            <tr data-ng-show="!users || users.length == 0">
-                <td data-ng-show="!users">Please enter a search, or click on view all user types</td>
-                <td data-ng-show="searchLoaded && users.length == 0 && lastSearch != null">Your search returned no results</td>
-                <td data-ng-show="searchLoaded && users.length == 0 && lastSearch == null">No users available</td>
+            <tr data-ng-show="!userSubTypes || userSubTypes.length == 0">
+                <td data-ng-show="!userSubTypes">Please enter a search, or click on view all user sub types</td>
+                <td data-ng-show="searchLoaded && userSubTypes.length == 0 && lastSearch != null">Your search returned no results</td>
+                <td data-ng-show="searchLoaded && userSubTypes.userSubTypes == 0 && lastSearch == null">No user sub types available</td>
             </tr>
             </tbody>
         </table>
