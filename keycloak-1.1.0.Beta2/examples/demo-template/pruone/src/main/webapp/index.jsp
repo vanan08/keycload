@@ -1,5 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@page import="org.keycloak.constants.ServiceUrlConstants"%>
+<%@page import="org.keycloak.util.KeycloakUriBuilder"%>
+<%@ page import="java.security.Principal" %>
+<%@ page import="java.util.*" %>
+<%@ page import="org.picketlink.identity.federation.web.constants.GeneralConstants" %>
+<%@ page session="false" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html lang="en">
@@ -21,6 +27,9 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
+<%
+	Principal userPrincipal = (Principal) request.getSession().getAttribute(GeneralConstants.PRINCIPAL_ID);
+%>
 <body class="landing-page">
 <div class="container-fluid">
 <section class="navbar-sec">
@@ -37,7 +46,7 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">John Malkovich</a></li>
+        <li><a href="#"><%=(userPrincipal != null) ? userPrincipal.getName() : "empty" %></a></li>
         <li><a href="?GLO=true">Logout</a></li>
       </ul>
       </div>
@@ -220,16 +229,34 @@ function getModuleByName(name) {
 	$.get("/auth/modules/"+name, function(data, status){
 		if(status == 'success'){
 			console.log(data);
-			window.open(data, "_blank");
-			//window.location.href = data;
+			//window.open(data, "_blank");
+			window.location.href = data;
 	}else{
 		console.log(status);
 	}
   });
-} 
+}
 
+function getModuleDetailByName(name) {
+	$.get("/auth/modules/"+name+"/info", function(data, status){
+		if(status == 'success'){
+			console.log(data);
+			//window.open(data, "_blank");
+			//window.location.href = data;
+			return data;
+	}else{
+		console.log(status);
+	}
+  });
+}
 
- 
+//document ready
+$( document ).ready(function() {
+    console.log( "ready!" );
+    var obj = getModuleDetailByName("REPMODE");
+    console.log(obj.active);
+});
+
  </script>
 
     <script type="text/javascript">
