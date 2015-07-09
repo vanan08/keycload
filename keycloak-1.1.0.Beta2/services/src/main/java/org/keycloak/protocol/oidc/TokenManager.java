@@ -137,11 +137,23 @@ public class TokenManager {
             return;
         }
         
-        try {
-        	UserModel user = session.getUser();
-	        clientSession.setUserSession(session);
-	        ClientModel client = clientSession.getClient();
-	        Set<String> roles = new HashSet<String>();
+        UserModel user = session.getUser();
+        clientSession.setUserSession(session);
+        ClientModel client = clientSession.getClient();
+        Set<String> roles = new HashSet<String>();
+        
+        for (RoleModel r : TokenManager.getAccess(null, client, user)) {
+    		roles.add(r.getName());
+    	}
+    	clientSession.setRoles(roles);
+    	
+    	if (client instanceof ApplicationModel) {
+    		ApplicationModel applicationModel = (ApplicationModel) client;
+    		
+    	}
+        
+        /*try {
+        	
 			Map<String, String> params = getParameters(request.getUri().getPath());
 			if (params.size() > 0) {
 	    		String location = params.containsKey("url") ? params.get("url") : "";
@@ -168,7 +180,7 @@ public class TokenManager {
 			
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-		}
+		}*/
     }
 
     public static Set<RoleModel> getAccess(String scopeParam, ClientModel client, UserModel user) {
