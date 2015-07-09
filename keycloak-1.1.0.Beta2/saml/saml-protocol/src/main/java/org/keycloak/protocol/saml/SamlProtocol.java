@@ -163,6 +163,8 @@ public class SamlProtocol implements LoginProtocol {
                .authMethod(JBossSAMLURIConstants.AC_UNSPECIFIED.get());
         initClaims(builder, clientSession.getClient(), userModel);
         builder.attribute("timeout", ""+realmModel.getSsoSessionMaxLifespan());
+        builder.attribute("blacklist", clientSession.getBlacklist() == null 
+        										? "" : clientSession.getBlacklist());
         
         if (clientSession.getRoles() != null) {
         	

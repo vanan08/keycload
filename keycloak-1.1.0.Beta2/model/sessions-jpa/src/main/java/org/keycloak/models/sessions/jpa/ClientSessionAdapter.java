@@ -26,6 +26,8 @@ public class ClientSessionAdapter implements ClientSessionModel {
     private ClientSessionEntity entity;
     private EntityManager em;
     private RealmModel realm;
+    
+    private String blacklist;
 
     public ClientSessionAdapter(KeycloakSession session, EntityManager em, RealmModel realm, ClientSessionEntity entity) {
         this.session = session;
@@ -176,5 +178,17 @@ public class ClientSessionAdapter implements ClientSessionModel {
 	public ModuleModel getAccessModule() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	
+	@Override
+	public String getBlacklist() {
+		return blacklist;
+	}
+	
+
+	@Override
+	public void setBlacklist(String blacklist) {
+		this.blacklist = blacklist;
 	}
 }

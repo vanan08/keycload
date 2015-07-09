@@ -148,39 +148,59 @@ public class TokenManager {
     	clientSession.setRoles(roles);
     	
     	if (client instanceof ApplicationModel) {
+    		StringBuilder sb = new StringBuilder();
     		ApplicationModel applicationModel = (ApplicationModel) client;
-    		
-    	}
-        
-        /*try {
-        	
-			Map<String, String> params = getParameters(request.getUri().getPath());
-			if (params.size() > 0) {
-	    		String location = params.containsKey("url") ? params.get("url") : "";
-	    		if (location.equals("")) {
-	    			return;
-	    		}
-	    		ApplicationModel applicationModel = (ApplicationModel) client;
-	    		for (ModuleModel moduleModel : applicationModel.getModules()) {
-	    			if (moduleModel.getUrl().indexOf(location) > -1) {
-	    				for (RoleModel roleModel : moduleModel.getAllRoles()) {
-	    					roles.add(roleModel.getName());
+    		String baseUrl = applicationModel.getBaseUrl();
+    		List<ModuleModel> moduleModels = applicationModel.getModules();
+    		int size = moduleModels.size();
+    		boolean flag;
+    		int i = 0;
+    		if (size > 0) {
+				for (ModuleModel moduleModel : moduleModels) {
+	    			i++;
+	    			flag = false;
+	    			for (String rolename : roles) {
+	    				RoleModel roleModel = applicationModel.getRole(rolename);
+	    				if (roleModel != null) {
+	    					if (moduleModel.hasRole(roleModel.getId())) {
+	    						flag = true;
+	    						break;
+	    					}
+	    				}
+	    			}
+	    			
+	    			if (!flag) {
+	    				
+	    				if (baseUrl.indexOf("/", baseUrl.length()-1) > 1) {
+	    					sb.append(baseUrl).append(moduleModel.getUrl());
+	    				} else {
+	    					sb.append(baseUrl).append("/").append(moduleModel.getUrl());
 	    				}
 	    				
-	    				clientSession.setRoles(roles);
-	    				return;
+	    				if (i <= size-1) {
+	    					sb.append(",");
+	    				}
 	    			}
 	    		}
-			} else {
-	        	for (RoleModel r : TokenManager.getAccess(null, client, user)) {
-	        		roles.add(r.getName());
-	        	}
-	        	clientSession.setRoles(roles);
-			}
-			
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}*/
+				
+    		} else {
+    			flag = false;
+    			for (String rolename : roles) {
+    				RoleModel role = applicationModel.getRole(rolename);
+    				if (role != null) {
+    					flag = true;
+    					break;
+    				}
+    			}
+    			
+    			if (!flag) {
+					sb.append(baseUrl);
+    			}
+    		}
+    		
+    		clientSession.setBlacklist(sb.toString());
+    		
+    	}
     }
 
     public static Set<RoleModel> getAccess(String scopeParam, ClientModel client, UserModel user) {

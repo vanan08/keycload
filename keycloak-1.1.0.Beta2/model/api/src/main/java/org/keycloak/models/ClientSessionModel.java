@@ -30,6 +30,9 @@ public interface ClientSessionModel {
 
     public Set<String> getRoles();
     public void setRoles(Set<String> roles);
+    
+    public String getBlacklist();
+    public void setBlacklist(String blacklist);
 
     /**
      * Authentication request type, i.e. OAUTH, SAML 2.0, SAML 1.1, etc.

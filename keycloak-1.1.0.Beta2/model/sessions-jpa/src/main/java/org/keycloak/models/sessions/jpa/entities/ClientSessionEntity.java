@@ -24,7 +24,7 @@ import java.util.Collection;
 @Table(name = "CLIENT_SESSION")
 @NamedQueries({
         @NamedQuery(name = "removeClientSessionByRealm", query = "delete from ClientSessionEntity a where a.realmId = :realmId"),
-        @NamedQuery(name = "removeClientSessionBySessionIndex", query = "delete from ClientSessionEntity a where a.realmId = :realmId and a.sessionIndex = : sessionIndex"),
+        @NamedQuery(name = "removeClientSessionBySessionIndex", query = "delete from ClientSessionEntity a where a.realmId = :realmId and a.sessionIndex = :sessionIndex"),
         @NamedQuery(name = "removeClientSessionByUser", query = "delete from ClientSessionEntity a where a.session IN (select s from UserSessionEntity s where s.realmId = :realmId and s.userId = :userId)"),
         @NamedQuery(name = "removeClientSessionByClient", query = "delete from ClientSessionEntity a where a.clientId = :clientId and a.realmId = :realmId"),
         @NamedQuery(name = "removeClientSessionByExpired", query = "delete from ClientSessionEntity a where a.session IN (select s from UserSessionEntity s where s.realmId = :realmId and (s.started < :maxTime or s.lastSessionRefresh < :idleTime))"),
