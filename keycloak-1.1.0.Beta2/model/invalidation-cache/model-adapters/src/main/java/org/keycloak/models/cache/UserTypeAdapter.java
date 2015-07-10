@@ -32,7 +32,6 @@ public class UserTypeAdapter implements UserTypeModel {
         }
     }
 
-
     @Override
     public String getName() {
         if (updated != null) return updated.getName();
@@ -82,6 +81,5 @@ public class UserTypeAdapter implements UserTypeModel {
     public int hashCode() {
         return getId().hashCode();
     }
-
 
 }

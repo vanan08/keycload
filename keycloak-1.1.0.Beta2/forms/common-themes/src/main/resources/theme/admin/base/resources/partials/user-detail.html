@@ -102,7 +102,7 @@
                     <label class="col-sm-2 control-label" for="reqActions">Required User Actions</label>
 
                     <div class="col-sm-5">
-                        <select ui-select2 ng-model="user.requiredActions" data-placeholder="Select an action..." multiple>
+                        <select id="reqActions" ui-select2 ng-model="user.requiredActions" data-placeholder="- Please Choose -" multiple>
                             <option ng-repeat="action in userReqActionList" value="{{action.id}}">{{action.text}}</option>
                         </select>
                     </div>
@@ -113,7 +113,8 @@
                     <label class="col-sm-2 control-label" for="userType">User Type</label>
                     <div class="col-sm-5">
                         <div class="select-kc">
-                            <select ng-model="user.customUserTypeId"  ng-options="o.id as o.name for o in userTypeList" data-placeholder="Select an action..." >
+                            <select id="userType" ng-model="user.customUserTypeId" ng-options="o.id as o.name for o in userTypeList" data-ng-change="changeUserType()">
+                                <option value="">- Please Choose -</option>
                             </select>
                         </div>
                     </div>
@@ -123,10 +124,12 @@
                     <label class="col-sm-2 control-label" for="userSubType">User Sub Type</label>
                     <div class="col-sm-5">
                         <div class="select-kc">
-                            <select ng-options="o.id as o.name for o in userSubTypeList" ng-model="user.customUserSubTypeId" data-placeholder="Select an action..." >
+                            <select id="userSubType" ng-model="user.customUserSubTypeId" data-ng-click="clickSub()" ng-options="o.id as o.name for o in userSubTypeList"  ng-disabled="{{create}}">
+                                <option value="">- Please Choose -</option>
                             </select>
                         </div>
                     </div>
+                    <span tooltip-placement="right" tooltip="Please select User Type first" class="fa fa-info-circle"></span>
                 </div>
 
                 <div class="form-group">

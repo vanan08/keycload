@@ -458,7 +458,7 @@ public class UserAdapter extends AbstractMongoAdapter<MongoUserEntity> implement
 		return null;
 	}
 
-	@Override
+
 	public void addCustomUser(CustomUserModel customUserModel) {
 		// TODO Auto-generated method stub
 		
@@ -468,5 +468,11 @@ public class UserAdapter extends AbstractMongoAdapter<MongoUserEntity> implement
 	public void updateCustomUser(CustomUserModel customUserModel) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public CustomUserModel addCustomUser(String acceptedTNC) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

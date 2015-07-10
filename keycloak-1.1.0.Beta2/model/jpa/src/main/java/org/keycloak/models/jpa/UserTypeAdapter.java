@@ -43,6 +43,16 @@ public class UserTypeAdapter implements UserTypeModel {
 	}
 
 	@Override
+	public String getTncContent() {
+		return userType.getTncContent();
+	}
+
+	@Override
+	public void setTncContent(String tncContent) {
+		userType.setTncContent(tncContent);
+	}
+
+	@Override
 	public UserTypeContainerModel getContainer() {
 		return realm;
 	}
@@ -69,16 +79,6 @@ public class UserTypeAdapter implements UserTypeModel {
 			return ((UserTypeAdapter) model).getUserType();
 		}
 		return em.getReference(UserTypeEntity.class, model.getId());
-	}
-
-	@Override
-	public String getTncContent() {
-		return userType.getTncContent();
-	}
-
-	@Override
-	public void setTncContent(String tncContent) {
-		userType.setTncContent(tncContent);
 	}
 
 }

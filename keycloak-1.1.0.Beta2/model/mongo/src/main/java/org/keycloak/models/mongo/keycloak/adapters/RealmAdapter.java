@@ -17,6 +17,7 @@ import org.keycloak.models.RequiredCredentialModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserFederationProviderModel;
 import org.keycloak.models.UserSubTypeModel;
+import org.keycloak.models.UserTypeModel;
 import org.keycloak.models.entities.RequiredCredentialEntity;
 import org.keycloak.models.entities.UserFederationProviderEntity;
 import org.keycloak.models.mongo.keycloak.entities.MongoApplicationEntity;
@@ -1030,6 +1031,60 @@ public class RealmAdapter extends AbstractMongoAdapter<MongoRealmEntity> impleme
 	public boolean removeUserSubTypeById(String id) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void refreshRealmUserSubTypesCache(String id, String name) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public UserTypeModel getUserType(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserTypeModel getUserTypeById(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserTypeModel addUserType(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserTypeModel addUserType(String id, String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean removeUserType(UserTypeModel userType) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Set<UserTypeModel> getUserTypes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean removeUserTypeById(String id) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void refreshRealmUserTypesCache(String id, String name) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

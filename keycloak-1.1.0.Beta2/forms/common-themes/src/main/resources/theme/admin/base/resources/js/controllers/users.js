@@ -252,14 +252,18 @@ module.controller('UserListCtrl', function($scope, realm, User) {
 module.controller('UserDetailCtrl', function($scope, realm, user, User, userTypes, userSubTypes, UserFederationInstances, $location, Dialog, Notifications) {
     $scope.realm = realm;
     $scope.user = angular.copy(user);
-    //TODO get userTypeList userSubTypeList from server.
-    //$scope.userTypeList = angular.copy(useTypeList);
-    //$scope.userSubTypeList = angular.copy(userSubTypeList);
-
     $scope.create = !user.username;
+    // get userTypeList userSubTypeList from server.
+    $scope.userTypeList = angular.copy(userTypes);
+
+    // get userTypeList userSubTypeList from server.
+    $scope.userSubTypes = angular.copy(userSubTypes);
 
     if ($scope.create) {
+        $scope.userSubTypeList = angular.copy([]);
         $scope.user.enabled = true;
+        $scope.user.customUserTypeId = "";
+        $scope.user.customUserSubTypeId = "";
     } else {
         if(user.federationLink) {
             console.log("federationLink is not null");
@@ -270,6 +274,15 @@ module.controller('UserDetailCtrl', function($scope, realm, user, User, userType
         } else {
             console.log("federationLink is null");
         }
+
+        // init subtype dropdown
+        var tmp =[];
+        var array = $scope.userSubTypes;
+        for (var i = 0; i < array.length; i++) {
+            if(array[i].userType == $scope.user.customUserTypeId)
+                tmp.push(array[i]);
+        }
+        $scope.userSubTypeList = tmp;
     }
 
     $scope.changed = false; // $scope.create;
@@ -282,11 +295,17 @@ module.controller('UserDetailCtrl', function($scope, realm, user, User, userType
         {id: "UPDATE_PASSWORD", text: "Update Password"}
     ];
 
-    //TODO get userTypeList userSubTypeList from server.
-    $scope.userTypeList = angular.copy(userTypes);
-
-    //TODO get userTypeList userSubTypeList from server.
-    $scope.userSubTypeList = angular.copy(userSubTypes);
+    $scope.changeUserType = function() {
+        var tmp =[];
+        var array = $scope.userSubTypes;
+        for (var i = 0; i < array.length; i++) {
+            if(array[i].userType == $scope.user.customUserTypeId)
+                tmp.push(array[i]);
+        }
+        $scope.userSubTypeList = tmp;
+        $scope.user.customUserSubTypeId = "";
+        document.getElementById('userSubType').removeAttribute('disabled');
+    };
 
     $scope.$watch('user', function() {
         if (!angular.equals($scope.user, user)) {
@@ -959,9 +978,9 @@ module.controller('UserSubTypeDetailCtrl', function($scope, realm, userSubType, 
                 userSubType : $scope.userSubType.id
             }, function() {
                 $location.url("/realms/" + realm.realm + "/user-sub-types");
-                Notifications.success("The user has been deleted.");
+                Notifications.success("The user sub type has been deleted.");
             }, function() {
-                Notifications.error("User couldn't be deleted");
+                Notifications.error("User sub type couldn't be deleted");
             });
         });
     };
