@@ -16,7 +16,7 @@ public class CachedUserSubType {
     public CachedUserSubType(UserSubTypeModel model, RealmModel realm) {
         id = model.getId();
         name = model.getName();
-        userType = model.getUserType();
+        userType = model.getUserType().getId();
         this.realm = realm.getId();
     }
     

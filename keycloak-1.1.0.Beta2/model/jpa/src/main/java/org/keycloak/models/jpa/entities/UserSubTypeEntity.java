@@ -3,9 +3,13 @@ package org.keycloak.models.jpa.entities;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -29,9 +33,10 @@ public class UserSubTypeEntity implements Serializable {
 
 	@Column(name = "USER_SUB_TYPE")
 	private String name;
-
-	@Column(name = "CUSTOM_USER_TYPE_ID", nullable = true)
-	private String userType;
+	
+	@ManyToOne(fetch = FetchType.EAGER, cascade ={CascadeType.ALL})
+	@JoinColumn(name = "CUSTOM_USER_TYPE_ID")
+	private UserTypeEntity userType;
 
 	@Column(name = "CREATED_BY")
 	private String createdBy;
@@ -96,11 +101,11 @@ public class UserSubTypeEntity implements Serializable {
 		this.updatedDate = updatedDate;
 	}
 
-	public String getUserType() {
+	public UserTypeEntity getUserType() {
 		return this.userType;
 	}
 
-	public void setUserType(String userType) {
+	public void setUserType(UserTypeEntity userType) {
 		this.userType = userType;
 	}
 

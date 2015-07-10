@@ -26,7 +26,7 @@
             <tr>
             <tr data-ng-show="searchLoaded && userSubTypes.length > 0">
                 <th>User Sub Type</th>
-                <th>User Type Id</th>
+                <th>User Type</th>
             </tr>
             </tr>
             </thead>
@@ -44,7 +44,7 @@
             <tbody>
             <tr ng-repeat="userSubType in userSubTypes">
                 <td><a href="#/realms/{{realm.realm}}/user-sub-types/{{userSubType.name}}">{{userSubType.name}}</a></td>
-                <td>{{userSubType.userType}}</td>
+                <td>{{userSubType.userTypeName}}</td>
             </tr>
             <tr data-ng-show="!userSubTypes || userSubTypes.length == 0">
                 <td data-ng-show="!userSubTypes">Please enter a search, or click on view all user sub types</td>

@@ -6,9 +6,9 @@ public interface UserSubTypeModel {
 
     String getId();
     
-    String getUserType();
+    UserTypeModel getUserType();
 
-    void setUserType(String userType);
+    void setUserType(UserTypeModel userType);
     
     void setName(String name);
 

@@ -1,8 +1,10 @@
 package org.keycloak.models.cache;
 
 import org.keycloak.models.RealmModel;
+import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserSubTypeContainerModel;
 import org.keycloak.models.UserSubTypeModel;
+import org.keycloak.models.UserTypeModel;
 import org.keycloak.models.cache.entities.CachedUserSubType;
 
 /**
@@ -48,16 +50,20 @@ public class UserSubTypeAdapter implements UserSubTypeModel {
     }
     
 	@Override
-	public String getUserType(){
+	public UserTypeModel getUserType(){
 		if (updated != null) return updated.getUserType();
-        return cached.getUserType();
+		UserTypeModel userType = realm.getUserTypeById(cached.getUserType());
+        if (userType == null) {
+            throw new IllegalStateException("Could not find User Type: " + cached.getUserType());
+        }
+        return userType;
 	}
 
 	@Override
-	public void setUserType(String userType) {
+	public void setUserType(UserTypeModel userType) {
 		System.out.println("######cached: " + getUserType());
 		System.out.println("#########new: " + userType);
-		if(!userType.equals(getUserType())){
+		if(!userType.getId().equals(getUserType().getId())){
 			System.out.println("######### gotta update ");
 			getDelegateForUpdate();
 			updated.setUserType(userType);

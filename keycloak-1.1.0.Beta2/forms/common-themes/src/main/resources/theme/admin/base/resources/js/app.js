@@ -272,6 +272,10 @@ module.config([ '$routeProvider', function($routeProvider) {
                     console.log("##### Create User Type in app.js   #####");
                     return {};
                 },
+                roles : function(RoleListLoader) {
+                    console.log("##### Edit User Type in app.js   #####");
+                    return RoleListLoader();
+                }
             },
             controller : 'UserTypeDetailCtrl'
         })
@@ -285,9 +289,14 @@ module.config([ '$routeProvider', function($routeProvider) {
                     console.log("##### Edit User Type in app.js   #####");
                     return UserTypeLoader();
                 },
+                roles : function(RoleListLoader) {
+                    console.log("##### Edit User Type in app.js   #####");
+                    return RoleListLoader();
+                }
             },
             controller : 'UserTypeDetailCtrl'
         })
+        
         /*Start add more for user sub type screen*/
         .when('/realms/:realm/user-sub-types', {
             templateUrl : 'partials/user-sub-type-list.html',

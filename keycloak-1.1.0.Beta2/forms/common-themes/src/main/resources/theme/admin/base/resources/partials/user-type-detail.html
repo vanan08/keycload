@@ -64,14 +64,14 @@
 
 			<!-- <div class="form-group" ng-show="application"> -->
 			
-			<!-- <div class="form-group" ng-show="true">
+			<div class="form-group" ng-show="true">
               <div class="controls changing-selectors col-sm-10">
                   <div class="select-title">
                       <label class="control-label" for="available-app">Available Roles <span tooltip-placement="right" tooltip="Assignable roles from this application." class="fa fa-info-circle"></span></label>
                       <select id="available-app" class="form-control" multiple size="5"
                               ng-multiple="true"
-                              ng-model="selectedRealmRoles"
-                              ng-options="r.name for r in realmRoles">
+                              ng-model="role"
+                              ng-options="r.name for r in roles">
                       </select>
                   </div>
                   <div class="middle-buttons">
@@ -86,35 +86,35 @@
                       <label class="control-label" for="assigned-app">Assigned Roles <span tooltip-placement="right" tooltip="Role mappings for this application." class="fa fa-info-circle"></span></label>
                       <select id="assigned-app" class="form-control" multiple size=5
                               ng-multiple="true"
-                              ng-model="selectedApplicationRoles"
-                              ng-options="r.name for r in applicationRoles">
-                      </select>
-                  </div>
-                  <div class="middle-buttons">
-                      -
-                  </div>
-                  <div class="select-title">
-                      <label class="control-label" for="app-composite">Effective Roles <span tooltip-placement="right" tooltip="Role mappings for this application.  Some roles here might be inherited from a mapped composite role." class="fa fa-info-circle"></span></label>
-                      <select id="app-composite" class="form-control" multiple size=5
-                              ng-disabled="true"
-                              ng-model="dummymodel"
-                              ng-options="r.name for r in myApplicationRolesComposite">
-                      </select>
-                  </div>
-              </div>
-          </div> -->
+                              ng-model="selectedRole"
+                              ng-options="r.name for r in selectedRoles" >
+                 </select>
+             </div>
+             <div class="middle-buttons">
+                 -
+             </div>
+             <div class="select-title">
+                 <label class="control-label" for="app-composite">Effective Roles <span tooltip-placement="right" tooltip="Role mappings for this application.  Some roles here might be inherited from a mapped composite role." class="fa fa-info-circle"></span></label>
+                 <select id="app-composite" class="form-control" multiple size=5
+                         ng-disabled="true"
+                         ng-model="selectedRole"
+                         ng-options="r.name for r in selectedRoles" >
+          </select>
+      </div>
+  </div>
+</div>
 
-			<div class="pull-right form-actions" data-ng-show="create">
-                <button kc-cancel data-ng-click="cancel()">Cancel</button>
-                <button kc-save data-ng-show="changed">Save</button>
-            </div>
+<div class="pull-right form-actions" data-ng-show="create">
+    <button kc-cancel data-ng-click="cancel()">Cancel</button>
+    <button kc-save data-ng-show="changed">Save</button>
+</div>
 
-            <div class="pull-right form-actions" data-ng-show="!create">
-                <button kc-reset data-ng-show="changed">Clear changes</button>
-                <button kc-save  data-ng-show="changed">Save</button>
-                <button kc-delete data-ng-click="remove()" data-ng-hide="changed">Delete</button>
-            </div>
+<div class="pull-right form-actions" data-ng-show="!create">
+    <button kc-reset data-ng-show="changed">Clear changes</button>
+    <button kc-save  data-ng-show="changed">Save</button>
+    <button kc-delete data-ng-click="remove()" data-ng-hide="changed">Delete</button>
+</div>
 
-        </form>
-    </div>
+</form>
+</div>
 </div>

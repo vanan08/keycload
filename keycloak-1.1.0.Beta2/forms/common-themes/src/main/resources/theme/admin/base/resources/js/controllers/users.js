@@ -824,9 +824,13 @@ module.controller('UserTypeListCtrl', function($scope, realm, UserType) {
     };
 });
 
-module.controller('UserTypeDetailCtrl', function($scope, realm, userType, UserType, $location, Dialog, Notifications) {
+module.controller('UserTypeDetailCtrl', function($scope, realm, userType, UserType, $location, Dialog, Notifications, RealmRoles, roles, UserTypeRole) {
     $scope.realm = realm;
     $scope.userType = angular.copy(userType);
+    $scope.roles = angular.copy(roles);
+    $scope.role = angular.copy([]);
+    $scope.selectedRoles = angular.copy([]);
+    $scope.selectedRole = angular.copy([]);
     $scope.create = !userType.name;
 
     $scope.changed = false; // $scope.create;
@@ -882,6 +886,30 @@ module.controller('UserTypeDetailCtrl', function($scope, realm, userType, UserTy
             });
         });
     };
+
+    $scope.addRole = function() {
+       console.log('addRole');
+        for(var i = 0; i < $scope.role.length; i++){
+            // console.log("filter item name: "+ $scope.realmRole[i].name);
+            var index = $scope.roles.indexOf($scope.role[i]);
+            $scope.selectedRoles.push($scope.role[i]);
+            $scope.roles.splice(index, 1);
+            console.log("remove name: "+$scope.role[i].name);
+        }
+
+    };
+    
+    $scope.deleteRole = function() {
+        console.log('delRole');
+        for(var i = 0; i < $scope.selectedRole.length; i++){
+            // console.log("filter item name: "+ $scope.realmRole[i].name);
+            var index = $scope.selectedRoles.indexOf($scope.selectedRole[i]);
+            $scope.roles.push($scope.selectedRole[i]);
+            $scope.selectedRoles.splice(index, 1);
+            console.log("remove name: "+$scope.selectedRole[i].name);
+        }
+    };
+
 });
 
 /*Start add more for user sub type screen*/

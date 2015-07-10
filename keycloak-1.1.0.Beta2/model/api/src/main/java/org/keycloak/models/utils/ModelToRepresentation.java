@@ -102,7 +102,8 @@ public class ModelToRepresentation {
         UserSubTypeRepresentation rep = new UserSubTypeRepresentation();
            rep.setId(userSubType.getId());
            rep.setName(userSubType.getName());
-           rep.setUserType(userSubType.getUserType());
+           rep.setUserType(userSubType.getUserType().getId());
+           rep.setUserTypeName(userSubType.getUserType().getName());
            return rep;
     }
 
