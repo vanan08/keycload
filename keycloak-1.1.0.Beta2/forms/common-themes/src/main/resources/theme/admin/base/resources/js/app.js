@@ -343,15 +343,15 @@ module.config([ '$routeProvider', function($routeProvider) {
         /*End add more for user sub type screen*/
 
         /*HieuDM start add more for reports*/
-        .when('/realms/:realm/reports', {
-            templateUrl : 'partials/reports.html',
-            resolve : {
-                realm : function(RealmLoader) {
-                    return RealmLoader();
-                }
-            },
-            controller : ''
-        })
+//        .when('/realms/:realm/reports', {
+//            templateUrl : 'partials/reports.html',
+//            resolve : {
+//                realm : function(RealmLoader) {
+//                    return RealmLoader();
+//                }
+//            },
+//            controller : ''
+//        })
         /*HieuDM end add more for reports*/
         /*End add more by HieuDM. Add controller for user types page*/
         .when('/realms/:realm/users/:user/user-credentials', {
@@ -1022,6 +1022,28 @@ module.config([ '$routeProvider', function($routeProvider) {
             },
             controller : 'RealmBruteForceCtrl'
         })
+        
+        /*HieuHn start add more for reports*/
+        .when('/realms/:realm/reports', {
+            templateUrl : 'partials/reports.html',
+            resolve : {
+                realm : function(RealmLoader) {
+                    return RealmLoader();
+                }
+            },
+            controller : 'ReportCtrl'
+        })
+        .when('/realms/:realm/reports2', {
+            templateUrl : 'partials/reports2.html',
+            resolve : {
+                realm : function(RealmLoader) {
+                    return RealmLoader();
+                }
+            },
+            controller : 'ReportCtrl2'
+        })
+       /*HieuHn end add more for reports*/ 
+        
         .when('/logout', {
             templateUrl : 'partials/home.html',
             controller : 'LogoutCtrl'

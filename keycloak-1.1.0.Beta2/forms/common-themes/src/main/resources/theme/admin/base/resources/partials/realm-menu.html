@@ -20,8 +20,9 @@
     <li data-ng-show="access.viewRealm" data-ng-class="(path[2] == 'sessions' || path[2] == 'token-settings') && 'active'"><a href="#/realms/{{realm.realm}}/sessions/realm">Sessions and Tokens</a></li>
     <li data-ng-show="access.viewRealm" data-ng-class="(path[2] == 'defense') && 'active'"><a href="#/realms/{{realm.realm}}/defense/headers">Security Defenses</a></li>
     <li data-ng-show="access.viewEvents" data-ng-class="(path[2] == 'events' || path[2] == 'events-settings') && 'active'"><a href="#/realms/{{realm.realm}}/events">Events</a></li>
-    <!-- HieuDM start add more menu -->
-    <li data-ng-show="access.viewUsers" data-ng-class="(path[2] == 'reports' || path[1] == 'report') && 'active'"><a href="#/realms/{{realm.realm}}/reports">Reports</a></li>
-    <!-- HieuDM end add more menu -->
+    <!-- HieuHN start add more menu -->
+    <li data-ng-show="access.viewUsers" data-ng-class="(path[2] == 'reports' || path[1] == 'report') && 'active'"><a href="#/realms/{{realm.realm}}/reports">Login Id Reports</a></li>
+    <li data-ng-show="access.viewUsers" data-ng-class="(path[2] == 'reports2' || path[1] == 'report2') && 'active'"><a href="#/realms/{{realm.realm}}/reports2">OTP LOGS Reports</a></li>
+    <!-- HieuHN end add more menu -->
     <li data-ng-show="access.viewTest" data-ng-class="(path[2] == 'test' || path[2] == 'test') && 'active'"><a href="test">Test menu</a></li>
 </ul>

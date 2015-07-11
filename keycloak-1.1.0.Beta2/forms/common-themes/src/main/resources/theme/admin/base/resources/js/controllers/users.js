@@ -1016,3 +1016,12 @@ module.controller('UserSubTypeDetailCtrl', function($scope, realm, userSubType, 
 /*End add more for user sub type screen*/
 
 /*End add more by HieuDM*/
+
+/*HieuHN start add more for reports*/
+module.controller('ReportCtrl', function($scope, realm) {
+	$scope.realm = realm;
+});
+module.controller('ReportCtrl2', function($scope, realm) {
+	$scope.realm = realm;
+});
+/*HieuHN end add more for reports*/
