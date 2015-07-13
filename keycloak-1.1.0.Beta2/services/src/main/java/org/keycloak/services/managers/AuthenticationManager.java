@@ -461,7 +461,7 @@ public class AuthenticationManager {
 		for (RequiredCredentialModel c : realm.getRequiredCredentials()) {
 			if (c.getType().equals(CredentialRepresentation.TOTP)
 					&& !user.isTotp()) {
-				user.addRequiredAction(UserModel.RequiredAction.CONFIGURE_TOTP);
+				//user.addRequiredAction(UserModel.RequiredAction.CONFIGURE_TOTP);
 				logger.debug("User is required to configure totp");
 			}
 		}
@@ -636,12 +636,16 @@ public class AuthenticationManager {
             if (user.isTotp() && totp == null) {
                 return AuthenticationStatus.MISSING_TOTP;
             }
+            
+            return AuthenticationStatus.SUCCESS;
 
+            /*
             if (!user.getRequiredActions().isEmpty()) {
                 return AuthenticationStatus.ACTIONS_REQUIRED;
             } else {
                 return AuthenticationStatus.SUCCESS;
             }
+            */
         } else if (types.contains(CredentialRepresentation.SECRET)) {
             String secret = formData.getFirst(CredentialRepresentation.SECRET);
             if (secret == null) {
@@ -1011,7 +1015,8 @@ public class AuthenticationManager {
 				System.out.println("KeyCloack: enable2fa: " + enable2fa);
 
 				// username & password is valid then check totp
-				if (user.isTotp() && totp == null && enable2fa) {
+				if(totp == null && enable2fa) {
+				//if (user.isTotp() && totp == null && enable2fa) {
 					System.out
 							.println("Username and Password is valid.Then send out OTP code");
 
