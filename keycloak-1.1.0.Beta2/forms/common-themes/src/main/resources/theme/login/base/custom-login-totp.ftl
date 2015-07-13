@@ -8,7 +8,7 @@
             <input id="password-token" name="password-token" value="${login.passwordToken!''}" type="hidden" />					
 			<div class="form-group mar-btm15">
 				<div class="input-group">
-					<input type="text" id="totp" name="totp" placeholder="OTP" class="form-control">
+					<input type="password" id="totp" name="totp" placeholder="OTP" class="form-control">
 				</div>
 			</div>
 				<input class="btn btn-danger btn-lg btn-block" name="login" id="kc-login" type="submit" value="SUBMIT"/>
