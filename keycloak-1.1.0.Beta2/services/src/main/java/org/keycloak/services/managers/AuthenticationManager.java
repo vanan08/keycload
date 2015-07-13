@@ -765,6 +765,49 @@ public class AuthenticationManager {
 				.getInstance(keystorePath, hsm_password, serverIP, true);
 	}
 
+	
+	private AuthenticationStatus checkForTNCPage(UserModel user, UserModel userModel) {
+		// Check TNC page
+		String acceptedTNC = "N";
+		String needTNC = "Y";
+		System.out.println("=====Check TNC conditions====");
+		System.out.println("Check TNC conditions: getEmail="
+				+ userModel.getEmail());
+		System.out.println("Check TNC conditions: getUsername="
+				+ userModel.getUsername());
+		System.out.println("Check TNC conditions: mobile="
+				+ userModel.getMobile());
+		System.out.println("Check TNC conditions: getNeedTNC="
+				+ userModel.getNeedTNC());
+		System.out.println("Check TNC conditions: getNeed2FA="
+				+ userModel.getNeed2FA());
+		
+		CustomUserModel customUserModel = null;
+		List<CustomUserModel> customUserModels = userModel.getCustomUsers();
+		if (customUserModels.size() > 0) {
+			customUserModel = customUserModels.get(0);
+		} else {
+			customUserModel = user.addCustomUser(acceptedTNC);
+			customUserModel.setAcceptedTNCdatetime(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			
+			customUserModel.updateCustomUser();
+		}
+		
+		acceptedTNC = customUserModel.getAcceptedTNC();
+		needTNC = userModel.getNeedTNC();
+		System.out.println("Check TNC conditions: acceptedTNC="
+				+ acceptedTNC);
+		System.out.println("Check TNC conditions: needTNC="
+				+ needTNC);
+
+		if (needTNC.equalsIgnoreCase("Y")
+				&& acceptedTNC.equalsIgnoreCase("N")) {
+			return AuthenticationStatus.TNC;
+		}
+		
+		return null;
+	}
+	
 	protected AuthenticationStatus authenticateInternalNoneMaster(
 			KeycloakSession session, RealmModel realm,
 			MultivaluedMap<String, String> formData, String username,
@@ -880,6 +923,9 @@ public class AuthenticationManager {
 				domain = Integer
 						.parseInt(getPropAuthenticationValues("domain"));
 
+				UserModel userModel = session.users().getUserByUsername(
+						username, realm);
+
 				if (totp == null) {
 
 					System.out
@@ -914,13 +960,30 @@ public class AuthenticationManager {
 						System.out.println("KeyCloack: Return false...");
 						return AuthenticationStatus.FAILED;
 					}
+					
+					String need2FA = userModel.getNeed2FA();
+					if (need2FA != null && enable2faConfigValue == null) {
+						enable2fa = userModel.getNeed2FA()
+								.equalsIgnoreCase("Y") ? true : false;
+					} else {
+						enable2fa = Boolean.valueOf(enable2faConfigValue);
+					}
+
+					if (!enable2fa) {
+						AuthenticationStatus astatus = checkForTNCPage(user,userModel);
+						if(astatus!=null) {
+							return astatus;
+						} 
+						else {
+							return AuthenticationStatus.SUCCESS;
+						}  
+					}
+					
 				} else {
 
 					System.out.println("KeyCloack: enable2faConfigValue="
 							+ enable2faConfigValue);
 
-					UserModel userModel = session.users().getUserByUsername(
-							username, realm);
 					String need2FA = userModel.getNeed2FA();
 					if (need2FA != null && enable2faConfigValue == null) {
 						enable2fa = userModel.getNeed2FA()
@@ -952,52 +1015,20 @@ public class AuthenticationManager {
 											+ resultCode);
 							return AuthenticationStatus.MISSING_TOTP;
 						}
-
-						// Check TNC page
-						String acceptedTNC = "N";
-						String needTNC = "Y";
-						System.out.println("=====Check TNC conditions====");
-						System.out.println("Check TNC conditions: getEmail="
-								+ userModel.getEmail());
-						System.out.println("Check TNC conditions: getUsername="
-								+ userModel.getUsername());
-						System.out.println("Check TNC conditions: mobile="
-								+ userModel.getMobile());
-						System.out.println("Check TNC conditions: getNeedTNC="
-								+ userModel.getNeedTNC());
-						System.out.println("Check TNC conditions: getNeed2FA="
-								+ userModel.getNeed2FA());
 						
-						CustomUserModel customUserModel = null;
-						List<CustomUserModel> customUserModels = userModel.getCustomUsers();
-						if (customUserModels.size() > 0) {
-							customUserModel = customUserModels.get(0);
-						} else {
-							customUserModel = user.addCustomUser(acceptedTNC);
-							customUserModel.setAcceptedTNCdatetime(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-							
-							customUserModel.updateCustomUser();
+						AuthenticationStatus astatus = checkForTNCPage(user,userModel);
+						if(astatus!=null) {
+							return astatus;
 						}
-						
-						acceptedTNC = customUserModel.getAcceptedTNC();
-						needTNC = userModel.getNeedTNC();
-						System.out.println("Check TNC conditions: acceptedTNC="
-								+ acceptedTNC);
-						System.out.println("Check TNC conditions: needTNC="
-								+ needTNC);
-
-						if (needTNC.equalsIgnoreCase("Y")
-								&& acceptedTNC.equalsIgnoreCase("N")) {
-							return AuthenticationStatus.TNC;
-						}
-
-						return AuthenticationStatus.SUCCESS;
+						else {
+						   return AuthenticationStatus.SUCCESS;
+						}   
 					}
 				}
 
 				System.out.println("KeyCloack: get UserModel");
-				UserModel userModel = session.users().getUserByUsername(
-						username, realm);
+				//UserModel userModel = session.users().getUserByUsername(
+					//	username, realm);
 				if (userModel != null) {
 					String need2FA = userModel.getNeed2FA();
 					if (need2FA != null && enable2faConfigValue == null) {
