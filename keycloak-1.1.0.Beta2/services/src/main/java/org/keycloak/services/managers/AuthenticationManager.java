@@ -1,6 +1,7 @@
 package org.keycloak.services.managers;
 
 import java.io.FileNotFoundException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -61,6 +62,7 @@ import com.client.ClientNoAccessException;
 import com.client.Converter;
 import com.client.NoServerException;
 import com.client.TokenOTIP;
+import com.client.QueryUserStatus;
 import com.og.smssender.SMSSend;
 
 /**
@@ -572,17 +574,23 @@ public class AuthenticationManager {
 			MultivaluedMap<String, String> formData, String username,
 			StringBuilder errorMessage) {
 
+		AuthenticationStatus as = null;
 		String realmName = realm.getName();
 
 		System.out.println("KeyCloack Authentication Realm: " + realmName);
 
-		if (realmName.equals("master")) {
-			return this.authenticateInternalMaster(session, realm, formData,
+		try {
+		   if (realmName.equals("master")) {
+		     as = this.authenticateInternalMaster(session, realm, formData,
 					username);
-		} else {
-			return this.authenticateInternalNoneMaster(session, realm,
+		   } else {
+			 as = this.authenticateInternalNoneMaster(session, realm,
 					formData, username, errorMessage);
+		   }
 		}
+		catch(Exception e) {}
+		
+		return as;
 
 	}
 	
@@ -668,7 +676,7 @@ public class AuthenticationManager {
 
 	protected AuthenticationStatus authenticateInternalMaster(
 			KeycloakSession session, RealmModel realm,
-			MultivaluedMap<String, String> formData, String username) {
+			MultivaluedMap<String, String> formData, String username) throws Exception {
 		UserModel user = KeycloakModelUtils.findUserByNameOrEmail(session,
 				realm, username);
 
@@ -766,7 +774,7 @@ public class AuthenticationManager {
 	}
 
 	
-	private AuthenticationStatus checkForTNCPage(UserModel user, UserModel userModel) {
+	private AuthenticationStatus checkForTNCPage(UserModel user, UserModel userModel) throws Exception {
 		// Check TNC page
 		String acceptedTNC = "N";
 		String needTNC = "Y";
@@ -808,24 +816,61 @@ public class AuthenticationManager {
 		return null;
 	}
 	
+	
+	private boolean checkForSpecialFlows(KeycloakSession session, ClientAPI clientAPI, String username, int domain) throws Exception {
+		boolean ret=false;
+		/* accountStatus=1 is active
+		 * accountStatus=2 is force change password
+		 * accountStatus=3 is account is suspended 
+		 * accountStatus=4 is account is disabled/not active
+		*/
+		QueryUserStatus qus = clientAPI.getUserStatus(EMPTY_BYTES, username, domain);
+		int accountStatus = 0;
+		if(qus!=null)
+			accountStatus=qus.getStatus();	
+
+		if(accountStatus==1) {
+			System.out.println("Account Active is detected");
+		}
+		else if(accountStatus==2) {
+		    //call url from pse function module=CHANGEPASSWORD to redirect to SFA
+			ret=true;
+			System.out.println("Force to change passsord is detected");
+			//updateTNCFlag(session,username);
+		}
+		else if(accountStatus==3 || accountStatus==4) {
+			//Show error message and the flow is ended at 1FA
+			ret=true;
+			System.out.println("Account Disabled or Suspended is detected");
+		}
+		
+		return ret;
+	}
+	
+	
+	private void updateTNCFlag(KeycloakSession session, String username) throws Exception {
+		// Update to database
+		UserModel model = session.users().getUserByUsername(username);
+		CustomUserModel customUserModel = model.getCustomUsers().get(0);
+		logger.debug("AcceptedTNC =" + customUserModel.getAcceptedTNC());
+		customUserModel.setAcceptedTNC("Y");
+		customUserModel.setUpdateby(model.getUsername());
+		customUserModel.setUpdateddate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		customUserModel.updateCustomUser();
+		logger.debug("Updated acceptedTNC");
+	}
+	
+	
 	protected AuthenticationStatus authenticateInternalNoneMaster(
 			KeycloakSession session, RealmModel realm,
 			MultivaluedMap<String, String> formData, String username,
-			StringBuilder errorMessage) {
+			StringBuilder errorMessage) throws Exception {
 
 		String need_tnc = formData.getFirst("need_tnc");
 		if (need_tnc != null) {
 			System.out.println("KeyCloack: processLogin need_tnc: " + need_tnc);
 			if (need_tnc.equalsIgnoreCase("Y")) {
-				// Update to database
-				UserModel model = session.users().getUserByUsername(username);
-				CustomUserModel customUserModel = model.getCustomUsers().get(0);
-				logger.debug("AcceptedTNC =" + customUserModel.getAcceptedTNC());
-				customUserModel.setAcceptedTNC("Y");
-				customUserModel.setUpdateby(model.getUsername());
-				customUserModel.setUpdateddate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-				customUserModel.updateCustomUser();
-				logger.debug("Updated acceptedTNC");
+				updateTNCFlag(session,username);
 				// go to landing page
 				return AuthenticationStatus.SUCCESS;
 			} else {
@@ -955,6 +1000,9 @@ public class AuthenticationManager {
 						logger.debug(e.getMessage());
 						return AuthenticationStatus.FAILED;
 					}
+					
+					boolean ret = checkForSpecialFlows(session, clientAPI, username, domain);
+					
 					// not success
 					if (!(returnCode == 0 || returnCode == 2051)) {
 						System.out.println("KeyCloack: Return false...");
@@ -973,12 +1021,11 @@ public class AuthenticationManager {
 						AuthenticationStatus astatus = checkForTNCPage(user,userModel);
 						if(astatus!=null) {
 							return astatus;
-						} 
+						}
 						else {
-							return AuthenticationStatus.SUCCESS;
-						}  
+						   return AuthenticationStatus.SUCCESS;
+						}   
 					}
-					
 				} else {
 
 					System.out.println("KeyCloack: enable2faConfigValue="
@@ -1015,6 +1062,10 @@ public class AuthenticationManager {
 											+ resultCode);
 							return AuthenticationStatus.MISSING_TOTP;
 						}
+						else {
+							boolean ret = checkForSpecialFlows(session, clientAPI, username, domain);
+						}
+						
 						
 						AuthenticationStatus astatus = checkForTNCPage(user,userModel);
 						if(astatus!=null) {
@@ -1022,7 +1073,7 @@ public class AuthenticationManager {
 						}
 						else {
 						   return AuthenticationStatus.SUCCESS;
-						}   
+						}  
 					}
 				}
 
