@@ -2,6 +2,7 @@ package org.keycloak.services.managers;
 
 import java.io.FileNotFoundException;
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
+import java.util.Date;
 
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
@@ -63,6 +65,7 @@ import com.client.Converter;
 import com.client.NoServerException;
 import com.client.TokenOTIP;
 import com.client.QueryUserStatus;
+import com.client.QueryDomain;
 import com.og.smssender.SMSSend;
 
 /**
@@ -819,7 +822,7 @@ public class AuthenticationManager {
 	
 	private boolean checkForSpecialFlows(KeycloakSession session, ClientAPI clientAPI, String username, int domain) throws Exception {
 		boolean ret=false;
-		/* accountStatus=1 is active
+		/* accountStatus=1 is active / password is going expired / password is expired
 		 * accountStatus=2 is force change password
 		 * accountStatus=3 is account is suspended 
 		 * accountStatus=4 is account is disabled/not active
@@ -830,7 +833,15 @@ public class AuthenticationManager {
 			accountStatus=qus.getStatus();	
 
 		if(accountStatus==1) {
-			System.out.println("Account Active is detected");
+			double returnCode = getPasswordDayRemaining (clientAPI, username, domain);
+			if(returnCode<0) {
+				//call url from pse function module=CHANGEPASSWORD to redirect to SFA
+				System.out.println("Password has expired");
+				//updateTNCFlag(session,username);
+			}
+			else {
+			   System.out.println("Account Active is detected");
+			}  
 		}
 		else if(accountStatus==2) {
 		    //call url from pse function module=CHANGEPASSWORD to redirect to SFA
@@ -860,6 +871,29 @@ public class AuthenticationManager {
 		logger.debug("Updated acceptedTNC");
 	}
 	
+	
+	private static double getPasswordDayRemaining(ClientAPI api, String userId, int dom) {
+		double returnCode = -9999999;
+		if (api != null) {
+			try {
+			     QueryDomain domain = api.queryDomain("".getBytes(), dom);
+			     int lifeTimie = domain == null ? 0 : domain.getPasswordLifetime();
+			     Date passwordCreateDate = api.queryUser("".getBytes(), userId, 22).getPwdCreationDate();
+	
+			     Calendar calendar = Calendar.getInstance();
+			     long currentTime = calendar.getTime().getTime();
+			     long createTime = passwordCreateDate == null ? 0 : passwordCreateDate.getTime();
+			     double createDay = (double) (currentTime - createTime) / (double) (1000 * 60 * 60 * 24);
+			     returnCode = lifeTimie - createDay;
+	
+			} catch (Exception e) {
+			     e.printStackTrace();
+			}
+		}
+		
+		return returnCode;
+	}
+
 	
 	protected AuthenticationStatus authenticateInternalNoneMaster(
 			KeycloakSession session, RealmModel realm,
