@@ -1,4 +1,4 @@
-<div class="bs-sidebar col-md-3 clearfix" data-ng-include data-src="'partials/realm-menu.html'"></div>
+<div class="bs-sidebar col-md-3 clearfix" data-ng-include data-src="'partials/realm-menu.html'"></div> 
 <div id="content-area" class="col-md-9" role="main">
 
     <!-- <ul class="nav nav-tabs nav-tabs-pf" data-ng-show="!create">
@@ -33,14 +33,20 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label"for="userTypeName">User Type<span class="required" data-ng-show="create">*</span></label>
                     <div class="col-sm-5">
-                        <input class="form-control" type="text" id="userTypeName" name="userTypeName" data-ng-model="userType.userTypeName" autofocus
-                               required data-ng-readonly="!create">
+                        <input class="form-control" type="text" id="userTypeName" name="userTypeName" data-ng-model="userType.name" autofocus
+                               required>
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">T&C Content</label>
-                    <div class="col-sm-4">
+                    <label class="col-sm-2 control-label" for="userTC">T&C Content</label>
+                    
+                    <div class="col-sm-5">
+                        <input class="form-control" type="text" id="userTC" name="userTC" data-ng-model="userType.tncContent" autofocus
+                               required>
+                    </div>
+                    
+                    <!-- <div class="col-sm-4">
                         <div class="controls kc-button-input-file" data-ng-show="!files || files.length == 0">
                             <a href="#" class="btn btn-default"><span class="kc-icon-upload">Icon: Upload</span>Choose a File...</a>
                             <input id="import-file" type="file" class="transparent" ng-file-select="onFileSelect($files)">
@@ -48,7 +54,7 @@
                         <span class="kc-uploaded-file" data-ng-show="files.length > 0">
                             {{files[0].name}}
                         </span>
-                    </div>
+                    </div> -->
                 </div>
                 <!-- <div class="pull-right form-actions" data-ng-show="files.length > 0">
                     <button type="submit" data-ng-click="clearFileSelect()" class="btn btn-lg btn-default">Cancel</button>
@@ -64,8 +70,8 @@
                       <label class="control-label" for="available-app">Available Roles <span tooltip-placement="right" tooltip="Assignable roles from this application." class="fa fa-info-circle"></span></label>
                       <select id="available-app" class="form-control" multiple size="5"
                               ng-multiple="true"
-                              ng-model="selectedRealmRoles"
-                              ng-options="r.name for r in realmRoles">
+                              ng-model="role"
+                              ng-options="r.name for r in roles">
                       </select>
                   </div>
                   <div class="middle-buttons">
@@ -80,35 +86,35 @@
                       <label class="control-label" for="assigned-app">Assigned Roles <span tooltip-placement="right" tooltip="Role mappings for this application." class="fa fa-info-circle"></span></label>
                       <select id="assigned-app" class="form-control" multiple size=5
                               ng-multiple="true"
-                              ng-model="selectedApplicationRoles"
-                              ng-options="r.name for r in applicationRoles">
-                      </select>
-                  </div>
-                  <div class="middle-buttons">
-                      -
-                  </div>
-                  <div class="select-title">
-                      <label class="control-label" for="app-composite">Effective Roles <span tooltip-placement="right" tooltip="Role mappings for this application.  Some roles here might be inherited from a mapped composite role." class="fa fa-info-circle"></span></label>
-                      <select id="app-composite" class="form-control" multiple size=5
-                              ng-disabled="true"
-                              ng-model="dummymodel"
-                              ng-options="r.name for r in myApplicationRolesComposite">
-                      </select>
-                  </div>
-              </div>
-          </div>
+                              ng-model="selectedRole"
+                              ng-options="r.name for r in selectedRoles" >
+                 </select>
+             </div>
+             <div class="middle-buttons">
+                 -
+             </div>
+             <div class="select-title">
+                 <label class="control-label" for="app-composite">Effective Roles <span tooltip-placement="right" tooltip="Role mappings for this application.  Some roles here might be inherited from a mapped composite role." class="fa fa-info-circle"></span></label>
+                 <select id="app-composite" class="form-control" multiple size=5
+                         ng-disabled="true"
+                         ng-model="selectedRole"
+                         ng-options="r.name for r in selectedRoles" >
+          </select>
+      </div>
+  </div>
+</div>
 
-			<div class="pull-right form-actions" data-ng-show="create && access.manageUsers">
-                <button kc-cancel data-ng-click="cancel()">Cancel</button>
-                <button kc-save data-ng-show="changed">Save</button>
-            </div>
+<div class="pull-right form-actions" data-ng-show="create">
+    <button kc-cancel data-ng-click="cancel()">Cancel</button>
+    <button kc-save data-ng-show="changed">Save</button>
+</div>
 
-            <div class="pull-right form-actions" data-ng-show="!create && access.manageUsers">
-                <button kc-reset data-ng-show="changed">Clear changes</button>
-                <button kc-save  data-ng-show="changed">Save</button>
-                <button kc-delete data-ng-click="remove()" data-ng-hide="changed">Delete</button>
-            </div>
+<div class="pull-right form-actions" data-ng-show="!create">
+    <button kc-reset data-ng-show="changed">Clear changes</button>
+    <button kc-save  data-ng-show="changed">Save</button>
+    <button kc-delete data-ng-click="remove()" data-ng-hide="changed">Delete</button>
+</div>
 
-        </form>
-    </div>
+</form>
+</div>
 </div>

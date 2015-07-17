@@ -1,4 +1,4 @@
-package org.keycloak.models.jpa.entities;
+package org.keycloak.models.jpa.entities; 
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -32,9 +33,9 @@ public class UserSubTypeEntity implements Serializable {
 
 	@Column(name = "USER_SUB_TYPE")
 	private String name;
-
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "CUSTOM_USER_TYPE_ID", nullable = true)
+	
+	@ManyToOne(fetch = FetchType.EAGER, cascade ={CascadeType.ALL})
+	@JoinColumn(name = "CUSTOM_USER_TYPE_ID")
 	private UserTypeEntity userType;
 
 	@Column(name = "CREATED_BY")

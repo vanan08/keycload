@@ -5,6 +5,7 @@ import org.keycloak.models.cache.entities.CachedOAuthClient;
 import org.keycloak.models.cache.entities.CachedRealm;
 import org.keycloak.models.cache.entities.CachedRole;
 import org.keycloak.models.cache.entities.CachedUserSubType;
+import org.keycloak.models.cache.entities.CachedUserType;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -56,6 +57,16 @@ public interface RealmCache {
     void setEnabled(boolean enabled);
     
     // Kien Start cached for usersubtype
+    void addCachedUserType(CachedUserType tncContent);
+
+	void invalidateCachedUserTypeById(String id);
+
+	void invalidateUserTypeById(String id);
+
+	void invalidateUserType(CachedUserType userType);
+
+	CachedUserType getUserType(String id);
+    
     void addCachedUserSubType(CachedUserSubType userSubType);
 
 	void invalidateCachedUserSubTypeById(String id);

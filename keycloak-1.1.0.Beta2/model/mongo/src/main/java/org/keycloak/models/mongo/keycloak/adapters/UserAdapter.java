@@ -1,5 +1,13 @@
 package org.keycloak.models.mongo.keycloak.adapters;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.keycloak.connections.mongo.api.context.MongoStoreInvocationContext;
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.CustomUserModel;
@@ -16,14 +24,6 @@ import org.keycloak.models.mongo.keycloak.entities.MongoRoleEntity;
 import org.keycloak.models.mongo.keycloak.entities.MongoUserEntity;
 import org.keycloak.models.mongo.utils.MongoModelUtils;
 import org.keycloak.models.utils.Pbkdf2PasswordEncoder;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Wrapper around UserData object, which will persist wrapped object after each set operation (compatibility with picketlink based idm)
@@ -458,7 +458,7 @@ public class UserAdapter extends AbstractMongoAdapter<MongoUserEntity> implement
 		return null;
 	}
 
-	@Override
+
 	public void addCustomUser(CustomUserModel customUserModel) {
 		// TODO Auto-generated method stub
 		
@@ -468,5 +468,11 @@ public class UserAdapter extends AbstractMongoAdapter<MongoUserEntity> implement
 	public void updateCustomUser(CustomUserModel customUserModel) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public CustomUserModel addCustomUser(String acceptedTNC) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

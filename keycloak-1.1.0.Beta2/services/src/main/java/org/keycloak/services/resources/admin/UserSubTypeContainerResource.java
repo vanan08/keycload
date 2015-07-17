@@ -1,4 +1,4 @@
-package org.keycloak.services.resources.admin;
+package org.keycloak.services.resources.admin;   
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,7 @@ import org.keycloak.models.ModelDuplicateException;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserSubTypeContainerModel;
 import org.keycloak.models.UserSubTypeModel;
+import org.keycloak.models.UserTypeModel;
 import org.keycloak.models.utils.ModelToRepresentation;
 import org.keycloak.representations.idm.UserSubTypeRepresentation;
 import org.keycloak.services.resources.flows.Flows;
@@ -80,7 +81,11 @@ public class UserSubTypeContainerResource extends UserSubTypeResource {
         System.out.println("############ : " + uriInfo.getAbsolutePath());
         try {
             UserSubTypeModel userSubType = userSubTypeContainer.addUserSubType(rep.getName());
-            userSubType.setUserType(rep.getUserType());
+            UserTypeModel userType = realm.getUserTypeById(rep.getUserType());
+            if (userType == null) {
+                throw new NotFoundException("Could not find User Type: " + rep.getName());
+            }
+            userSubType.setUserType(userType);
             return Response.created(uriInfo.getAbsolutePathBuilder().path(userSubType.getName()).build()).build();
         } catch (ModelDuplicateException e) {
             return Flows.errors().exists("UserSubType with name " + rep.getName() + " already exists");
@@ -142,10 +147,12 @@ public class UserSubTypeContainerResource extends UserSubTypeResource {
     public Response updateUserSubType(final @PathParam("userSubType-id") String userSubTypeId, final UserSubTypeRepresentation rep) {
         auth.requireManage();
         System.out.println("############ DONE updateUserSubType " + userSubTypeId);
-        UserSubTypeModel userSubType = userSubTypeContainer.getUserSubTypeById(userSubTypeId);
+        UserSubTypeModel userSubType = userSubTypeContainer.getUserSubTypeById(userSubTypeId);        
+        
         if (userSubType == null) {
             throw new NotFoundException("Could not find userSubTypeName: " + userSubTypeId);
         }
+        
         try {
             updateUserSubType(rep, userSubType);
             System.out.println("############ DONE updateUserSubType " + userSubTypeId);
