@@ -1,6 +1,8 @@
 package org.keycloak.services.managers;
 
 import java.io.FileNotFoundException;
+
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
+import java.util.Date;
 
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
@@ -61,6 +64,8 @@ import com.client.ClientNoAccessException;
 import com.client.Converter;
 import com.client.NoServerException;
 import com.client.TokenOTIP;
+import com.client.QueryUserStatus;
+import com.client.QueryDomain;
 import com.og.smssender.SMSSend;
 
 /**
@@ -461,7 +466,7 @@ public class AuthenticationManager {
 		for (RequiredCredentialModel c : realm.getRequiredCredentials()) {
 			if (c.getType().equals(CredentialRepresentation.TOTP)
 					&& !user.isTotp()) {
-				user.addRequiredAction(UserModel.RequiredAction.CONFIGURE_TOTP);
+				//user.addRequiredAction(UserModel.RequiredAction.CONFIGURE_TOTP);
 				logger.debug("User is required to configure totp");
 			}
 		}
@@ -572,17 +577,23 @@ public class AuthenticationManager {
 			MultivaluedMap<String, String> formData, String username,
 			StringBuilder errorMessage) {
 
+		AuthenticationStatus as = null;
 		String realmName = realm.getName();
 
 		System.out.println("KeyCloack Authentication Realm: " + realmName);
 
-		if (realmName.equals("master")) {
-			return this.authenticateInternalMaster(session, realm, formData,
+		try {
+		   if (realmName.equals("master")) {
+		     as = this.authenticateInternalMaster(session, realm, formData,
 					username);
-		} else {
-			return this.authenticateInternalNoneMaster(session, realm,
+		   } else {
+			 as = this.authenticateInternalNoneMaster(session, realm,
 					formData, username, errorMessage);
+		   }
 		}
+		catch(Exception e) {}
+		
+		return as;
 
 	}
 	
@@ -636,12 +647,16 @@ public class AuthenticationManager {
             if (user.isTotp() && totp == null) {
                 return AuthenticationStatus.MISSING_TOTP;
             }
+            
+            return AuthenticationStatus.SUCCESS;
 
+            /*
             if (!user.getRequiredActions().isEmpty()) {
                 return AuthenticationStatus.ACTIONS_REQUIRED;
             } else {
                 return AuthenticationStatus.SUCCESS;
             }
+            */
         } else if (types.contains(CredentialRepresentation.SECRET)) {
             String secret = formData.getFirst(CredentialRepresentation.SECRET);
             if (secret == null) {
@@ -664,7 +679,7 @@ public class AuthenticationManager {
 
 	protected AuthenticationStatus authenticateInternalMaster(
 			KeycloakSession session, RealmModel realm,
-			MultivaluedMap<String, String> formData, String username) {
+			MultivaluedMap<String, String> formData, String username) throws Exception {
 		UserModel user = KeycloakModelUtils.findUserByNameOrEmail(session,
 				realm, username);
 
@@ -761,24 +776,135 @@ public class AuthenticationManager {
 				.getInstance(keystorePath, hsm_password, serverIP, true);
 	}
 
+	
+	private AuthenticationStatus checkForTNCPage(UserModel user, UserModel userModel) throws Exception {
+		// Check TNC page
+		String acceptedTNC = "N";
+		String needTNC = "Y";
+		System.out.println("=====Check TNC conditions====");
+		System.out.println("Check TNC conditions: getEmail="
+				+ userModel.getEmail());
+		System.out.println("Check TNC conditions: getUsername="
+				+ userModel.getUsername());
+		System.out.println("Check TNC conditions: mobile="
+				+ userModel.getMobile());
+		System.out.println("Check TNC conditions: getNeedTNC="
+				+ userModel.getNeedTNC());
+		System.out.println("Check TNC conditions: getNeed2FA="
+				+ userModel.getNeed2FA());
+		
+		CustomUserModel customUserModel = null;
+		List<CustomUserModel> customUserModels = userModel.getCustomUsers();
+		if (customUserModels.size() > 0) {
+			customUserModel = customUserModels.get(0);
+		} else {
+			customUserModel = user.addCustomUser(acceptedTNC);
+			customUserModel.setAcceptedTNCdatetime(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			
+			customUserModel.updateCustomUser();
+		}
+		
+		acceptedTNC = customUserModel.getAcceptedTNC();
+		needTNC = userModel.getNeedTNC();
+		System.out.println("Check TNC conditions: acceptedTNC="
+				+ acceptedTNC);
+		System.out.println("Check TNC conditions: needTNC="
+				+ needTNC);
+
+		if (needTNC.equalsIgnoreCase("Y")
+				&& acceptedTNC.equalsIgnoreCase("N")) {
+			return AuthenticationStatus.TNC;
+		}
+		
+		return null;
+	}
+	
+	
+	private boolean checkForSpecialFlows(KeycloakSession session, ClientAPI clientAPI, String username, int domain) throws Exception {
+		boolean ret=false;
+		/* accountStatus=1 is active / password is going expired / password is expired
+		 * accountStatus=2 is force change password
+		 * accountStatus=3 is account is suspended 
+		 * accountStatus=4 is account is disabled/not active
+		*/
+		QueryUserStatus qus = clientAPI.getUserStatus(EMPTY_BYTES, username, domain);
+		int accountStatus = 0;
+		if(qus!=null)
+			accountStatus=qus.getStatus();	
+
+		if(accountStatus==1) {
+			double returnCode = getPasswordDayRemaining (clientAPI, username, domain);
+			if(returnCode<0) {
+				//call url from pse function module=CHANGEPASSWORD to redirect to SFA
+				System.out.println("Password has expired");
+				//updateTNCFlag(session,username);
+			}
+			else {
+			   System.out.println("Account Active is detected");
+			}  
+		}
+		else if(accountStatus==2) {
+		    //call url from pse function module=CHANGEPASSWORD to redirect to SFA
+			ret=true;
+			System.out.println("Force to change passsord is detected");
+			//updateTNCFlag(session,username);
+		}
+		else if(accountStatus==3 || accountStatus==4) {
+			//Show error message and the flow is ended at 1FA
+			ret=true;
+			System.out.println("Account Disabled or Suspended is detected");
+		}
+		
+		return ret;
+	}
+	
+	
+	private void updateTNCFlag(KeycloakSession session, String username) throws Exception {
+		// Update to database
+		UserModel model = session.users().getUserByUsername(username);
+		CustomUserModel customUserModel = model.getCustomUsers().get(0);
+		logger.debug("AcceptedTNC =" + customUserModel.getAcceptedTNC());
+		customUserModel.setAcceptedTNC("Y");
+		customUserModel.setUpdateby(model.getUsername());
+		customUserModel.setUpdateddate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		customUserModel.updateCustomUser();
+		logger.debug("Updated acceptedTNC");
+	}
+	
+	
+	private static double getPasswordDayRemaining(ClientAPI api, String userId, int dom) {
+		double returnCode = -9999999;
+		if (api != null) {
+			try {
+			     QueryDomain domain = api.queryDomain("".getBytes(), dom);
+			     int lifeTimie = domain == null ? 0 : domain.getPasswordLifetime();
+			     Date passwordCreateDate = api.queryUser("".getBytes(), userId, 22).getPwdCreationDate();
+	
+			     Calendar calendar = Calendar.getInstance();
+			     long currentTime = calendar.getTime().getTime();
+			     long createTime = passwordCreateDate == null ? 0 : passwordCreateDate.getTime();
+			     double createDay = (double) (currentTime - createTime) / (double) (1000 * 60 * 60 * 24);
+			     returnCode = lifeTimie - createDay;
+	
+			} catch (Exception e) {
+			     e.printStackTrace();
+			}
+		}
+		
+		return returnCode;
+	}
+
+	
 	protected AuthenticationStatus authenticateInternalNoneMaster(
 			KeycloakSession session, RealmModel realm,
 			MultivaluedMap<String, String> formData, String username,
-			StringBuilder errorMessage) {
+			StringBuilder errorMessage) throws Exception {
 
 		String need_tnc = formData.getFirst("need_tnc");
 		if (need_tnc != null) {
 			System.out.println("KeyCloack: processLogin need_tnc: " + need_tnc);
 			if (need_tnc.equalsIgnoreCase("Y")) {
-				// Update to database
-				UserModel model = session.users().getUserByUsername(username);
-				CustomUserModel customUserModel = model.getCustomUsers().get(0);
-				logger.debug("AcceptedTNC =" + customUserModel.getAcceptedTNC());
-				customUserModel.setAcceptedTNC("Y");
-				customUserModel.setUpdateby(model.getUsername());
-				customUserModel.setUpdateddate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-				customUserModel.updateCustomUser();
-				logger.debug("Updated acceptedTNC");
+				updateTNCFlag(session,username);
 				// go to landing page
 				return AuthenticationStatus.SUCCESS;
 			} else {
@@ -876,6 +1002,9 @@ public class AuthenticationManager {
 				domain = Integer
 						.parseInt(getPropAuthenticationValues("domain"));
 
+				UserModel userModel = session.users().getUserByUsername(
+						username, realm);
+
 				if (totp == null) {
 
 					System.out
@@ -905,18 +1034,37 @@ public class AuthenticationManager {
 						logger.debug(e.getMessage());
 						return AuthenticationStatus.FAILED;
 					}
+					
+					boolean ret = checkForSpecialFlows(session, clientAPI, username, domain);
+					
 					// not success
 					if (!(returnCode == 0 || returnCode == 2051)) {
 						System.out.println("KeyCloack: Return false...");
 						return AuthenticationStatus.FAILED;
+					}
+					
+					String need2FA = userModel.getNeed2FA();
+					if (need2FA != null && enable2faConfigValue == null) {
+						enable2fa = userModel.getNeed2FA()
+								.equalsIgnoreCase("Y") ? true : false;
+					} else {
+						enable2fa = Boolean.valueOf(enable2faConfigValue);
+					}
+
+					if (!enable2fa) {
+						AuthenticationStatus astatus = checkForTNCPage(user,userModel);
+						if(astatus!=null) {
+							return astatus;
+						}
+						else {
+						   return AuthenticationStatus.SUCCESS;
+						}   
 					}
 				} else {
 
 					System.out.println("KeyCloack: enable2faConfigValue="
 							+ enable2faConfigValue);
 
-					UserModel userModel = session.users().getUserByUsername(
-							username, realm);
 					String need2FA = userModel.getNeed2FA();
 					if (need2FA != null && enable2faConfigValue == null) {
 						enable2fa = userModel.getNeed2FA()
@@ -948,52 +1096,24 @@ public class AuthenticationManager {
 											+ resultCode);
 							return AuthenticationStatus.MISSING_TOTP;
 						}
-
-						// Check TNC page
-						String acceptedTNC = "N";
-						String needTNC = "Y";
-						System.out.println("=====Check TNC conditions====");
-						System.out.println("Check TNC conditions: getEmail="
-								+ userModel.getEmail());
-						System.out.println("Check TNC conditions: getUsername="
-								+ userModel.getUsername());
-						System.out.println("Check TNC conditions: mobile="
-								+ userModel.getMobile());
-						System.out.println("Check TNC conditions: getNeedTNC="
-								+ userModel.getNeedTNC());
-						System.out.println("Check TNC conditions: getNeed2FA="
-								+ userModel.getNeed2FA());
-						
-						CustomUserModel customUserModel = null;
-						List<CustomUserModel> customUserModels = userModel.getCustomUsers();
-						if (customUserModels.size() > 0) {
-							customUserModel = customUserModels.get(0);
-						} else {
-							customUserModel = user.addCustomUser(acceptedTNC);
-							customUserModel.setAcceptedTNCdatetime(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-							
-							customUserModel.updateCustomUser();
+						else {
+							boolean ret = checkForSpecialFlows(session, clientAPI, username, domain);
 						}
 						
-						acceptedTNC = customUserModel.getAcceptedTNC();
-						needTNC = userModel.getNeedTNC();
-						System.out.println("Check TNC conditions: acceptedTNC="
-								+ acceptedTNC);
-						System.out.println("Check TNC conditions: needTNC="
-								+ needTNC);
-
-						if (needTNC.equalsIgnoreCase("Y")
-								&& acceptedTNC.equalsIgnoreCase("N")) {
-							return AuthenticationStatus.TNC;
+						
+						AuthenticationStatus astatus = checkForTNCPage(user,userModel);
+						if(astatus!=null) {
+							return astatus;
 						}
-
-						return AuthenticationStatus.SUCCESS;
+						else {
+						   return AuthenticationStatus.SUCCESS;
+						}  
 					}
 				}
 
 				System.out.println("KeyCloack: get UserModel");
-				UserModel userModel = session.users().getUserByUsername(
-						username, realm);
+				//UserModel userModel = session.users().getUserByUsername(
+					//	username, realm);
 				if (userModel != null) {
 					String need2FA = userModel.getNeed2FA();
 					if (need2FA != null && enable2faConfigValue == null) {
@@ -1011,7 +1131,8 @@ public class AuthenticationManager {
 				System.out.println("KeyCloack: enable2fa: " + enable2fa);
 
 				// username & password is valid then check totp
-				if (user.isTotp() && totp == null && enable2fa) {
+				if(totp == null && enable2fa) {
+				//if (user.isTotp() && totp == null && enable2fa) {
 					System.out
 							.println("Username and Password is valid.Then send out OTP code");
 
