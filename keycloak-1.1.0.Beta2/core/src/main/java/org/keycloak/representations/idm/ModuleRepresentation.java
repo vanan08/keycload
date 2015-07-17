@@ -7,6 +7,7 @@ public class ModuleRepresentation {
     protected String description;
     protected String [] roles;
     protected boolean active;
+    protected boolean externalUrl;
     protected String startdate;
     protected String enddate;
     protected String fullpath;
@@ -79,6 +80,14 @@ public class ModuleRepresentation {
 		this.active = active;
 	}
 
+	public boolean isExternalUrl() {
+		return externalUrl;
+	}
+
+	public void setExternalUrl(boolean externalUrl) {
+		this.externalUrl = externalUrl;
+	}
+
 	public String getStartdate() {
 		return startdate;
 	}
@@ -97,6 +106,6 @@ public class ModuleRepresentation {
 	
 	@Override
 	public String toString() {
-		return "{id="+id+",name="+name+",url="+url+",description="+description+"}";
+		return "{id="+id+",name="+name+",url="+url+",description="+description +",externalUrl="+externalUrl+"}";
 	}
 }
