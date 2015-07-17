@@ -78,6 +78,16 @@ public class ApplicationModuleAdapter implements ModuleModel {
 	public boolean isActive() {
 		return moduleEntity.isActive();
 	}
+	
+	@Override
+	public boolean isExternalUrl() {
+		return moduleEntity.isExternalUrl();
+	}
+
+	@Override
+	public void setExternalUrl(boolean externalUrl) {
+		moduleEntity.setExternalUrl(externalUrl);
+	}
 
 	@Override
 	public void setActive(boolean active) {
@@ -226,5 +236,6 @@ public class ApplicationModuleAdapter implements ModuleModel {
 		}
 		
 	}
+
 
 }

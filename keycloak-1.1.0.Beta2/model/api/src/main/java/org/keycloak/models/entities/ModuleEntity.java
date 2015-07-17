@@ -8,6 +8,8 @@ public class ModuleEntity extends AbstractIdentifiableEntity {
 	private String name;
 	private String description;
 	private String url;
+	private boolean active;
+	private boolean externalUrl;
 	private List<String> roleNames = new ArrayList<String>();
 	private String applicationId;
 	
@@ -35,6 +37,22 @@ public class ModuleEntity extends AbstractIdentifiableEntity {
 		this.url = url;
 	}
 	
+	public boolean isExternalUrl() {
+		return externalUrl;
+	}
+
+	public void setExternalUrl(boolean externalUrl) {
+		this.externalUrl = externalUrl;
+	}
+	
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
 	public List<String> getRoleNames() {
 		return roleNames;
 	}
