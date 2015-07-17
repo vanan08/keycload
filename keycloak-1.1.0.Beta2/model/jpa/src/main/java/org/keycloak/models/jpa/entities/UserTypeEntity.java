@@ -43,7 +43,7 @@ public class UserTypeEntity implements Serializable {
 	/*@Column(name = "TNC_CONTENT")
 	private byte[] tncContent;*/
 	@Column(name = "TNC_CONTENT")
-	private String tncContent;
+	private byte[] tncContent;
 
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
@@ -105,11 +105,11 @@ public class UserTypeEntity implements Serializable {
 		this.createdDate = createdDate;
 	}
 
-	public String getTncContent() {
+	public byte[] getTncContent() {
 		return tncContent;
 	}
 
-	public void setTncContent(String tncContent) {
+	public void setTncContent(byte[] tncContent) {
 		this.tncContent = tncContent;
 	}
 

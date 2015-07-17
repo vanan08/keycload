@@ -11,7 +11,7 @@ public class CachedUserType {
     final protected String id;
     final protected String name;
     final protected String realm;
-    final protected String tncContent;
+    final protected byte[] tncContent;
 
     public CachedUserType(UserTypeModel model, RealmModel realm) {
         id = model.getId();
@@ -20,7 +20,7 @@ public class CachedUserType {
         this.realm = realm.getId();
     }
     
-    public String getTncContent() {
+    public byte[] getTncContent() {
 		return tncContent;
 	}
 
