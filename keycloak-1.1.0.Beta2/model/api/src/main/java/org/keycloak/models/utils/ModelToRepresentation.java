@@ -1,4 +1,4 @@
-package org.keycloak.models.utils;
+package org.keycloak.models.utils; 
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package org.keycloak.representations.idm;
+package org.keycloak.representations.idm; 
 
 
 public class UserSubTypeRepresentation {

@@ -1,7 +1,7 @@
 module.controller('UserRoleMappingCtrl', function($scope, $http, realm, user, applications, Notifications, RealmRoleMapping,
                                                   ApplicationRoleMapping, AvailableRealmRoleMapping, AvailableApplicationRoleMapping,
                                                   CompositeRealmRoleMapping, CompositeApplicationRoleMapping, AvailableApplicationModules,
-                                                  AvailableModuleRoleMapping, ModuleRoleMapping, CompositeModuleRoleMapping) {
+                                                  AvailableModuleRoleMapping, ModuleRoleMapping, CompositeModuleRoleMapping) { 
     $scope.realm = realm;
     $scope.user = user;
     $scope.selectedRealmRoles = [];

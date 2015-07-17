@@ -1,4 +1,4 @@
-package org.keycloak.models.jpa.entities;
+package org.keycloak.models.jpa.entities; 
 
 import java.io.Serializable;
 import java.sql.Timestamp;

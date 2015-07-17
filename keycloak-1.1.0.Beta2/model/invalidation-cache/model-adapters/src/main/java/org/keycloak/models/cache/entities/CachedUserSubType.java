@@ -1,4 +1,4 @@
-package org.keycloak.models.cache.entities;
+package org.keycloak.models.cache.entities; 
 
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserSubTypeModel;

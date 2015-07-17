@@ -1,4 +1,4 @@
-'use strict';
+'use strict'; 
 
 var consoleBaseUrl = window.location.href;
 consoleBaseUrl = consoleBaseUrl.substring(0, consoleBaseUrl.indexOf("/console"));

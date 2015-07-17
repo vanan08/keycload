@@ -1,4 +1,4 @@
-package org.keycloak.models.jpa;
+package org.keycloak.models.jpa;  
 
 import javax.persistence.EntityManager;
 

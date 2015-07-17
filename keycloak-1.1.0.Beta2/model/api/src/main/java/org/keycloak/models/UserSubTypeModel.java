@@ -1,4 +1,4 @@
-package org.keycloak.models;
+package org.keycloak.models; 
 
 
 public interface UserSubTypeModel {
