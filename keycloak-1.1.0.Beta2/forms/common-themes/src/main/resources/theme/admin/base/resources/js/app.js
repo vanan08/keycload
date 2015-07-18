@@ -323,7 +323,7 @@ module.config([ '$routeProvider', function($routeProvider) {
             },
             controller : 'UserSubTypeDetailCtrl'
         })
-        .when('/realms/:realm/user-sub-types/:usersubtype', {
+        .when('/realms/:realm/user-sub-types/:userSubType', {
             templateUrl : 'partials/user-sub-type-detail.html',
             resolve : {
                 realm : function(RealmLoader) {

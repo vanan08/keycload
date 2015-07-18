@@ -55,9 +55,17 @@ public class UserTypeContainerResource extends UserTypeResource {
     @Produces("application/json")
     public List<UserTypeRepresentation> getUserType() {
         auth.requireAny();
+        
+        List<UserTypeRepresentation> userTypes = new ArrayList<UserTypeRepresentation>();
+        
         System.out.println("############ getUserType all ");
         Set<UserTypeModel> userTypeModels = userTypeContainer.getUserTypes();
-        List<UserTypeRepresentation> userTypes = new ArrayList<UserTypeRepresentation>();
+        if(userTypeModels == null){
+        	System.out.println("############ getUserType all: null ");
+        	return userTypes;
+        }
+        System.out.println("############ getUserType all size: " + userTypeModels.size());
+       
         for (UserTypeModel userTypeModel : userTypeModels) {
         	userTypes.add(ModelToRepresentation.toRepresentation(userTypeModel));
         }

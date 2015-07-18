@@ -19,7 +19,7 @@ import javax.persistence.Table;
  * 
  */
 @Entity
-@Table(name = "custom_user_type")
+@Table(name = "custom_user_type", schema="public")
 @NamedQueries({
 	@NamedQuery(name = "getAllUserType", query = "SELECT c FROM UserTypeEntity c"),
 	@NamedQuery(name = "getUserTypeById", query = "SELECT c FROM UserTypeEntity c WHERE c.id = :id "),
@@ -28,7 +28,7 @@ public class UserTypeEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "CUSTOM_USER_TYPE_ID")
+	@Column(name = "id")
 	private String id;
  
 	@Column(name = "ACCEPTED_TNC")

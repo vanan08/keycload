@@ -146,7 +146,9 @@ public class CachedRealm {
             cache.addCachedRole(cachedRole);
         }
         
+        System.out.println("############ Cached UserType");
         for (UserTypeModel UserType : model.getUserTypes()) {
+        	System.out.println("############ Cached UserType: "+UserType.getName());
         	realmUserTypes.put(UserType.getName(), UserType.getId());
             CachedUserType cachedUserType = new CachedRealmUserType(UserType, model);
             cache.addCachedUserType(cachedUserType);

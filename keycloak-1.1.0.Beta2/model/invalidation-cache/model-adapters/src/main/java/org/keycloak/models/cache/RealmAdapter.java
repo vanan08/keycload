@@ -840,12 +840,20 @@ public class RealmAdapter implements RealmModel {
     // KIEN START cached adapter function for user type
     @Override
     public Set<UserTypeModel> getUserTypes() {
+    	getDelegateForUpdate();
+    	System.out.println("############ RealmAdapter getUserTypes");
         if (updated != null) return updated.getUserTypes();
 
+        System.out.println("############ RealmAdapter getUserTypes from cached");
         Set<UserTypeModel> UserTypes = new HashSet<UserTypeModel>();
         for (String id : cached.getRealmUserTypes().values()) {
+        	System.out.println("############ RealmAdapter id: "+id);
             UserTypeModel roleById = cacheSession.getUserTypeById(id, this);
-            if (roleById == null) continue;
+            if (roleById == null) {
+            	System.out.println("############ roleById is null");
+            	continue;
+            }
+            System.out.println("############ roleById is "+roleById);
             UserTypes.add(roleById);
         }
         return UserTypes;
@@ -858,6 +866,7 @@ public class RealmAdapter implements RealmModel {
     
     @Override
     public UserTypeModel getUserType(String name) {
+    	getDelegateForUpdate();
         if (updated != null) return updated.getUserType(name);
         String id = cached.getRealmUserTypes().get(name);
         if (id == null) return null;
