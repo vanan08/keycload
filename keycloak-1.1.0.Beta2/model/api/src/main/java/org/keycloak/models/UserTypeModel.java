@@ -6,11 +6,11 @@ public interface UserTypeModel {
 
     String getId();
     
-    String getTncContent();
+    byte[] getTncContent();
     
     void setName(String name);
     
-    void setTncContent(String tncContent);
+    void setTncContent(byte[] tncContent);
     
 	public UserTypeContainerModel getContainer();
 

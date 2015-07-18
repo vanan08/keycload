@@ -824,7 +824,7 @@ module.controller('UserTypeListCtrl', function($scope, realm, UserType) {
     };
 });
 
-module.controller('UserTypeDetailCtrl', function($scope, realm, userType, UserType, $location, Dialog, Notifications, RealmRoles, roles, UserTypeRole) {
+module.controller('UserTypeDetailCtrl', function($scope, $upload, realm, userType, UserType, $location, Dialog, Notifications, RealmRoles, roles, UserTypeRole) {
     $scope.realm = realm;
     $scope.userType = angular.copy(userType);
     $scope.roles = angular.copy(roles);
@@ -832,16 +832,134 @@ module.controller('UserTypeDetailCtrl', function($scope, realm, userType, UserTy
     $scope.selectedRoles = angular.copy([]);
     $scope.selectedRole = angular.copy([]);
     $scope.create = !userType.name;
-
+    $scope.files = [];
     $scope.changed = false; // $scope.create;
-
+    $scope.fileName = 'TnC-' + userType.name + '.txt';
     $scope.$watch('userType', function() {
         if (!angular.equals($scope.userType, userType)) {
             $scope.changed = true;
         }
     }, true);
 
-    $scope.save = function() {
+    $scope.onFileSelect = function($files) {
+        $scope.files = $files;
+        $scope.changed = true;
+    };
+
+    $scope.clearFileSelect = function() {
+        $scope.files = null;
+        if (!angular.equals($scope.userType, userType)) {
+            $scope.changed = true;
+        }
+    }
+
+    $scope.uploadFile = function() {
+        if ($scope.create) {
+            var $file = $scope.files[0];
+            if($scope.files.length != 1){
+                Notifications.error("Please select a Tnc content file!");
+            }
+            $scope.upload = $upload.upload({
+                url: authUrl + '/admin/realms/' + realm.realm + '/user-types/',
+                data: {userTypeName: $scope.userType.name,
+                    userTypeId: " "
+                },
+                file: $file
+            }).progress(function(evt) {
+                console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+            }).success(function(data, status, headers) {
+                Notifications.success("User type has been created successfully.");
+                $location.url("/realms/" + realm.realm + "/user-types/" + $scope.userType.name);
+            }).error(function() {
+                Notifications.error("User type can not be created.");
+            });
+        } else if($scope.files != null && $scope.files.length > 0){
+            var $file = $scope.files[0];
+            $scope.upload = $upload.upload({
+                url: authUrl + '/admin/realms/' + realm.realm + '/user-types/',
+                data: {userTypeName: $scope.userType.name,
+                    userTypeId: $scope.userType.id,
+                },
+                file: $file
+            }).progress(function(evt) {
+                console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+            }).success(function(data, status, headers) {
+                Notifications.success("Your changes have been saved to the user type!");
+                $location.url("/realms/" + realm.realm + "/user-types/" + $scope.userType.name);
+            }).error(function() {
+                Notifications.error("Error occurs when updating!");
+            });
+        } else {
+            UserType.update({
+                realm: realm.realm,
+                userType: $scope.userType.id
+            }, $scope.userType, function () {
+                $scope.changed = false;
+                userType = angular.copy($scope.userType);
+                Notifications.success("Your changes have been saved to the user type.");
+            });
+        }
+    };
+
+    $scope.download = function() {
+        var blob = base64toBlob($scope.userType.tncContent);
+        blobToFile(blob);
+    }
+
+    function base64toBlob(base64Data) {
+        contentType = '';
+        var sliceSize = 1024;
+        var byteCharacters = atob(base64Data);
+        var bytesLength = byteCharacters.length;
+        var slicesCount = Math.ceil(bytesLength / sliceSize);
+        var byteArrays = new Array(slicesCount);
+
+        for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+            var begin = sliceIndex * sliceSize;
+            var end = Math.min(begin + sliceSize, bytesLength);
+
+            var bytes = new Array(end - begin);
+            for (var offset = begin, i = 0 ; offset < end; ++i, ++offset) {
+                bytes[i] = byteCharacters[offset].charCodeAt(0);
+            }
+            byteArrays[sliceIndex] = new Uint8Array(bytes);
+        }
+        return new Blob(byteArrays, { type: contentType });
+    }
+
+    function blobToFile(blob){
+        var filename = $scope.fileName
+        if (typeof window.navigator.msSaveBlob !== 'undefined') {
+            // IE workaround for "HTML7007: One or more blob URLs were revoked by
+            //closing the blob for which they were created.
+            //These URLs will no longer resolve as the data backing the URL has been freed."
+            window.navigator.msSaveBlob(blob, filename);
+        } else {
+            var downloadUrl = URL.createObjectURL(blob);
+
+            if (filename) {
+                // use HTML5 a[download] attribute to specify filename
+                var a = document.createElement("a");
+                // safari doesn't support this yet
+                if (typeof a.download === 'undefined') {
+                    window.location = downloadUrl;
+                } else {
+                    a.href = downloadUrl;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                }
+            } else {
+                window.location = downloadUrl;
+            }
+
+            setTimeout(function() {
+                URL.revokeObjectURL(downloadUrl);
+            }, 100); // cleanup
+        }
+    }
+
+    /*$scope.save = function() {
         if ($scope.create) {
             UserType.save({
                 realm: realm.realm
@@ -862,11 +980,12 @@ module.controller('UserTypeDetailCtrl', function($scope, realm, userType, UserTy
                 Notifications.success("Your changes have been saved to the user type.");
             });
         }
-    };
+    };*/
 
     $scope.reset = function() {
         $scope.userType = angular.copy(userType);
         $scope.changed = false;
+        $scope.files = null;
     };
 
     $scope.cancel = function() {
@@ -898,7 +1017,7 @@ module.controller('UserTypeDetailCtrl', function($scope, realm, userType, UserTy
         }
 
     };
-    
+
     $scope.deleteRole = function() {
         console.log('delRole');
         for(var i = 0; i < $scope.selectedRole.length; i++){
