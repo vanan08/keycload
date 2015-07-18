@@ -44,7 +44,7 @@
             <tbody>
             <tr ng-repeat="userType in userTypes">
                 <td><a href="#/realms/{{realm.realm}}/user-types/{{userType.name}}">{{userType.name}}</a></td>
-                <td>{{userType.tncContent}}</td>
+                <td>{{userType.tncContent.length > 0}}</td>
             </tr>
             <tr data-ng-show="!userTypes || userTypes.length == 0">
                 <td data-ng-show="!userTypes">Please enter a search, or click on view all user types</td>

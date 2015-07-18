@@ -98,11 +98,11 @@ public class UserSubTypeContainerResource extends UserSubTypeResource {
      * @param userSubTypeName userSubType's name (not id!)
      * @return
      */
-    @Path("{userSubType-name}")
+    @Path("{userSubType}")
     @GET
     @NoCache
     @Produces("application/json")
-    public UserSubTypeRepresentation getUserSubType(final @PathParam("userSubType-name") String userSubTypeName) {
+    public UserSubTypeRepresentation getUserSubType(final @PathParam("userSubType") String userSubTypeName) {
         auth.requireView();
         
         System.out.println("############ getUserSubType " + userSubTypeName);

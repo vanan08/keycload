@@ -43,6 +43,7 @@ import org.keycloak.models.ClientModel;
 import org.keycloak.models.ClientSessionModel;
 import org.keycloak.models.CustomUserModel;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.ModuleModel;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RequiredCredentialModel;
 import org.keycloak.models.RoleModel;
@@ -1306,6 +1307,15 @@ public class AuthenticationManager {
 		}
 		return sb.toString();
 	}
+	
+	public  String getModule(KeycloakSession session,String moduleName){
+    	RealmManager moduleManager = new RealmManager(session);
+		ModuleModel module = moduleManager.getModuleByName(moduleName);
+		if (module == null) {
+			return null;
+		}
+		return module.getFullpath();
+    }
 
 	public static String getErrorMessage(int errorCode) {
 		String hexErrorCode = Integer.toHexString(errorCode);

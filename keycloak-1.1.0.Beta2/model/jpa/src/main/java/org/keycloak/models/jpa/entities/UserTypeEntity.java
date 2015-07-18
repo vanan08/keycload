@@ -19,7 +19,7 @@ import javax.persistence.Table;
  * 
  */
 @Entity
-@Table(name = "custom_user_type")
+@Table(name = "custom_user_type", schema="public")
 @NamedQueries({
 	@NamedQuery(name = "getAllUserType", query = "SELECT c FROM UserTypeEntity c"),
 	@NamedQuery(name = "getUserTypeById", query = "SELECT c FROM UserTypeEntity c WHERE c.id = :id "),
@@ -28,7 +28,7 @@ public class UserTypeEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "CUSTOM_USER_TYPE_ID")
+	@Column(name = "id")
 	private String id;
  
 	@Column(name = "ACCEPTED_TNC")
@@ -43,7 +43,7 @@ public class UserTypeEntity implements Serializable {
 	/*@Column(name = "TNC_CONTENT")
 	private byte[] tncContent;*/
 	@Column(name = "TNC_CONTENT")
-	private String tncContent;
+	private byte[] tncContent;
 
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
@@ -105,11 +105,11 @@ public class UserTypeEntity implements Serializable {
 		this.createdDate = createdDate;
 	}
 
-	public String getTncContent() {
+	public byte[] getTncContent() {
 		return tncContent;
 	}
 
-	public void setTncContent(String tncContent) {
+	public void setTncContent(byte[] tncContent) {
 		this.tncContent = tncContent;
 	}
 

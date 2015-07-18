@@ -19,7 +19,7 @@ import javax.persistence.Table;
  * 
  */
 @Entity
-@Table(name = "CUSTOM_USER_SUBTYPE")
+@Table(name = "custom_user_subtype", schema="public")
 @NamedQueries({
 		@NamedQuery(name = "getAllUserSubType", query = "SELECT c FROM UserSubTypeEntity c"),
 		@NamedQuery(name = "getUserSubTypeById", query = "SELECT c FROM UserSubTypeEntity c WHERE c.id = :id "),
@@ -28,16 +28,16 @@ public class UserSubTypeEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "CUSTOM_USER_SUBTYPE_ID")
+	@Column(name = "id")
 	private String id;
 
-	@Column(name = "USER_SUB_TYPE")
-	private String name;
-	
 	@ManyToOne(fetch = FetchType.EAGER, cascade ={CascadeType.ALL})
 	@JoinColumn(name = "CUSTOM_USER_TYPE_ID")
 	private UserTypeEntity userType;
-
+	
+	@Column(name = "USER_SUB_TYPE")
+	private String name;
+	
 	@Column(name = "CREATED_BY")
 	private String createdBy;
 

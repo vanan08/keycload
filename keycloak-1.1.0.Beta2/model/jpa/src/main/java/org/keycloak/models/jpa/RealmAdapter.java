@@ -1030,13 +1030,19 @@ public class RealmAdapter implements RealmModel {
     // KIEN START implement adaper function
     @Override
     public Set<UserTypeModel> getUserTypes() {
+    	System.out.println("############ JPA RealmAdapter getUserTypes");
         Set<UserTypeModel> list = new HashSet<UserTypeModel>();
         TypedQuery<UserTypeEntity> query = em.createNamedQuery("getAllUserType", UserTypeEntity.class);
         List<UserTypeEntity> userTypes = query.getResultList();
-        if (userTypes == null) return list;
+        if (userTypes == null) {
+        	System.out.println("############ JPA RealmAdapter userTypes is null");
+        	return list;
+        }
         for (UserTypeEntity entity : userTypes) {
+        	System.out.println("############ JPA RealmAdapter userTypes is "+entity.getName());
             list.add(new UserTypeAdapter(this, em, entity));
         }
+        System.out.println("############ JPA RealmAdapter return list usertypes");
         return list;
     }
 

@@ -340,10 +340,10 @@ module.factory('UserSubTypeListLoader', function(Loader, UserSubType, $route, $q
 module.factory('UserSubTypeLoader', function(Loader, UserSubType, $route, $q) {
     return Loader.get(UserSubType, function() {
         console.log('usertype loader****');
-        console.log($route.current.params.usersubtype);
+        console.log($route.current.params.userSubType);
         return {
             realm : $route.current.params.realm,
-            userSubType : $route.current.params.usersubtype
+            userSubType : $route.current.params.userSubType
         }
     });
 });

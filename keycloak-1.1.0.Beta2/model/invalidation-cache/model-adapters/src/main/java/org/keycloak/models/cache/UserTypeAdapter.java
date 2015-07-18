@@ -46,13 +46,13 @@ public class UserTypeAdapter implements UserTypeModel {
     }
     
 	@Override
-	public String getTncContent() {
+	public byte[] getTncContent() {
 		if (updated != null) return updated.getTncContent();
 	    return cached.getTncContent();
 	}
 
 	@Override
-	public void setTncContent(String tncContent) {
+	public void setTncContent(byte[] tncContent) {
 		getDelegateForUpdate();
         updated.setTncContent(tncContent);
 	}

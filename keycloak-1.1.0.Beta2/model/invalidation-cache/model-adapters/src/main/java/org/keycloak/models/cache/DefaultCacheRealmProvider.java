@@ -352,27 +352,44 @@ public class DefaultCacheRealmProvider implements CacheRealmProvider {
 	// Kien Start default cached for user sub type, user type
 	@Override
 	public UserTypeModel getUserTypeById(String id, RealmModel realm) {
+		System.out.println("############ getUserTypeById");
 		if (!cache.isEnabled()) return getDelegate().getUserTypeById(id, realm);
+		System.out.println("############ getUserTypeById: "+id);
         CachedUserType cached = cache.getUserType(id);
         if (cached != null && !cached.getRealm().equals(realm.getId())) {
+        	System.out.println("############ getUserTypeById cached is null ");
             cached = null;
         }
 
         if (cached == null) {
             UserTypeModel model = getDelegate().getUserTypeById(id, realm);
-            if (model == null) return null;
-            if (userTypeInvalidations.contains(id)) return model;
+           
+            if (model == null) {
+            	System.out.println("############ getUserTypeById cached model is null ");
+            	return null;
+            }
+            
+            
+            if (userTypeInvalidations.contains(id)) {
+            	System.out.println("############ getUserTypeById cached return model ");
+            	return model;
+            }
+            System.out.println("############ getUserTypeById CachedRealmUserType");
             cached = new CachedRealmUserType(model, realm);
             cache.addCachedUserType(cached);
 
         } else if (userTypeInvalidations.contains(id)) {
+        	System.out.println("############ getDelegate().getUserTypeById(id, realm)");
             return getDelegate().getUserTypeById(id, realm);
         } else if (managedUserTypes.containsKey(id)) {
+        	System.out.println("############ managedUserTypes.get(id)");
             return managedUserTypes.get(id);
         }
         
+        System.out.println("############ UserTypeAdapter");
         UserTypeAdapter adapter = new UserTypeAdapter(cached, cache, this, realm);
         managedUserTypes.put(id, adapter);
+        System.out.println("############ return user type adapter");
         return adapter;
 	}
 

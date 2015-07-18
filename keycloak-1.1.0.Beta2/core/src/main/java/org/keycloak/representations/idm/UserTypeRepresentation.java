@@ -4,7 +4,7 @@ package org.keycloak.representations.idm;
 public class UserTypeRepresentation {
 	protected String id;
     protected String name;
-    protected String tncContent;
+    protected byte[] tncContent;
     
     public UserTypeRepresentation() {
     }
@@ -25,11 +25,11 @@ public class UserTypeRepresentation {
         this.name = name;
     }
     
-	public String getTncContent() {
+	public byte[] getTncContent() {
 		return tncContent;
 	}
 
-	public void setTncContent(String tncContent) {
+	public void setTncContent(byte[] tncContent) {
 		this.tncContent = tncContent;
 	}
 

@@ -1,7 +1,11 @@
 package org.keycloak.services.resources.admin;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
@@ -13,11 +17,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.IOUtils;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.annotations.cache.NoCache;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.spi.NotFoundException;
 import org.keycloak.models.ModelDuplicateException;
 import org.keycloak.models.RealmModel;
@@ -55,9 +63,17 @@ public class UserTypeContainerResource extends UserTypeResource {
     @Produces("application/json")
     public List<UserTypeRepresentation> getUserType() {
         auth.requireAny();
+        
+        List<UserTypeRepresentation> userTypes = new ArrayList<UserTypeRepresentation>();
+        
         System.out.println("############ getUserType all ");
         Set<UserTypeModel> userTypeModels = userTypeContainer.getUserTypes();
-        List<UserTypeRepresentation> userTypes = new ArrayList<UserTypeRepresentation>();
+        if(userTypeModels == null){
+        	System.out.println("############ getUserType all: null ");
+        	return userTypes;
+        }
+        System.out.println("############ getUserType all size: " + userTypeModels.size());
+       
         for (UserTypeModel userTypeModel : userTypeModels) {
         	userTypes.add(ModelToRepresentation.toRepresentation(userTypeModel));
         }
@@ -84,6 +100,47 @@ public class UserTypeContainerResource extends UserTypeResource {
             return Response.created(uriInfo.getAbsolutePathBuilder().path(userType.getName()).build()).build();
         } catch (ModelDuplicateException e) {
             return Flows.errors().exists("UserType with name " + rep.getName() + " already exists");
+        }
+    }
+    
+    @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createUserType(final @Context UriInfo uriInfo, MultipartFormDataInput input) {
+        auth.requireManage();
+        Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
+        List<InputPart> inputParts = uploadForm.get("file");
+        //UserTypeRepresentation rep = new UserTypeRepresentation();
+        String name = "";
+        String id = "";
+        try {
+        	name = uploadForm.get("userTypeName").get(0).getBodyAsString();
+        	id = uploadForm.get("userTypeId").get(0).getBodyAsString();
+			String content = inputParts.get(0).getBodyAsString();
+	        System.out.println("*********** createUserType NEW :" + name);	     
+	        System.out.println("*********** content :" + " \n" + content);
+	        System.out.println("*********** content.toString :" + " \n" + inputParts.get(0).toString());
+	        
+	        if(id.equals(" ")){
+	            UserTypeModel userType = userTypeContainer.addUserType(name);
+	            InputStream inputStream = inputParts.get(0).getBody(InputStream.class, null);
+	            userType.setTncContent(IOUtils.toByteArray(inputStream));
+	        }else{
+	        	System.out.println("*********** updateUserType " + id);
+	            UserTypeModel userType = userTypeContainer.getUserTypeById(id);
+	            userType.setName(name);
+            	System.out.println("*********** update TNC ");
+            	InputStream inputStream = inputParts.get(0).getBody(InputStream.class, null);
+            	userType.setTncContent(IOUtils.toByteArray(inputStream));
+	        }
+	        
+            return Response.created(uriInfo.getAbsolutePathBuilder().path(name).build()).build();
+        } catch (ModelDuplicateException e) {
+        	return Flows.errors().exists("UserType with name " + name + " already exists");
+        } catch (IOException e1) {
+        	// TODO Auto-generated catch block
+        	e1.printStackTrace();
+        	return Flows.errors().exists("Can not creat user type");
         }
     }
 
@@ -147,8 +204,8 @@ public class UserTypeContainerResource extends UserTypeResource {
             throw new NotFoundException("Could not find userTypeName: " + userTypeId);
         }
         try {
-            updateUserType(rep, userType);
-            System.out.println("############ DONE updateUserType " + userTypeId);
+        	userType.setName(rep.getName());
+            System.out.println("####******* DONE updateUserTypeName " + userTypeId);
             return Response.noContent().build();
         } catch (ModelDuplicateException e) {
             return Flows.errors().exists("UserType with name " + rep.getName() + " already exists");
