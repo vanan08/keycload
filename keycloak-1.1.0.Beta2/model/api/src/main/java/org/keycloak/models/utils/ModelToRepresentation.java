@@ -334,6 +334,7 @@ public class ModelToRepresentation {
     	req.setUrl(model.getUrl());
     	req.setDescription(model.getDescription());
 		req.setActive(model.isActive());
+		req.setExternalUrl(model.isExternalUrl());
 		req.setFullpath(model.getFullpath());
     	
     	if (model.getEndDate() != null) {

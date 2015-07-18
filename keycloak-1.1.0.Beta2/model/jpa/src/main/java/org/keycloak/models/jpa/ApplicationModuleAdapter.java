@@ -91,7 +91,7 @@ public class ApplicationModuleAdapter implements ModuleModel {
 
 	@Override
 	public void setActive(boolean active) {
-		throw new UnsupportedOperationException("not support this method");
+		moduleEntity.setActive(active);
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class ApplicationModuleAdapter implements ModuleModel {
 
 	@Override
 	public void setStartDate(Date startDate) {
-		throw new UnsupportedOperationException("not support this method");
+		moduleEntity.setStartDate(startDate);
 	}
 
 	@Override
@@ -111,47 +111,47 @@ public class ApplicationModuleAdapter implements ModuleModel {
 
 	@Override
 	public void setEndDate(Date endDate) {
-		throw new UnsupportedOperationException("not support this method");
+		moduleEntity.setEndDate(endDate);
 	}
 
 	@Override
 	public String getCreatedBy() {
-		throw new UnsupportedOperationException("not support this method");
+		return moduleEntity.getCreatedBy();
 	}
 
 	@Override
 	public void setCreatedBy(String createdBy) {
-		throw new UnsupportedOperationException("not support this method");
+		moduleEntity.setCreatedBy(createdBy);
 	}
 
 	@Override
 	public Date getCreatedDate() {
-		throw new UnsupportedOperationException("not support this method");
+		return moduleEntity.getCreatedDate();
 	}
 
 	@Override
 	public void setCreatedDate(Date createdDate) {
-		throw new UnsupportedOperationException("not support this method");
+		moduleEntity.setCreatedDate(createdDate);
 	}
 
 	@Override
 	public String getUpdatedBy() {
-		throw new UnsupportedOperationException("not support this method");
+		return moduleEntity.getUpdatedBy();
 	}
 
 	@Override
 	public void setUpdatedBy(String updatedBy) {
-		throw new UnsupportedOperationException("not support this method");
+		moduleEntity.setUpdatedBy(updatedBy);
 	}
 
 	@Override
 	public Date getUpdatedDate() {
-		throw new UnsupportedOperationException("not support this method");
+		return moduleEntity.getUpdatedDate();
 	}
 
 	@Override
 	public void setUpdatedDate(Date updatedDate) {
-		throw new UnsupportedOperationException("not support this method");
+		moduleEntity.setUpdatedDate(updatedDate);
 	}
 
 	@Override
