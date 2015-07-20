@@ -151,7 +151,7 @@ public class TokenManager {
     		StringBuilder sb = new StringBuilder();
     		ApplicationModel applicationModel = (ApplicationModel) client;
     		String baseUrl = applicationModel.getBaseUrl();
-    		if (baseUrl.indexOf("/", baseUrl.length()-1) == -1) {
+    		if (!baseUrl.endsWith("/")) {
     			baseUrl = baseUrl + "/";
     		}
     		
@@ -174,8 +174,11 @@ public class TokenManager {
 	    			}
 	    			
 	    			if (!flag) {
-	    				
-    					sb.append(baseUrl).append(moduleModel.getUrl());
+	    				if (moduleModel.isExternalUrl()) {
+	    					sb.append(moduleModel.getUrl());
+	    				} else {
+	    					sb.append(baseUrl).append(moduleModel.getUrl());
+	    				}
 	    				
 	    				if (i <= size-1) {
 	    					sb.append(",");
@@ -197,8 +200,6 @@ public class TokenManager {
 					sb.append(baseUrl);
     			}
     		}
-    		
-    		logger.info("blacklist="+sb.toString());
     		
     		clientSession.setBlacklist(sb.toString());
     		
