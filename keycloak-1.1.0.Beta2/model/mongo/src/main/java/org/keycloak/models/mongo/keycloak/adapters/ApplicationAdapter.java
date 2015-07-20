@@ -285,7 +285,7 @@ public class ApplicationAdapter extends ClientAdapter<MongoApplicationEntity> im
 		return null;
 	}
 
-	@Override
+//	@Override
 	public ModuleModel addModule(String id, String name) {
 //		MongoModuleEntity module = new MongoModuleEntity();
 //		module.setId(id);
@@ -338,10 +338,24 @@ public class ApplicationAdapter extends ClientAdapter<MongoApplicationEntity> im
 		return false;
 	}
 
-	@Override
+//	@Override
 	public ModuleModel addModule(String id, String name, String url) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+@Override
+public ModuleModel addModule(String name, String url, boolean active,
+		boolean externalUrl) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public ModuleModel addModule(String id, String name, String url,
+		boolean active, boolean externalUrl) {
+	// TODO Auto-generated method stub
+	return null;
+}
 
 }

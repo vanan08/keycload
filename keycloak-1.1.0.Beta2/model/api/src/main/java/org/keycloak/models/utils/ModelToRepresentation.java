@@ -95,6 +95,7 @@ public class ModelToRepresentation {
            rep.setId(userType.getId());
            rep.setName(userType.getName());
            rep.setTncContent(userType.getTncContent());
+           rep.setUserTypeRole(userType.getUserTypeRole());
            return rep;
     }
     

@@ -5,6 +5,7 @@ public class UserTypeRepresentation {
 	protected String id;
     protected String name;
     protected byte[] tncContent;
+    protected String userTypeRole;
     
     public UserTypeRepresentation() {
     }
@@ -31,6 +32,14 @@ public class UserTypeRepresentation {
 
 	public void setTncContent(byte[] tncContent) {
 		this.tncContent = tncContent;
+	}
+	
+	public String getUserTypeRole() {
+		return userTypeRole;
+	}
+
+	public void setUserTypeRole(String userTypeRole) {
+		this.userTypeRole = userTypeRole;
 	}
 
 	@Override

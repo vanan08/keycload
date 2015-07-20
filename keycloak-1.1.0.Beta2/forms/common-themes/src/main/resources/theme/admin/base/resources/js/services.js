@@ -1157,6 +1157,26 @@ module.factory('UserType', function($resource) {
     });
 });
 
+module.factory('AvailableUserTypeRoleMapping', function($resource) {
+    return $resource(authUrl + '/admin/realms/:realm/user-types/:userType/available', {
+    	realm : '@realm',
+        userType : '@userType'
+    });
+});
+
+module.factory('UserTypeRoleMapping', function($resource) {
+   	return $resource(authUrl + '/admin/realms/:realm/user-types/:userType/roles', {
+   		realm : '@realm',
+        userType : '@userType'
+    });
+});
+
+module.factory('UserTypeRoles', function($resource) {
+	return $resource(authUrl + '/admin/realms/:realm/roles', {
+        realm : '@realm'
+    });
+});
+
 module.factory('UserSubType', function($resource) {
     return $resource(authUrl + '/admin/realms/:realm/user-sub-types/:userSubType', {
         realm : '@realm',
@@ -1168,15 +1188,4 @@ module.factory('UserSubType', function($resource) {
     });
 });
 
-module.factory('UserTypeRole', function($resource) {
-    return $resource(authUrl + '/admin/realms/:realm/user-type-roles/:userTypeId', {
-        realm : '@realm',
-        userTypeId : "@userTypeId",
-        role : '@role'
-    },  {
-        update : {
-            method : 'PUT'
-        }
-    });
-});
 /*End add more by HieuDM*/

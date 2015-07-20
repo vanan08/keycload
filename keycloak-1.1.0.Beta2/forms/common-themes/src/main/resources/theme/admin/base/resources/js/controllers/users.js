@@ -824,23 +824,95 @@ module.controller('UserTypeListCtrl', function($scope, realm, UserType) {
     };
 });
 
-module.controller('UserTypeDetailCtrl', function($scope, $upload, realm, userType, UserType, $location, Dialog, Notifications, RealmRoles, roles, UserTypeRole) {
-    $scope.realm = realm;
+//User type screen
+module.controller('UserTypeDetailCtrl', function($scope, $upload, realm, userType, UserType, userTypeRoles, $location, Dialog, Notifications) {
+	$scope.realm = realm;
     $scope.userType = angular.copy(userType);
-    $scope.roles = angular.copy(roles);
-    $scope.role = angular.copy([]);
-    $scope.selectedRoles = angular.copy([]);
-    $scope.selectedRole = angular.copy([]);
+    $scope.availableUserTypeRoleMappings = angular.copy(userTypeRoles);
+    $scope.applicationUserTypeRoles=[];
+    $scope.applicationComposite=[];
     $scope.create = !userType.name;
     $scope.files = [];
     $scope.changed = false; // $scope.create;
     $scope.fileName = 'TnC-' + userType.name + '.txt';
+	
+	
+	if (!$scope.create  &&  $scope.userType.userTypeRole) {
+		// TODO: Get all roles tag for module
+		console.log('roleeeee: ' + $scope.userType.userTypeRole);
+		var roleNames = angular.copy($scope.userType.userTypeRole);
+        roleNames = roleNames.replace(/\"/g, '');
+        roleNames = roleNames.substring(1,roleNames .length-1);
+        roleNames = roleNames.split(",");
+        
+        for(var i = 0; i < roleNames.length; i++){
+        	for(var j = 0; j < $scope.availableUserTypeRoleMappings.length; j++){
+    			console.log("filter item name: "+ $scope.availableUserTypeRoleMappings[j].name);
+    			if ($scope.availableUserTypeRoleMappings[j].name.trim() == roleNames[i].trim()){
+    				$scope.applicationUserTypeRoles.push($scope.availableUserTypeRoleMappings[j]);
+    				$scope.availableUserTypeRoleMappings.splice(j, 1);
+    			}
+    		}
+        }
+        
+        $scope.applicationComposite = angular.copy($scope.applicationUserTypeRoles);
+	} 
+    
+	$scope.$watch('availableUserTypeRoleMappings', function() {
+		console.log("availableUserTypeRoleMappings: "+JSON.stringify($scope.availableUserTypeRoleMappings));
+	});
+    
+	$scope.$watch('applicationUserTypeRoles', function() {
+		console.log("applicationUserTypeRoles: "+JSON.stringify($scope.applicationUserTypeRoles));		
+		if (!angular.equals($scope.applicationComposite, $scope.applicationUserTypeRoles)) {
+            $scope.changed = true;
+        }
+	},true);
+	 
     $scope.$watch('userType', function() {
         if (!angular.equals($scope.userType, userType)) {
             $scope.changed = true;
         }
     }, true);
-
+	
+	$scope.$watch('applicationComposite', function() {
+		console.log("applicationComposite: "+JSON.stringify($scope.applicationComposite));
+	});
+	
+	$scope.addUserTypeRole = function() {
+		// TODO: add user type role
+		if($scope.selectedUserTypeRoles.length == 0)
+			return;
+			
+			for(var i = 0; i < $scope.selectedUserTypeRoles.length; i++){
+				$scope.applicationUserTypeRoles.push($scope.selectedUserTypeRoles[i]);
+				var selectedItem = $scope.selectedUserTypeRoles[i];
+	    		for(var j = 0; j < $scope.availableUserTypeRoleMappings.length; j++){
+	    			if ($scope.availableUserTypeRoleMappings[j].name.trim() == selectedItem.name.trim()){
+	    				$scope.availableUserTypeRoleMappings.splice(j, 1);
+	    			}
+	    		}
+			}
+    		
+    		$scope.selectedUserTypeRoles = [];
+    };
+    
+    $scope.deleteUserTypeRole = function() {
+    	if($scope.selectedApplicationUserTypeRoles.length == 0)
+    		return;
+    	
+    	//if ($scope.create) {
+    		for(var i = 0; i < $scope.selectedApplicationUserTypeRoles.length; i++){
+    			for(var j = 0; j < $scope.applicationUserTypeRoles.length; j++){
+	    			if ($scope.selectedApplicationUserTypeRoles[i].name.trim() === $scope.applicationUserTypeRoles[j].name.trim()){
+	    				$scope.applicationUserTypeRoles.splice(j, 1);
+	    				$scope.availableUserTypeRoleMappings.push($scope.selectedApplicationUserTypeRoles[i]);
+	    			}
+	    		}
+    		}
+    		$scope.selectedApplicationUserTypeRoles = [];
+    };
+    
     $scope.onFileSelect = function($files) {
         $scope.files = $files;
         $scope.changed = true;
@@ -854,20 +926,29 @@ module.controller('UserTypeDetailCtrl', function($scope, $upload, realm, userTyp
     }
 
     $scope.uploadFile = function() {
+    	var roleNames = new Array();
+    	for(var i=0; i<$scope.applicationUserTypeRoles.length; i++){
+    		roleNames.push($scope.applicationUserTypeRoles[i].name);
+    	}
+    	
+    	$scope.userType.userTypeRole = roleNames;
         if ($scope.create) {
             var $file = $scope.files[0];
-            if($scope.files.length != 1){
+         
+			if($scope.files.length != 1){
                 Notifications.error("Please select a Tnc content file!");
             }
             $scope.upload = $upload.upload({
                 url: authUrl + '/admin/realms/' + realm.realm + '/user-types/',
                 data: {userTypeName: $scope.userType.name,
-                    userTypeId: " "
+                    userTypeId: " ",
+                    roleNames: roleNames
                 },
                 file: $file
             }).progress(function(evt) {
                 console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
             }).success(function(data, status, headers) {
+				
                 Notifications.success("User type has been created successfully.");
                 $location.url("/realms/" + realm.realm + "/user-types/" + $scope.userType.name);
             }).error(function() {
@@ -875,27 +956,61 @@ module.controller('UserTypeDetailCtrl', function($scope, $upload, realm, userTyp
             });
         } else if($scope.files != null && $scope.files.length > 0){
             var $file = $scope.files[0];
+
             $scope.upload = $upload.upload({
                 url: authUrl + '/admin/realms/' + realm.realm + '/user-types/',
-                data: {userTypeName: $scope.userType.name,
+                data: {
                     userTypeId: $scope.userType.id,
+                    userTypeName: $scope.userType.name,
+                    roleNames: roleNames
                 },
                 file: $file
             }).progress(function(evt) {
                 console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
             }).success(function(data, status, headers) {
-                Notifications.success("Your changes have been saved to the user type!");
-                $location.url("/realms/" + realm.realm + "/user-types/" + $scope.userType.name);
+            	Notifications.success("Your changes have been saved to the user type!");
+            	$location.path("/realms/" + realm.realm + "/user-types/" + $scope.userType.name+"/");
             }).error(function() {
                 Notifications.error("Error occurs when updating!");
             });
-        } else {
+        } else {        	
+        	var str = '';        	
+        	for (var i = 0; i < $scope.userType.userTypeRole.length; i++) {
+				str = str + $scope.userType.userTypeRole[i];
+				if(i < $scope.userType.userTypeRole.length - 1)
+				{
+					str = str + '","';
+				}
+			}
+        	
+        	str = '["' + str + '"]';
+        	console.log('new roles :' + str);
+        	$scope.userType.userTypeRole = angular.copy(str);
             UserType.update({
                 realm: realm.realm,
                 userType: $scope.userType.id
             }, $scope.userType, function () {
                 $scope.changed = false;
                 userType = angular.copy($scope.userType);
+                $scope.availableUserTypeRoleMappings = angular.copy(userTypeRoles);
+                $scope.applicationUserTypeRoles = [];
+                
+                if ($scope.userType.userTypeRole) {
+
+	                var roleNames = angular.copy($scope.userType.userTypeRole);
+	                roleNames = roleNames.replace(/\"/g, '');
+	                roleNames = roleNames.substring(1,roleNames .length-1);
+	                roleNames = roleNames.split(",");
+	                for(var i = 0; i < roleNames.length; i++){
+	                	for(var j = 0; j < $scope.availableUserTypeRoleMappings.length; j++){
+	            			if ($scope.availableUserTypeRoleMappings[j].name.trim() == roleNames[i].trim()){
+	            				$scope.applicationUserTypeRoles.push($scope.availableUserTypeRoleMappings[j]);
+	            				$scope.availableUserTypeRoleMappings.splice(j, 1);
+	            			}
+	            		}
+	                }
+                }
+                $scope.applicationComposite = angular.copy($scope.applicationUserTypeRoles);
                 Notifications.success("Your changes have been saved to the user type.");
             });
         }
@@ -959,33 +1074,31 @@ module.controller('UserTypeDetailCtrl', function($scope, $upload, realm, userTyp
         }
     }
 
-    /*$scope.save = function() {
-        if ($scope.create) {
-            UserType.save({
-                realm: realm.realm
-            }, $scope.userType, function () {
-                $scope.changed = false;
-                userType = angular.copy($scope.userType);
-
-                $location.url("/realms/" + realm.realm + "/user-types/" + $scope.userType.name);
-                Notifications.success("The user type has been created.");
-            });
-        } else {
-            UserType.update({
-                realm: realm.realm,
-                userType: $scope.userType.id
-            }, $scope.userType, function () {
-                $scope.changed = false;
-                userType = angular.copy($scope.userType);
-                Notifications.success("Your changes have been saved to the user type.");
-            });
-        }
-    };*/
-
     $scope.reset = function() {
+    	$scope.files = null;
         $scope.userType = angular.copy(userType);
+
+        $scope.applicationUserTypeRoles = [];
+        $scope.availableUserTypeRoleMappings = angular.copy(userTypeRoles);
+        
+        if ($scope.userType.userTypeRole) {
+	        var roleNames = angular.copy($scope.userType.userTypeRole);
+	        roleNames = roleNames.replace(/\"/g, '');
+	        roleNames = roleNames.substring(1,roleNames .length-1);
+	        roleNames = roleNames.split(",");
+	        
+	        for(var i = 0; i < roleNames.length; i++){
+	        	for(var j = 0; j < $scope.availableUserTypeRoleMappings.length; j++){
+	    			if ($scope.availableUserTypeRoleMappings[j].name.trim() == roleNames[i].trim()){
+	    				$scope.applicationUserTypeRoles.push($scope.availableUserTypeRoleMappings[j]);
+	    				$scope.availableUserTypeRoleMappings.splice(j, 1);
+	    			}
+	    		}
+	        }        
+        }
+        
+        $scope.applicationComposite = angular.copy($scope.applicationUserTypeRoles);
         $scope.changed = false;
-        $scope.files = null;
     };
 
     $scope.cancel = function() {
@@ -1006,32 +1119,8 @@ module.controller('UserTypeDetailCtrl', function($scope, $upload, realm, userTyp
         });
     };
 
-    $scope.addRole = function() {
-       console.log('addRole');
-        for(var i = 0; i < $scope.role.length; i++){
-            // console.log("filter item name: "+ $scope.realmRole[i].name);
-            var index = $scope.roles.indexOf($scope.role[i]);
-            $scope.selectedRoles.push($scope.role[i]);
-            $scope.roles.splice(index, 1);
-            console.log("remove name: "+$scope.role[i].name);
-        }
-
-    };
-
-    $scope.deleteRole = function() {
-        console.log('delRole');
-        for(var i = 0; i < $scope.selectedRole.length; i++){
-            // console.log("filter item name: "+ $scope.realmRole[i].name);
-            var index = $scope.selectedRoles.indexOf($scope.selectedRole[i]);
-            $scope.roles.push($scope.selectedRole[i]);
-            $scope.selectedRoles.splice(index, 1);
-            console.log("remove name: "+$scope.selectedRole[i].name);
-        }
-    };
-
 });
 
-/*Start add more for user sub type screen*/
 module.controller('UserSubTypeListCtrl', function($scope, realm, UserSubType) {
     $scope.realm = realm;
     $scope.page = 0;
@@ -1132,15 +1221,11 @@ module.controller('UserSubTypeDetailCtrl', function($scope, realm, userSubType, 
         });
     };
 });
-/*End add more for user sub type screen*/
 
-/*End add more by HieuDM*/
-
-/*HieuHN start add more for reports*/
 module.controller('ReportCtrl', function($scope, realm) {
 	$scope.realm = realm;
 });
+
 module.controller('ReportCtrl2', function($scope, realm) {
 	$scope.realm = realm;
 });
-/*HieuHN end add more for reports*/

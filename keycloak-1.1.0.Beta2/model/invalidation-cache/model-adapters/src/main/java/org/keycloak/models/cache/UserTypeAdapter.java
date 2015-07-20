@@ -52,9 +52,21 @@ public class UserTypeAdapter implements UserTypeModel {
 	}
 
 	@Override
+	public String getUserTypeRole() {
+		if (updated != null) return updated.getUserTypeRole();
+		return cached.getUserTypeRole();
+	}
+
+	@Override
 	public void setTncContent(byte[] tncContent) {
 		getDelegateForUpdate();
         updated.setTncContent(tncContent);
+	}
+
+	@Override
+	public void setUserTypeRole(String userTypeRole) {
+		getDelegateForUpdate();
+		updated.setUserTypeRole(userTypeRole);
 	}
 	
     @Override

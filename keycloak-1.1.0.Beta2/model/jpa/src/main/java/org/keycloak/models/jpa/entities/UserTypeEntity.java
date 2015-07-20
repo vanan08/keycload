@@ -45,6 +45,9 @@ public class UserTypeEntity implements Serializable {
 	@Column(name = "TNC_CONTENT")
 	private byte[] tncContent;
 
+	@Column(name = "ROLE")
+	private String userTypeRole;
+	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 
@@ -109,8 +112,16 @@ public class UserTypeEntity implements Serializable {
 		return tncContent;
 	}
 
+	public String getUserTypeRole() {
+		return userTypeRole;
+	}
+
 	public void setTncContent(byte[] tncContent) {
 		this.tncContent = tncContent;
+	}
+
+	public void setUserTypeRole(String userTypeRole) {
+		this.userTypeRole = userTypeRole;
 	}
 
 	public String getUpdatedBy() {

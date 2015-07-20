@@ -46,10 +46,21 @@ public class UserTypeAdapter implements UserTypeModel {
 	public byte[] getTncContent() {
 		return userType.getTncContent();
 	}
-
+	
+	@Override
+	public String getUserTypeRole() {
+		return userType.getUserTypeRole();
+	}
+	
 	@Override
 	public void setTncContent(byte[] tncContent) {
 		userType.setTncContent(tncContent);
+	}
+	
+	@Override
+	public void setUserTypeRole(String userTypeRole) {
+		userType.setUserTypeRole(userTypeRole);
+		
 	}
 
 	@Override

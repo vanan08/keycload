@@ -272,9 +272,8 @@ module.config([ '$routeProvider', function($routeProvider) {
                     console.log("##### Create User Type in app.js   #####");
                     return {};
                 },
-                roles : function(RoleListLoader) {
-                    console.log("##### Edit User Type in app.js   #####");
-                    return RoleListLoader();
+                userTypeRoles : function(UserTypeRolesLoader) {
+                    return UserTypeRolesLoader();
                 }
             },
             controller : 'UserTypeDetailCtrl'
@@ -289,9 +288,9 @@ module.config([ '$routeProvider', function($routeProvider) {
                     console.log("##### Edit User Type in app.js   #####");
                     return UserTypeLoader();
                 },
-                roles : function(RoleListLoader) {
-                    console.log("##### Edit User Type in app.js   #####");
-                    return RoleListLoader();
+                userTypeRoles : function(UserTypeRolesLoader) {
+                	console.log("##### Edit User Type in app.js   #####");
+                    return UserTypeRolesLoader();
                 }
             },
             controller : 'UserTypeDetailCtrl'

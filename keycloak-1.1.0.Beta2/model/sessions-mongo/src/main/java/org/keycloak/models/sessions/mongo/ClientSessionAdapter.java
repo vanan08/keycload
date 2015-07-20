@@ -153,4 +153,16 @@ public class ClientSessionAdapter extends AbstractMongoAdapter<MongoClientSessio
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String getBlacklist() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setBlacklist(String blacklist) {
+		// TODO Auto-generated method stub
+		
+	}
 }
