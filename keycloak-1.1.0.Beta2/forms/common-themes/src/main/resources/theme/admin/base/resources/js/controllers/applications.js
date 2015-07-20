@@ -471,6 +471,8 @@ module.controller('ApplicationRoleDetailCtrl', function($scope, realm, applicati
 module.controller('ModuleDetailCtrl', function($scope, Loader, realm, application, module,
 		AvailableModuleRoleMapping, ModuleRoleMapping, ApplicationModule, AppliationRoleMapping, $http, $location, Dialog, Notifications) {
 	 console.log("ModuleDetailCtrl");
+	 console.log("module: "+JSON.stringify(module));
+	 
 	$scope.realm = realm;
 	$scope.application = application;
 	$scope.create = false;
@@ -479,8 +481,6 @@ module.controller('ModuleDetailCtrl', function($scope, Loader, realm, applicatio
 	$scope.applicationComposite=[];
 	$scope.module = angular.copy(module);
 	
-	$scope.module.startdate = "1/1/2015";
-	$scope.module.active = 'true';
 	
 	$scope.create = !module.name;
 	$scope.changed = $scope.create;
@@ -498,13 +498,39 @@ module.controller('ModuleDetailCtrl', function($scope, Loader, realm, applicatio
 		console.log("applicationComposite: "+JSON.stringify($scope.applicationComposite));
 	});
 	
+	
+	$scope.switchChange = function() {
+		console.log("switchChange");
+        $scope.changed = true;
+        
+    }
+	
+	$scope.activeChanged = false;
+	$scope.$watch('module.active', function() {
+		console.log("watch module active status");
+		if($scope.activeChanged != false){
+			$scope.changed = true;
+		}
+		$scope.activeChanged = true;
+	});
+	
+	$scope.externalUrlChanged = false;
+	$scope.$watch('module.externalUrl', function() {
+		console.log("watch module externalUrl status");
+		if($scope.externalUrlChanged != false){
+			$scope.changed = true;
+		}
+		$scope.externalUrlChanged = true;
+	});
+	
 	if (!$scope.create) {
 		//TODO: Get all roles tag for module
 		$scope.availableModuleRoleMappings = AvailableModuleRoleMapping.query({ realm : realm.realm, application: $scope.application.id, module: $scope.module.name });
 		$scope.applicationModuleRoles = ModuleRoleMapping.query({ realm : realm.realm, application: $scope.application.id, module: $scope.module.name });
 		$scope.applicationComposite = $scope.applicationModuleRoles;
 	} else {
-		
+		$scope.module.startdate = "1/1/2015";
+		$scope.module.active = true;
 		$scope.availableModuleRoleMappings = AppliationRoleMapping.query({ realm : realm.realm, application: $scope.application.id });
 	}
 	
@@ -879,6 +905,7 @@ module.controller('ApplicationDetailCtrl', function($scope, realm, application, 
     }
 
     $scope.switchChange = function() {
+    	console.log("switchChange");
         $scope.changed = true;
     }
 

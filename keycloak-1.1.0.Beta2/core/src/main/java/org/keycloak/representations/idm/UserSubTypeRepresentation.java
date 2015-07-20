@@ -1,12 +1,21 @@
-package org.keycloak.representations.idm;
+package org.keycloak.representations.idm; 
 
 
 public class UserSubTypeRepresentation {
 	protected String id;
     protected String name;
     protected String userType;
+    protected String userTypeName;
     
-    public String getUserType(){
+    public String getUserTypeName() {
+		return userTypeName;
+	}
+
+	public void setUserTypeName(String userTypeName) {
+		this.userTypeName = userTypeName;
+	}
+
+	public String getUserType(){
     	return userType;
     }
 

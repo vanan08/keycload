@@ -41,6 +41,9 @@ public class ModuleEntity {
 	@Column(name = "ACTIVE")
 	private boolean active;
 	
+	@Column(name = "EXTERNAL_URL")
+	private boolean externalUrl;
+	
 	@Column(name = "START_DATE")
 	private Date startDate;
 	
@@ -117,6 +120,14 @@ public class ModuleEntity {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+	
+	public boolean isExternalUrl() {
+		return externalUrl;
+	}
+
+	public void setExternalUrl(boolean externalUrl) {
+		this.externalUrl = externalUrl;
 	}
 
 	public Date getStartDate() {

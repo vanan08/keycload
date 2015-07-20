@@ -88,6 +88,17 @@ public class CacheModuleAdapter implements ModuleModel {
 	public void setActive(boolean active) {
 		if (updated != null) updated.setActive(active);
 	}
+	
+	@Override
+	public boolean isExternalUrl() {
+		if (updated != null) return updated.isExternalUrl();
+		return cached.getExternalUrl();
+	}
+
+	@Override
+	public void setExternalUrl(boolean externalUrl) {
+		if (updated != null) updated.setExternalUrl(externalUrl);
+	}
 
 	@Override
 	public Date getStartDate() {

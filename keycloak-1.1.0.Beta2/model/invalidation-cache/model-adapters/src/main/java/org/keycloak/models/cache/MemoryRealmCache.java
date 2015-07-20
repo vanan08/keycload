@@ -7,6 +7,7 @@ import org.keycloak.models.cache.entities.CachedOAuthClient;
 import org.keycloak.models.cache.entities.CachedRealm;
 import org.keycloak.models.cache.entities.CachedRole;
 import org.keycloak.models.cache.entities.CachedUserSubType;
+import org.keycloak.models.cache.entities.CachedUserType;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -20,6 +21,7 @@ public class MemoryRealmCache implements RealmCache {
     protected ConcurrentHashMap<String, CachedOAuthClient> clientCache = new ConcurrentHashMap<String, CachedOAuthClient>();
     protected ConcurrentHashMap<String, CachedRole> roleCache = new ConcurrentHashMap<String, CachedRole>();
     protected ConcurrentHashMap<String, CachedUserSubType> userSubTypeCache = new ConcurrentHashMap<String, CachedUserSubType>();
+    protected ConcurrentHashMap<String, CachedUserType> userTypeCache = new ConcurrentHashMap<String, CachedUserType>();
     protected volatile boolean enabled = true;
 
     @Override
@@ -30,6 +32,7 @@ public class MemoryRealmCache implements RealmCache {
         clientCache.clear();
         roleCache.clear();
         userSubTypeCache.clear();
+        userTypeCache.clear();
     }
 
     @Override
@@ -148,7 +151,34 @@ public class MemoryRealmCache implements RealmCache {
         roleCache.remove(id);
     }
     
-    // Kien Start cached for usersubtype
+    // Kien Start cached for usersubtype, usertype
+    @Override
+    public CachedUserType getUserType(String id) {
+        if (!enabled) return null;
+        return userTypeCache.get(id);
+    }
+
+    @Override
+    public void invalidateUserType(CachedUserType userType) {
+        userTypeCache.remove(userType);
+    }
+
+    @Override
+    public void invalidateUserTypeById(String id) {
+        userTypeCache.remove(id);
+    }
+
+    @Override
+    public void addCachedUserType(CachedUserType tncContent) {
+        if (!enabled) return;
+        userTypeCache.put(tncContent.getId(), tncContent);
+    }    
+
+    @Override
+    public void invalidateCachedUserTypeById(String id) {
+        userTypeCache.remove(id);
+    }
+    
     @Override
     public CachedUserSubType getUserSubType(String id) {
         if (!enabled) return null;
@@ -176,5 +206,5 @@ public class MemoryRealmCache implements RealmCache {
         userSubTypeCache.remove(id);
     }
     
-    // Kien End cached for usersubtype
+    // Kien End cached for usersubtype, usertype
 }

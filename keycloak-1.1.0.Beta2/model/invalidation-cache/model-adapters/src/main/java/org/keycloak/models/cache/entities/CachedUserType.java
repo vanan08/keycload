@@ -1,30 +1,30 @@
-package org.keycloak.models.cache.entities; 
+package org.keycloak.models.cache.entities;
 
 import org.keycloak.models.RealmModel;
-import org.keycloak.models.UserSubTypeModel;
+import org.keycloak.models.UserTypeModel;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
  * @version $Revision: 1 $
  */
-public class CachedUserSubType {
+public class CachedUserType {
     final protected String id;
     final protected String name;
     final protected String realm;
-    final protected String userType;
+    final protected byte[] tncContent;
 
-    public CachedUserSubType(UserSubTypeModel model, RealmModel realm) {
+    public CachedUserType(UserTypeModel model, RealmModel realm) {
         id = model.getId();
         name = model.getName();
-        userType = model.getUserType().getId();
+        tncContent = model.getTncContent();
         this.realm = realm.getId();
     }
     
-    public String getUserType(){
-    	return userType;
-    }
+    public byte[] getTncContent() {
+		return tncContent;
+	}
 
-    public String getId() {
+	public String getId() {
         return id;
     }
 

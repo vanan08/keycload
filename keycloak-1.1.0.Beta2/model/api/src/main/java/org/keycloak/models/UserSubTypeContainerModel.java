@@ -16,4 +16,6 @@ public interface UserSubTypeContainerModel {
     Set<UserSubTypeModel> getUserSubTypes();
     
     boolean removeUserSubTypeById(String id);
+    
+    void refreshRealmUserSubTypesCache(String id, String name);
 }

@@ -1,5 +1,13 @@
 package org.keycloak.models.cache.entities;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.keycloak.enums.SslRequired;
 import org.keycloak.models.ApplicationModel;
 import org.keycloak.models.OAuthClientModel;
@@ -10,15 +18,8 @@ import org.keycloak.models.RequiredCredentialModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserFederationProviderModel;
 import org.keycloak.models.UserSubTypeModel;
+import org.keycloak.models.UserTypeModel;
 import org.keycloak.models.cache.RealmCache;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -79,6 +80,7 @@ public class CachedRealm {
     private List<String> defaultRoles = new LinkedList<String>();
     private Map<String, String> realmRoles = new HashMap<String, String>();
     private Map<String, String> realmUserSubTypes = new HashMap<String, String>();
+    private Map<String, String> realmUserTypes = new HashMap<String, String>();
     private Map<String, String> applications = new HashMap<String, String>();
     private Map<String, String> clients = new HashMap<String, String>();
 
@@ -144,10 +146,18 @@ public class CachedRealm {
             cache.addCachedRole(cachedRole);
         }
         
+        System.out.println("############ Cached UserType");
+        for (UserTypeModel UserType : model.getUserTypes()) {
+        	System.out.println("############ Cached UserType: "+UserType.getName());
+        	realmUserTypes.put(UserType.getName(), UserType.getId());
+            CachedUserType cachedUserType = new CachedRealmUserType(UserType, model);
+            cache.addCachedUserType(cachedUserType);
+        }
+        
         for (UserSubTypeModel userSubType : model.getUserSubTypes()) {
         	realmUserSubTypes.put(userSubType.getName(), userSubType.getId());
-            CachedUserSubType cachedUserSubType = new CachedRealmUserSubType(userSubType, model);
-            cache.addCachedUserSubType(cachedUserSubType);
+        	CachedUserSubType cachedUserSubType = new CachedRealmUserSubType(userSubType, model);
+        	cache.addCachedUserSubType(cachedUserSubType);
         }
 
         for (ApplicationModel app : model.getApplications()) {
@@ -187,6 +197,10 @@ public class CachedRealm {
     
     public Map<String, String> getRealmUserSubTypes() {
         return realmUserSubTypes;
+    }
+    
+    public Map<String, String> getRealmUserTypes() {
+        return realmUserTypes;
     }
 
     public Map<String, String> getApplications() {

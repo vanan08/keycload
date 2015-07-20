@@ -21,6 +21,8 @@ public interface ModuleModel {
 	
 	boolean isActive();
 	void setActive(boolean active);
+	boolean isExternalUrl();
+	void setExternalUrl(boolean externalUrl);
 
 	Date getStartDate();
 	void setStartDate(Date startDate);

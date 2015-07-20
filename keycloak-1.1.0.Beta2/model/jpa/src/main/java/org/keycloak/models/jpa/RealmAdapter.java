@@ -31,6 +31,7 @@ import org.keycloak.models.RequiredCredentialModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserFederationProviderModel;
 import org.keycloak.models.UserSubTypeModel;
+import org.keycloak.models.UserTypeModel;
 import org.keycloak.models.jpa.entities.ApplicationEntity;
 import org.keycloak.models.jpa.entities.OAuthClientEntity;
 import org.keycloak.models.jpa.entities.RealmAttributeEntity;
@@ -39,6 +40,7 @@ import org.keycloak.models.jpa.entities.RequiredCredentialEntity;
 import org.keycloak.models.jpa.entities.RoleEntity;
 import org.keycloak.models.jpa.entities.UserFederationProviderEntity;
 import org.keycloak.models.jpa.entities.UserSubTypeEntity;
+import org.keycloak.models.jpa.entities.UserTypeEntity;
 import org.keycloak.models.utils.KeycloakModelUtils;
 
 /**
@@ -1026,7 +1028,85 @@ public class RealmAdapter implements RealmModel {
     
     
     // KIEN START implement adaper function
+    @Override
+    public Set<UserTypeModel> getUserTypes() {
+    	System.out.println("############ JPA RealmAdapter getUserTypes");
+        Set<UserTypeModel> list = new HashSet<UserTypeModel>();
+        TypedQuery<UserTypeEntity> query = em.createNamedQuery("getAllUserType", UserTypeEntity.class);
+        List<UserTypeEntity> userTypes = query.getResultList();
+        if (userTypes == null) {
+        	System.out.println("############ JPA RealmAdapter userTypes is null");
+        	return list;
+        }
+        for (UserTypeEntity entity : userTypes) {
+        	System.out.println("############ JPA RealmAdapter userTypes is "+entity.getName());
+            list.add(new UserTypeAdapter(this, em, entity));
+        }
+        System.out.println("############ JPA RealmAdapter return list usertypes");
+        return list;
+    }
 
+    @Override
+    public UserTypeModel getUserTypeById(String id) {
+    	UserTypeEntity entity = em.find(UserTypeEntity.class, id);
+		if (entity == null)
+			return null;
+		return new UserTypeAdapter(this, em, entity);
+    }
+
+    @Override
+    public UserTypeModel getUserType(String name) {
+        TypedQuery<UserTypeEntity> query = em.createNamedQuery("getUserTypeByName", UserTypeEntity.class);
+        query.setParameter("name", name);
+        List<UserTypeEntity> userTypes = query.getResultList();
+        if (userTypes.size() == 0) return null;
+        return new UserTypeAdapter(this, em, userTypes.get(0));
+    }
+
+    @Override
+    public UserTypeModel addUserType(String name) {
+        return this.addUserType(KeycloakModelUtils.generateId(), name);
+    }
+
+    @Override
+    public UserTypeModel addUserType(String id, String name) {
+        UserTypeEntity entity = new UserTypeEntity();
+        entity.setId(id);
+        entity.setName(name);
+        em.persist(entity);
+        em.flush();
+        return new UserTypeAdapter(this, em, entity);
+    }
+
+    @Override
+    public boolean removeUserType(UserTypeModel userType) {
+        if (userType == null) {
+            return false;
+        }
+        
+        if (!userType.getContainer().equals(this)) return false;
+        UserTypeEntity userTypeEntity = UserTypeAdapter.toUserTypeEntity(userType, em);
+        //em.createNativeQuery("delete from COMPOSITE_ROLE where CHILD_ROLE = :userType").setParameter("userType", userTypeEntity).executeUpdate();
+        //em.createNamedQuery("deleteScopeMappingByUserType").setParameter("userType", userTypeEntity).executeUpdate();
+        em.remove(userTypeEntity);
+
+        return true;
+    }
+
+    @Override
+    public boolean removeUserTypeById(String id) {
+        UserTypeModel userType = getUserTypeById(id);
+        if (userType == null) return false;
+        return userType.getContainer().removeUserType(userType);
+    }
+     
+	@Override
+	public void refreshRealmUserTypesCache(String id, String name) {
+		// TODO Auto-generated method stub
+		System.out.println("##### JPA refreshRealmUserTypesCache ");
+	}
+    
+    // for sub type    
     @Override
     public Set<UserSubTypeModel> getUserSubTypes() {
         Set<UserSubTypeModel> list = new HashSet<UserSubTypeModel>();
@@ -1092,6 +1172,13 @@ public class RealmAdapter implements RealmModel {
         if (userSubType == null) return false;
         return userSubType.getContainer().removeUserSubType(userSubType);
     }
+    
+
+	@Override
+	public void refreshRealmUserSubTypesCache(String id, String name) {
+		// TODO Auto-generated method stub		
+		System.out.println("##### JPA refreshRealmUserSubTypesCache ");
+	}
 	// KIEN END implement adaper function
     
     @Override
@@ -1211,4 +1298,5 @@ public class RealmAdapter implements RealmModel {
         realm.setMasterAdminApp(appEntity);
         em.flush();
     }
+
 }

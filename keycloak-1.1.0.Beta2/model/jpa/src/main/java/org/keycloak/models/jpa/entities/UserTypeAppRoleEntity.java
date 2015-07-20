@@ -10,13 +10,13 @@ import java.sql.Timestamp;
  * 
  */
 @Entity
-@Table(name="custom_user_type_app_role")
+@Table(name="custom_user_type_app_role", schema="public")
 @NamedQuery(name="getAllUserTypeAppRole", query="SELECT c FROM UserTypeAppRoleEntity c")
 public class UserTypeAppRoleEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="custom_user_type_app_role_id")
+	@Column(name="id")
 	private String customUserTypeAppRoleId;
 
 	@Column(name="created_by")

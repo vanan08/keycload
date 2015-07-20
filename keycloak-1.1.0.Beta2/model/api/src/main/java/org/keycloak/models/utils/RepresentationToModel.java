@@ -581,13 +581,14 @@ public class RepresentationToModel {
     public static ModuleModel createModule(RealmModel realm, ApplicationModel appModel, ModuleRepresentation moduleRep) {
     	ModuleModel module = null;
     	if (moduleRep.getId() != null) {
-    		module = appModel.addModule(moduleRep.getId(), moduleRep.getName(), moduleRep.getUrl());
+    		module = appModel.addModule(moduleRep.getId(), moduleRep.getName(), moduleRep.getUrl(), moduleRep.isActive(), moduleRep.isExternalUrl());
     	} else {
-    		module = appModel.addModule(moduleRep.getName(), moduleRep.getUrl());
+    		module = appModel.addModule(moduleRep.getName(), moduleRep.getUrl(), moduleRep.isActive(), moduleRep.isExternalUrl());
     	}
     	module.setDescription(moduleRep.getDescription());
     	module.setCreatedBy("admin");
     	module.setActive(moduleRep.isActive());
+    	module.setExternalUrl(moduleRep.isExternalUrl());
     	module.setEndDate(convertStringToDate(moduleRep.getEnddate(), "dd-MM-yyyy"));
     	module.setStartDate(convertStringToDate(moduleRep.getStartdate(), "dd-MM-yyyy"));
     	module.setCreatedDate(new Date());
@@ -613,6 +614,7 @@ public class RepresentationToModel {
     	if (moduleRep.getStartdate() != null) resource.setStartDate(convertStringToDate(moduleRep.getStartdate(), "dd-MM-yyyy"));
     	if (moduleRep.getEnddate() != null) resource.setEndDate(convertStringToDate(moduleRep.getEnddate(), "dd-MM-yyyy"));
     	
+    	resource.setExternalUrl(moduleRep.isExternalUrl());
     	resource.setActive(moduleRep.isActive());
     	resource.setUpdatedBy("admin");
     	resource.setUpdatedDate(new Date());

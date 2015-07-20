@@ -15,14 +15,17 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.models.RealmProvider;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserSubTypeModel;
+import org.keycloak.models.UserTypeModel;
 import org.keycloak.models.cache.entities.CachedApplication;
 import org.keycloak.models.cache.entities.CachedApplicationRole;
 import org.keycloak.models.cache.entities.CachedOAuthClient;
 import org.keycloak.models.cache.entities.CachedRealm;
 import org.keycloak.models.cache.entities.CachedRealmRole;
 import org.keycloak.models.cache.entities.CachedRealmUserSubType;
+import org.keycloak.models.cache.entities.CachedRealmUserType;
 import org.keycloak.models.cache.entities.CachedRole;
 import org.keycloak.models.cache.entities.CachedUserSubType;
+import org.keycloak.models.cache.entities.CachedUserType;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -39,6 +42,7 @@ public class DefaultCacheRealmProvider implements CacheRealmProvider {
     protected Set<String> appInvalidations = new HashSet<String>();
     protected Set<String> roleInvalidations = new HashSet<String>();
     protected Set<String> userSubTypeInvalidations = new HashSet<String>();
+    protected Set<String> userTypeInvalidations = new HashSet<String>();
     protected Set<String> clientInvalidations = new HashSet<String>();
     protected Set<String> userInvalidations = new HashSet<String>();
     protected Map<String, RealmModel> managedRealms = new HashMap<String, RealmModel>();
@@ -46,6 +50,7 @@ public class DefaultCacheRealmProvider implements CacheRealmProvider {
     protected Map<String, OAuthClientModel> managedClients = new HashMap<String, OAuthClientModel>();
     protected Map<String, RoleModel> managedRoles = new HashMap<String, RoleModel>();
     protected Map<String, UserSubTypeModel> managedUserSubTypes = new HashMap<String, UserSubTypeModel>();
+    protected Map<String, UserTypeModel> managedUserTypes = new HashMap<String, UserTypeModel>();
 
     protected boolean clearAll;
 
@@ -95,6 +100,11 @@ public class DefaultCacheRealmProvider implements CacheRealmProvider {
     }
     
     @Override
+    public void registerUserTypeInvalidation(String id) {
+    	userTypeInvalidations.add(id);
+    }
+    
+    @Override
     public void registerOAuthClientInvalidation(String id) {
         clientInvalidations.add(id);
     }
@@ -113,6 +123,9 @@ public class DefaultCacheRealmProvider implements CacheRealmProvider {
         }
         for (String id : userSubTypeInvalidations) {
         	cache.invalidateUserSubTypeById(id);
+        }
+        for (String id : userTypeInvalidations) {
+        	cache.invalidateUserTypeById(id);
         }
         for (String id : appInvalidations) {
             cache.invalidateCachedApplicationById(id);
@@ -335,6 +348,50 @@ public class DefaultCacheRealmProvider implements CacheRealmProvider {
 	public ModuleModel getModuleByName(String name) {
 		return getDelegate().getModuleByName(name);
 	}
+	
+	// Kien Start default cached for user sub type, user type
+	@Override
+	public UserTypeModel getUserTypeById(String id, RealmModel realm) {
+		System.out.println("############ getUserTypeById");
+		if (!cache.isEnabled()) return getDelegate().getUserTypeById(id, realm);
+		System.out.println("############ getUserTypeById: "+id);
+        CachedUserType cached = cache.getUserType(id);
+        if (cached != null && !cached.getRealm().equals(realm.getId())) {
+        	System.out.println("############ getUserTypeById cached is null ");
+            cached = null;
+        }
+
+        if (cached == null) {
+            UserTypeModel model = getDelegate().getUserTypeById(id, realm);
+           
+            if (model == null) {
+            	System.out.println("############ getUserTypeById cached model is null ");
+            	return null;
+            }
+            
+            
+            if (userTypeInvalidations.contains(id)) {
+            	System.out.println("############ getUserTypeById cached return model ");
+            	return model;
+            }
+            System.out.println("############ getUserTypeById CachedRealmUserType");
+            cached = new CachedRealmUserType(model, realm);
+            cache.addCachedUserType(cached);
+
+        } else if (userTypeInvalidations.contains(id)) {
+        	System.out.println("############ getDelegate().getUserTypeById(id, realm)");
+            return getDelegate().getUserTypeById(id, realm);
+        } else if (managedUserTypes.containsKey(id)) {
+        	System.out.println("############ managedUserTypes.get(id)");
+            return managedUserTypes.get(id);
+        }
+        
+        System.out.println("############ UserTypeAdapter");
+        UserTypeAdapter adapter = new UserTypeAdapter(cached, cache, this, realm);
+        managedUserTypes.put(id, adapter);
+        System.out.println("############ return user type adapter");
+        return adapter;
+	}
 
 	@Override
 	public UserSubTypeModel getUserSubTypeById(String id, RealmModel realm) {
@@ -361,5 +418,6 @@ public class DefaultCacheRealmProvider implements CacheRealmProvider {
         managedUserSubTypes.put(id, adapter);
         return adapter;
 	}
+	// Kien End default cached for user sub type, user type
 
 }

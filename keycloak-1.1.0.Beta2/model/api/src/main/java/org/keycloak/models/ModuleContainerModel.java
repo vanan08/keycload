@@ -11,9 +11,9 @@ public interface ModuleContainerModel {
 
 	ModuleModel getModuleByRedirectUrl(String url);
 	
-	public ModuleModel addModule(String name, String url);
+	public ModuleModel addModule(String name, String url, boolean active, boolean externalUrl);
 
-	public ModuleModel addModule(String id, String name, String url);
+	public ModuleModel addModule(String id, String name, String url, boolean active, boolean externalUrl);
 
     boolean removeModule(ModuleModel module);
     

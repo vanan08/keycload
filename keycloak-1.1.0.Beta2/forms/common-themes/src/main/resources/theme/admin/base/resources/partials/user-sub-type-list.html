@@ -1,4 +1,4 @@
-<div class="bs-sidebar col-md-3 clearfix" data-ng-include data-src="'partials/realm-menu.html'"></div>
+<div class="bs-sidebar col-md-3 clearfix" data-ng-include data-src="'partials/realm-menu.html'"></div> 
 <div id="content-area" class="col-md-9" role="main">
     <h2></h2>
     <div id="content">
@@ -44,7 +44,7 @@
             <tbody>
             <tr ng-repeat="userSubType in userSubTypes">
                 <td><a href="#/realms/{{realm.realm}}/user-sub-types/{{userSubType.name}}">{{userSubType.name}}</a></td>
-                <td>{{userSubType.userType}}</td>
+                <td>{{userSubType.userTypeName}}</td>
             </tr>
             <tr data-ng-show="!userSubTypes || userSubTypes.length == 0">
                 <td data-ng-show="!userSubTypes">Please enter a search, or click on view all user sub types</td>

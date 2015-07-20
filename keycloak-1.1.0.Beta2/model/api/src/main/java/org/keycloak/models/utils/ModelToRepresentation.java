@@ -1,4 +1,4 @@
-package org.keycloak.models.utils;
+package org.keycloak.models.utils; 
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +23,7 @@ import org.keycloak.models.UserFederationProviderModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.UserSessionModel;
 import org.keycloak.models.UserSubTypeModel;
+import org.keycloak.models.UserTypeModel;
 import org.keycloak.representations.idm.ApplicationRepresentation;
 import org.keycloak.representations.idm.ClaimRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
@@ -36,6 +37,7 @@ import org.keycloak.representations.idm.UserFederationProviderRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.representations.idm.UserSessionRepresentation;
 import org.keycloak.representations.idm.UserSubTypeRepresentation;
+import org.keycloak.representations.idm.UserTypeRepresentation;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -87,15 +89,25 @@ public class ModelToRepresentation {
         rep.setComposite(role.isComposite());
         return rep;
     }
-
+/*KienNT start add more user type & user sub type*/
+    public static UserTypeRepresentation toRepresentation(UserTypeModel userType) {
+        UserTypeRepresentation rep = new UserTypeRepresentation();
+           rep.setId(userType.getId());
+           rep.setName(userType.getName());
+           rep.setTncContent(userType.getTncContent());
+           return rep;
+    }
+    
     public static UserSubTypeRepresentation toRepresentation(UserSubTypeModel userSubType) {
         UserSubTypeRepresentation rep = new UserSubTypeRepresentation();
            rep.setId(userSubType.getId());
            rep.setName(userSubType.getName());
-           rep.setUserType(userSubType.getUserType());
+           rep.setUserType(userSubType.getUserType().getId());
+           rep.setUserTypeName(userSubType.getUserType().getName());
            return rep;
     }
-    
+
+/*KienNT end add more user type & user sub type*/
     public static RealmRepresentation toRepresentation(RealmModel realm, boolean internal) {
         RealmRepresentation rep = new RealmRepresentation();
         rep.setId(realm.getId());
@@ -322,6 +334,7 @@ public class ModelToRepresentation {
     	req.setUrl(model.getUrl());
     	req.setDescription(model.getDescription());
 		req.setActive(model.isActive());
+		req.setExternalUrl(model.isExternalUrl());
 		req.setFullpath(model.getFullpath());
     	
     	if (model.getEndDate() != null) {

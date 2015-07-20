@@ -19,6 +19,7 @@ public interface RealmProvider extends Provider {
     ModuleModel getModuleByName(String name);
 
     RoleModel getRoleById(String id, RealmModel realm);
+    UserTypeModel getUserTypeById(String id, RealmModel realm);
     UserSubTypeModel getUserSubTypeById(String id, RealmModel realm);
     
     ApplicationModel getApplicationById(String id, RealmModel realm);

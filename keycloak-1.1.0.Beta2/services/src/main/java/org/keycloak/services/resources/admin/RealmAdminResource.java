@@ -34,6 +34,7 @@ import org.keycloak.models.ModelDuplicateException;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserFederationProviderModel;
 import org.keycloak.models.UserSessionModel;
+import org.keycloak.models.UserTypeContainerModel;
 import org.keycloak.models.cache.CacheRealmProvider;
 import org.keycloak.models.cache.CacheUserProvider;
 import org.keycloak.models.utils.ModelToRepresentation;
@@ -157,6 +158,16 @@ public class RealmAdminResource {
 //    public UserTypeContainerResource userTypes() {
 //    	return new UserTypeContainerResource(realm, auth, tokenManager);
 //    }
+    
+    /**
+     * Base path for managing users in this realm.
+     *
+     * @return
+     */
+    @Path("user-types")
+    public UserTypeContainerResource userTypes() {
+        return new UserTypeContainerResource(realm, auth, realm);
+    }
     
     /**
      * Base path for managing users in this realm.

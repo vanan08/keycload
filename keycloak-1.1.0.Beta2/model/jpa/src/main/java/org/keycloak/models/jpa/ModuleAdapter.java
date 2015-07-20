@@ -345,4 +345,14 @@ public class ModuleAdapter implements ModuleModel {
 	public String getFullpath() {
 		return moduleEntity.getUrl();
 	}
+
+	@Override
+	public boolean isExternalUrl() {
+		return moduleEntity.isExternalUrl();
+	}
+
+	@Override
+	public void setExternalUrl(boolean externalUrl) {
+		moduleEntity.setExternalUrl(externalUrl);
+	}
 }

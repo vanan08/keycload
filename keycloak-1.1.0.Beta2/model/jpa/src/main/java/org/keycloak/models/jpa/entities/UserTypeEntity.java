@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -18,34 +19,39 @@ import javax.persistence.Table;
  * 
  */
 @Entity
-@Table(name = "custom_user_type")
-@NamedQuery(name = "getAllUserType", query = "SELECT c FROM UserTypeEntity c")
+@Table(name = "custom_user_type", schema="public")
+@NamedQueries({
+	@NamedQuery(name = "getAllUserType", query = "SELECT c FROM UserTypeEntity c"),
+	@NamedQuery(name = "getUserTypeById", query = "SELECT c FROM UserTypeEntity c WHERE c.id = :id "),
+	@NamedQuery(name = "getUserTypeByName", query = "SELECT c FROM UserTypeEntity c WHERE c.name = :name ") })
 public class UserTypeEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "custom_user_type_id")
+	@Column(name = "id")
 	private String id;
-
-	@Column(name = "accepted_tnc")
+ 
+	@Column(name = "ACCEPTED_TNC")
 	private String acceptedTnc;
 
-	@Column(name = "created_by")
+	@Column(name = "CREATED_BY")
 	private String createdBy;
 
-	@Column(name = "created_date")
+	@Column(name = "CREATED_DATE")
 	private Timestamp createdDate;
 
-	@Column(name = "tnc_content")
+	/*@Column(name = "TNC_CONTENT")
+	private byte[] tncContent;*/
+	@Column(name = "TNC_CONTENT")
 	private byte[] tncContent;
 
-	@Column(name = "updated_by")
+	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 
-	@Column(name = "updated_date")
+	@Column(name = "UPDATED_DATE")
 	private Timestamp updatedDate;
 
-	@Column(name = "user_type")
+	@Column(name = "USER_TYPE")
 	private String name;
 
 	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "customUserType")
@@ -100,7 +106,7 @@ public class UserTypeEntity implements Serializable {
 	}
 
 	public byte[] getTncContent() {
-		return this.tncContent;
+		return tncContent;
 	}
 
 	public void setTncContent(byte[] tncContent) {

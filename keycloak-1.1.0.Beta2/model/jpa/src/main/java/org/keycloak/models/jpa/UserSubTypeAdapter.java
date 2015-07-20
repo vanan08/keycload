@@ -1,10 +1,11 @@
-package org.keycloak.models.jpa;
+package org.keycloak.models.jpa;  
 
 import javax.persistence.EntityManager;
 
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserSubTypeContainerModel;
 import org.keycloak.models.UserSubTypeModel;
+import org.keycloak.models.UserTypeModel;
 import org.keycloak.models.jpa.entities.UserSubTypeEntity;
 import org.keycloak.models.jpa.entities.UserTypeEntity;
 
@@ -44,23 +45,23 @@ public class UserSubTypeAdapter implements UserSubTypeModel {
 
 	@Override
 	public void setName(String name) {
+		System.out.println("#### jpa setName: " + name);
 		userSubType.setName(name);
 	}
 
 	@Override
-	public String getUserType() {
-		if (userSubType.getUserType() == null)
-			return "";
-		return userSubType.getUserType().getId();
+	public UserTypeModel getUserType() {
+//		if (userSubType.getUserType() == null)
+//			return "";
+		return new UserTypeAdapter(realm, em, userSubType.getUserType());
 	}
 
 	@Override
-	public void setUserType(String userType) {
+	public void setUserType(UserTypeModel userType) {
 		System.out.println("#### set usertype: " + userType);
 		//TODO: get real user type from DB
-		/*UserTypeEntity newUserType = new UserTypeEntity(userType);
-		newUserType.setId(userType);
-		userSubType.setUserType(newUserType);*/
+		UserTypeEntity entity = UserTypeAdapter.toUserTypeEntity(userType, em);
+		userSubType.setUserType(entity);
 	}
 
 	@Override

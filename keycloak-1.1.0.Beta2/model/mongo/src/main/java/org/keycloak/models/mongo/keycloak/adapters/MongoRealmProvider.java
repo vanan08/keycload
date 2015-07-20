@@ -14,6 +14,7 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.models.RealmProvider;
 import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserSubTypeModel;
+import org.keycloak.models.UserTypeModel;
 import org.keycloak.models.mongo.keycloak.entities.MongoApplicationEntity;
 import org.keycloak.models.mongo.keycloak.entities.MongoOAuthClientEntity;
 import org.keycloak.models.mongo.keycloak.entities.MongoRealmEntity;
@@ -139,6 +140,12 @@ public class MongoRealmProvider implements RealmProvider {
 
 	@Override
 	public UserSubTypeModel getUserSubTypeById(String id, RealmModel realm) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public UserTypeModel getUserTypeById(String id, RealmModel realm) {
 		// TODO Auto-generated method stub
 		return null;
 	}
