@@ -329,6 +329,15 @@ module.factory('UserTypeLoader', function(Loader, UserType, $route, $q) {
     });
 });
 
+module.factory('UserTypeRolesLoader', function(Loader, UserTypeRoles, $route, $q) {
+    return Loader.query(UserTypeRoles, function() {
+        console.log('UserTypeRoles loader****');
+        return {
+            realm : $route.current.params.realm,
+        }
+    });
+});
+
 /*Start add more user sub type page*/
 module.factory('UserSubTypeListLoader', function(Loader, UserSubType, $route, $q) {
     return Loader.query(UserSubType, function() {

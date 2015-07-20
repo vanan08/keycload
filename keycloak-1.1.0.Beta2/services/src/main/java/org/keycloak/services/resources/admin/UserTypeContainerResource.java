@@ -1,6 +1,5 @@
 package org.keycloak.services.resources.admin;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -91,12 +90,13 @@ public class UserTypeContainerResource extends UserTypeResource {
     @Consumes("application/json")
     public Response createUserType(final @Context UriInfo uriInfo, final UserTypeRepresentation rep) {
         auth.requireManage();
-        System.out.println("############ createUserType :" + rep.getName() + " " + rep.getTncContent());
+        System.out.println("############ createUserType :" + rep.getName() + " " + rep.getTncContent() + " " +rep.getUserTypeRole());
         System.out.println("############ : " + uriInfo.getPath());
         System.out.println("############ : " + uriInfo.getAbsolutePath());
         try {
             UserTypeModel userType = userTypeContainer.addUserType(rep.getName());
             userType.setTncContent(rep.getTncContent());
+            userType.setUserTypeRole(rep.getUserTypeRole());
             return Response.created(uriInfo.getAbsolutePathBuilder().path(userType.getName()).build()).build();
         } catch (ModelDuplicateException e) {
             return Flows.errors().exists("UserType with name " + rep.getName() + " already exists");
@@ -113,25 +113,25 @@ public class UserTypeContainerResource extends UserTypeResource {
         //UserTypeRepresentation rep = new UserTypeRepresentation();
         String name = "";
         String id = "";
+        String userTypeRole = "";
         try {
         	name = uploadForm.get("userTypeName").get(0).getBodyAsString();
         	id = uploadForm.get("userTypeId").get(0).getBodyAsString();
-			String content = inputParts.get(0).getBodyAsString();
+        	userTypeRole = uploadForm.get("roleNames").get(0).getBodyAsString();
 	        System.out.println("*********** createUserType NEW :" + name);	     
-	        System.out.println("*********** content :" + " \n" + content);
-	        System.out.println("*********** content.toString :" + " \n" + inputParts.get(0).toString());
-	        
+
 	        if(id.equals(" ")){
 	            UserTypeModel userType = userTypeContainer.addUserType(name);
 	            InputStream inputStream = inputParts.get(0).getBody(InputStream.class, null);
 	            userType.setTncContent(IOUtils.toByteArray(inputStream));
+            	userType.setUserTypeRole(userTypeRole);
+	            
 	        }else{
-	        	System.out.println("*********** updateUserType " + id);
 	            UserTypeModel userType = userTypeContainer.getUserTypeById(id);
 	            userType.setName(name);
-            	System.out.println("*********** update TNC ");
             	InputStream inputStream = inputParts.get(0).getBody(InputStream.class, null);
             	userType.setTncContent(IOUtils.toByteArray(inputStream));
+            	userType.setUserTypeRole(userTypeRole);
 	        }
 	        
             return Response.created(uriInfo.getAbsolutePathBuilder().path(name).build()).build();
@@ -205,6 +205,7 @@ public class UserTypeContainerResource extends UserTypeResource {
         }
         try {
         	userType.setName(rep.getName());
+        	userType.setUserTypeRole(rep.getUserTypeRole());
             System.out.println("####******* DONE updateUserTypeName " + userTypeId);
             return Response.noContent().build();
         } catch (ModelDuplicateException e) {

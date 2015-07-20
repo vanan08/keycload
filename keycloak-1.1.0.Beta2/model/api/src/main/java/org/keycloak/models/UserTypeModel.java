@@ -12,6 +12,10 @@ public interface UserTypeModel {
     
     void setTncContent(byte[] tncContent);
     
+    String getUserTypeRole();
+    
+    void setUserTypeRole(String userTypeRole);
+    
 	public UserTypeContainerModel getContainer();
 
 }

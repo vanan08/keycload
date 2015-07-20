@@ -1,8 +1,8 @@
 <PicketLink xmlns="urn:picketlink:identity-federation:config:2.1">
 	<PicketLinkSP xmlns="urn:picketlink:identity-federation:config:2.1"
 		ServerEnvironment="tomcat" BindingType="POST">
-		<IdentityURL>${idp.url::https://localhost:8443/auth/realms/PSE/protocol/saml}</IdentityURL>
-		<ServiceURL>${ROOT.url::https://localhost:8443/pruone/}</ServiceURL>
+		<IdentityURL>${idp.url::https://ssopoc.prudential.com.sg/auth/realms/pse/protocol/saml}</IdentityURL>
+		<ServiceURL>${ROOT.url::https://ssopoc.prudential.com.sg/root/}</ServiceURL>
 	</PicketLinkSP>
 	<Handlers xmlns="urn:picketlink:identity-federation:handler:config:2.1">
 		<Handler
