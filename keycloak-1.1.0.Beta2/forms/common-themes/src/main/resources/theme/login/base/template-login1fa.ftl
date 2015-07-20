@@ -21,7 +21,6 @@
 	
    
    	<script type="text/javascript">
-		$('.newsticker').newsTicker();
 		
 		function forgetPasswordLink(){
 			$.get('${url.forgotPasswordLink}', function(data, status){
@@ -76,11 +75,19 @@
 	           <a href="#" class="navbar-brand"></a>
 	        </div>
 	        <div class="pull-right ticker-box">
-	        <ul class="nav navbar-nav  col-sm-12">
-	        
-	        
-	        
-	        </ul> </div>
+		        <ul class="nav navbar-nav  col-sm-12">
+			        <li><h4 class="news_hd">NEWS FLASH</h4></li>
+			        
+			        <li>
+			        	<ul class="newsticker" style="height: 60px; overflow: hidden;">
+				    		<li style="margin-top: 0px;"><h6>Nunc ultrices tortor eu massa placerat posuere.</h6></li>
+				    		<li style="margin-top: 0px;"><h6> <span>26 DEC</span> System Maintenance Scheduled </h6> </li>
+				    		<li style="margin-top: 0px;"><h6>Curabitur porttitor ante eget hendrerit adipiscing lectus gravida ut.</h6>.</li>
+				    		<li style="margin-top: 0px;"><h6>Praesent ornare nisl lorem, ut condimentum lectus gravida ut.</h6></li>
+			    		</ul>
+			    	</li>
+		        </ul> 
+	        </div>
 	        </div>
 	      </div>
 	    </nav>
@@ -114,7 +121,9 @@
                     </div>
                        <div class="form-group clearfix">
                     <div class="col-md-6 col-sm-6"><a class="link_btn" href="javascript:getModuleByName('SECURITYNYOU');">&raquo; <span>SECURITY &amp; YOU</span> </a></div>
-                     <div class="col-md-6 col-sm-6"></div>
+                     <div class="col-md-6 col-sm-6">
+                     <a class="link_btn" href="javascript:getModuleByName('FAQ');">&raquo; <span>FAQ</span> </a>
+                     </div>
                     </div>
                     </div>
 				</div>
@@ -130,6 +139,15 @@
         </p>
     </div>
     -->
+    
+    <script type="text/javascript">
+		$('.newsticker').newsTicker();
+		// A $( document ).ready() block.
+		$( document ).ready(function() {
+		    console.log( "ready!" );
+		    $('.newsticker').newsTicker();
+		});
+		</script>
 </body>
 </html>
 </#macro>
