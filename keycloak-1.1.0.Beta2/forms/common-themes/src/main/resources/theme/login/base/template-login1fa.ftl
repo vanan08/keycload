@@ -80,10 +80,9 @@
 			        
 			        <li>
 			        	<ul class="newsticker" style="height: 60px; overflow: hidden;">
-				    		<li style="margin-top: 0px;"><h6>Nunc ultrices tortor eu massa placerat posuere.</h6></li>
-				    		<li style="margin-top: 0px;"><h6> <span>26 DEC</span> System Maintenance Scheduled </h6> </li>
-				    		<li style="margin-top: 0px;"><h6>Curabitur porttitor ante eget hendrerit adipiscing lectus gravida ut.</h6>.</li>
-				    		<li style="margin-top: 0px;"><h6>Praesent ornare nisl lorem, ut condimentum lectus gravida ut.</h6></li>
+				    		<li style="margin-top: 0px;"><h6>Scheduled maintenance downtime for PRUONE and SFA (12 Jul 2015, 2300hrs to 12 Jul 2015, 0700hrs).</h6></li>
+				    		<li style="margin-top: 0px;"><h6>PRUone v3.90 available now.</li>
+				    		<li style="margin-top: 0px;"><h6>Updates on Windows 10 support and compatibility.</h6>.</li>
 			    		</ul>
 			    	</li>
 		        </ul> 
