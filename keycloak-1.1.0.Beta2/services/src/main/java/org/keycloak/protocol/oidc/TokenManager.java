@@ -151,6 +151,10 @@ public class TokenManager {
     		StringBuilder sb = new StringBuilder();
     		ApplicationModel applicationModel = (ApplicationModel) client;
     		String baseUrl = applicationModel.getBaseUrl();
+    		if (baseUrl.indexOf("/", baseUrl.length()-1) == -1) {
+    			baseUrl = baseUrl + "/";
+    		}
+    		
     		List<ModuleModel> moduleModels = applicationModel.getModules();
     		int size = moduleModels.size();
     		boolean flag;
@@ -171,11 +175,7 @@ public class TokenManager {
 	    			
 	    			if (!flag) {
 	    				
-	    				if (baseUrl.indexOf("/", baseUrl.length()-1) > 1) {
-	    					sb.append(baseUrl).append(moduleModel.getUrl());
-	    				} else {
-	    					sb.append(baseUrl).append("/").append(moduleModel.getUrl());
-	    				}
+    					sb.append(baseUrl).append(moduleModel.getUrl());
 	    				
 	    				if (i <= size-1) {
 	    					sb.append(",");
@@ -197,6 +197,8 @@ public class TokenManager {
 					sb.append(baseUrl);
     			}
     		}
+    		
+    		logger.info("blacklist="+sb.toString());
     		
     		clientSession.setBlacklist(sb.toString());
     		

@@ -140,7 +140,6 @@ public class SamlService {
             SAML2Object samlObject = documentHolder.getSamlObject();
             
             RequestAbstractType requestAbstractType = (RequestAbstractType)samlObject;
-            logger.info("=>"+requestAbstractType);
             String issuer = requestAbstractType.getIssuer().getValue();
             
         	StringBuilder sb = new StringBuilder();
@@ -220,13 +219,13 @@ public class SamlService {
         protected Response loginRequest(String relayState, AuthnRequestType requestAbstractType, ClientModel client) {
 
         	String redirect = requestAbstractType.getIssuer().getValue();
+        	
+        	logger.info("redirect="+redirect);
             
             if (redirect == null) {
                 event.error(Errors.INVALID_REDIRECT_URI);
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Invalid redirect_uri.");
             }
-            
-            logger.info("authID = "+requestAbstractType.getID());
             
             ClientSessionModel clientSession = session.sessions().createClientSession(realm, client);
             clientSession.setAuthMethod(SamlProtocol.LOGIN_PROTOCOL);
