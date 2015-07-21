@@ -821,7 +821,7 @@ public class AuthenticationManager {
 	}
 	
 	
-	private boolean checkForSpecialFlows(KeycloakSession session, ClientAPI clientAPI, String username, int domain) throws Exception {
+	private AuthenticationStatus checkForSpecialFlows(KeycloakSession session, ClientAPI clientAPI, String username, int domain) throws Exception {
 		boolean ret=false;
 		/* accountStatus=1 is active / password is going expired / password is expired
 		 * accountStatus=2 is force change password
@@ -838,7 +838,8 @@ public class AuthenticationManager {
 			if(returnCode<0) {
 				//call url from pse function module=CHANGEPASSWORD to redirect to SFA
 				System.out.println("Password has expired");
-				//updateTNCFlag(session,username);
+				updateTNCFlag(session,username, "N");
+				return AuthenticationStatus.PASSWORD_EXPIRED;
 			}
 			else {
 			   System.out.println("Account Active is detected");
@@ -848,24 +849,26 @@ public class AuthenticationManager {
 		    //call url from pse function module=CHANGEPASSWORD to redirect to SFA
 			ret=true;
 			System.out.println("Force to change passsord is detected");
-			//updateTNCFlag(session,username);
+			updateTNCFlag(session,username, "N");
+			return AuthenticationStatus.FORCE_CHANGE_PASSWORD;
 		}
 		else if(accountStatus==3 || accountStatus==4) {
 			//Show error message and the flow is ended at 1FA
 			ret=true;
 			System.out.println("Account Disabled or Suspended is detected");
+			return AuthenticationStatus.ACCOUNT_DISABLED;
 		}
 		
-		return ret;
+		return AuthenticationStatus.SPECIAL_FLOW_OK;
 	}
 	
 	
-	private void updateTNCFlag(KeycloakSession session, String username) throws Exception {
+	private void updateTNCFlag(KeycloakSession session, String username, String value) throws Exception {
 		// Update to database
 		UserModel model = session.users().getUserByUsername(username);
 		CustomUserModel customUserModel = model.getCustomUsers().get(0);
 		logger.debug("AcceptedTNC =" + customUserModel.getAcceptedTNC());
-		customUserModel.setAcceptedTNC("Y");
+		customUserModel.setAcceptedTNC(value);
 		customUserModel.setUpdateby(model.getUsername());
 		customUserModel.setUpdateddate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		customUserModel.updateCustomUser();
@@ -905,7 +908,7 @@ public class AuthenticationManager {
 		if (need_tnc != null) {
 			System.out.println("KeyCloack: processLogin need_tnc: " + need_tnc);
 			if (need_tnc.equalsIgnoreCase("Y")) {
-				updateTNCFlag(session,username);
+				updateTNCFlag(session,username, "Y");
 				// go to landing page
 				return AuthenticationStatus.SUCCESS;
 			} else {
@@ -1036,7 +1039,11 @@ public class AuthenticationManager {
 						return AuthenticationStatus.FAILED;
 					}
 					
-					boolean ret = checkForSpecialFlows(session, clientAPI, username, domain);
+					AuthenticationStatus specialFlowStatus = checkForSpecialFlows(session, clientAPI, username, domain);
+					
+					if(specialFlowStatus != AuthenticationStatus.SPECIAL_FLOW_OK){
+						return specialFlowStatus;
+					}
 					
 					// not success
 					if (!(returnCode == 0 || returnCode == 2051)) {
@@ -1098,7 +1105,10 @@ public class AuthenticationManager {
 							return AuthenticationStatus.MISSING_TOTP;
 						}
 						else {
-							boolean ret = checkForSpecialFlows(session, clientAPI, username, domain);
+							AuthenticationStatus specialFlowStatus = checkForSpecialFlows(session, clientAPI, username, domain);
+							if(specialFlowStatus != AuthenticationStatus.SPECIAL_FLOW_OK){
+								return specialFlowStatus;
+							}
 						}
 						
 						
@@ -1256,7 +1266,7 @@ public class AuthenticationManager {
 
 	public enum AuthenticationStatus {
 		SUCCESS, ACCOUNT_TEMPORARILY_DISABLED, ACCOUNT_DISABLED, ACTIONS_REQUIRED, INVALID_USER, INVALID_CREDENTIALS, MISSING_PASSWORD, MISSING_TOTP, FAILED, TNC,
-		TNC_CANCEL
+		TNC_CANCEL, PASSWORD_EXPIRED, FORCE_CHANGE_PASSWORD, ACCOUNT_SUSPENDED, SPECIAL_FLOW_OK
 	}
 
 	public class AuthResult {
