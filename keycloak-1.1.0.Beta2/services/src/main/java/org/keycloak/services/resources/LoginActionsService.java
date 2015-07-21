@@ -404,6 +404,27 @@ public class LoginActionsService {
                         .setFormData(formData)
                         .setClientSessionCode(clientCode.getCode())
                         .createLogin();
+            case PASSWORD_EXPIRED:
+            	formData.add("popMessage", "Password has expired");
+            	formData.add("requestRedirect", "YES");
+                return Flows.forms(this.session, realm, client, uriInfo)
+                        .setFormData(formData)
+                        .setClientSessionCode(clientCode.getCode())
+                        .createLogin();
+            case FORCE_CHANGE_PASSWORD:
+              formData.add("popMessage", "Force to change passsord is detected");
+              formData.add("requestRedirect", "YES");
+              return Flows.forms(this.session, realm, client, uriInfo)
+                      .setFormData(formData)
+                      .setClientSessionCode(clientCode.getCode())
+                      .createLogin();
+            case ACCOUNT_DISABLED_SUSPENDED:
+            	formData.add("popMessage", "Account Disabled or Suspended is detected");
+            	formData.add("requestRedirect", "NO");
+            	 return Flows.forms(this.session, realm, client, uriInfo)
+                         .setFormData(formData)
+                         .setClientSessionCode(clientCode.getCode())
+                         .createLogin();
             default:
                 event.error(Errors.INVALID_USER_CREDENTIALS);
                 return Flows.forms(this.session, realm, client, uriInfo).setError(Messages.INVALID_USER)

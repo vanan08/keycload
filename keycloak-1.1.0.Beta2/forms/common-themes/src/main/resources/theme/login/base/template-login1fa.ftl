@@ -19,6 +19,13 @@
 	<script src="/auth/theme/admin/keycloak/js/bootstrap.min.js"></script>
 	<script src="/auth/theme/admin/keycloak/js/jquery.newsTicker.js"></script>
 	
+	<style>
+		.ui-dialog-osx {
+		    -moz-border-radius: 0 0 8px 8px;
+		    -webkit-border-radius: 0 0 8px 8px;
+		    border-radius: 0 0 8px 8px; border-width: 0 8px 8px 8px;
+		}
+	</style>
    
    	<script type="text/javascript">
 		
@@ -44,6 +51,28 @@
 			}
 		  });
 		} 
+		
+		function show(){
+			 $("#dialog-message").dialog({
+			    modal: true,
+			    draggable: false,
+			    resizable: false,
+			    position: ['center', 'top'],
+			    show: 'blind',
+			    hide: 'blind',
+			    width: 400,
+			    dialogClass: 'ui-dialog-osx',
+			    buttons: {
+			        "OK": function() {
+			            $(this).dialog("close");
+			            <#if requestRedirect?has_content>
+	        				document.location.href = requestRedirect;
+	    				</#if>
+			        }
+			    }
+			});   
+		}
+    
 	</script>
    
     <#if properties.meta?has_content>
@@ -51,6 +80,7 @@
             <meta name="${meta?split('==')[0]}" content="${meta?split('==')[1]}"/>
         </#list>
     </#if>
+    
     <title><#nested "title"></title>
     <link rel="icon" href="${url.resourcesPath}/img/favicon.ico" />
     <link href="${url.resourcesPath}/css/pse-style.css" rel="stylesheet" />
@@ -147,6 +177,18 @@
 		    $('.newsticker').newsTicker();
 		});
 		</script>
+		
+		
+	<div style="display:none" id="dialog-message" title="Important information">
+    	<span class="ui-state-default"><span class="ui-icon ui-icon-info" style="float:left; margin:0 7px 0 0;"></span></span>
+    	<div style="margin-left: 23px;">
+	        <p>
+	            <#if popMessage?has_content>
+	        		popMessage
+	    		</#if>
+	        </p>
+        </div>
+	</div>
 </body>
 </html>
 </#macro>

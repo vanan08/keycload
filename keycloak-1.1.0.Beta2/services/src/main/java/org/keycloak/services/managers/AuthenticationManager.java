@@ -821,7 +821,7 @@ public class AuthenticationManager {
 	}
 	
 	
-	private AuthenticationStatus checkForSpecialFlows(KeycloakSession session, ClientAPI clientAPI, String username, int domain) throws Exception {
+	private AuthenticationStatus checkForSpecialFlows(KeycloakSession session, ClientAPI clientAPI, String username, int domain, RealmModel realm) throws Exception {
 		boolean ret=false;
 		/* accountStatus=1 is active / password is going expired / password is expired
 		 * accountStatus=2 is force change password
@@ -837,6 +837,8 @@ public class AuthenticationManager {
 			double returnCode = getPasswordDayRemaining (clientAPI, username, domain);
 			if(returnCode<0) {
 				//call url from pse function module=CHANGEPASSWORD to redirect to SFA
+				session.modules().getModuleByName("CHANGEPASSWORD");
+//				realm.getUserType(name)
 				System.out.println("Password has expired");
 				updateTNCFlag(session,username, "N");
 				return AuthenticationStatus.PASSWORD_EXPIRED;
@@ -856,7 +858,7 @@ public class AuthenticationManager {
 			//Show error message and the flow is ended at 1FA
 			ret=true;
 			System.out.println("Account Disabled or Suspended is detected");
-			return AuthenticationStatus.ACCOUNT_DISABLED;
+			return AuthenticationStatus.ACCOUNT_DISABLED_SUSPENDED;
 		}
 		
 		return AuthenticationStatus.SPECIAL_FLOW_OK;
@@ -1266,7 +1268,7 @@ public class AuthenticationManager {
 
 	public enum AuthenticationStatus {
 		SUCCESS, ACCOUNT_TEMPORARILY_DISABLED, ACCOUNT_DISABLED, ACTIONS_REQUIRED, INVALID_USER, INVALID_CREDENTIALS, MISSING_PASSWORD, MISSING_TOTP, FAILED, TNC,
-		TNC_CANCEL, PASSWORD_EXPIRED, FORCE_CHANGE_PASSWORD, ACCOUNT_SUSPENDED, SPECIAL_FLOW_OK
+		TNC_CANCEL, PASSWORD_EXPIRED, FORCE_CHANGE_PASSWORD, ACCOUNT_DISABLED_SUSPENDED, SPECIAL_FLOW_OK
 	}
 
 	public class AuthResult {
