@@ -305,7 +305,6 @@ public class SamlProtocol implements LoginProtocol {
         
         try {
             ClientRequest request = executor.createRequest(adminUrl);
-            request.accept("*/*");
             request.formParameter(GeneralConstants.SAML_REQUEST_KEY, logoutRequestString);
             request.formParameter(BACK_CHANNEL_LOGOUT, BACK_CHANNEL_LOGOUT);
             ClientResponse<String> response = null;
