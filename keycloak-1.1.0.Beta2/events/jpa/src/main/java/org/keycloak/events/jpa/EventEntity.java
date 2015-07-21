@@ -1,5 +1,7 @@
 package org.keycloak.events.jpa;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -28,10 +30,10 @@ public class EventEntity {
     @Column(name="CLIENT_ID")
     private String clientId;
 
-    @Column(name="USER_ID")
+    @Column(name="USER_ID", length = 36)
     private String userId;
 
-    @Column(name="SESSION_ID")
+    @Column(name="SESSION_ID", length = 255)
     private String sessionId;
 
     @Column(name="IP_ADDRESS")
@@ -39,7 +41,49 @@ public class EventEntity {
 
     @Column(name="ERROR")
     private String error;
+    
+    @Column(name="BROWSER_TYPE", length = 50)
+    private String browserType;
+    
+    @Column(name="BROWSER_INFORMATION", length = 200)
+    private String browserInfomation;
 
+    @Column(name="LOGIN_DATE_TIMP_STAMP")
+    private Timestamp loginDateTimepStamp;
+    
+    @Column(name="LOGOUT_DATE_TIMP_STAMP")
+    private Timestamp logoutDateTimepStamp;
+    
+    @Column(name="OTP_GENERATED_DATE_TIME")
+    private Timestamp otpGenerateDateTime;
+    
+    @Column(name="OTP_GENERATED", length = 200)
+    private String otpGenerated;
+    
+    @Column(name="OTP_SEND_DATE_TIME")
+    private Timestamp otpSendDateTime;
+    
+    @Column(name="OTP_RECEIVED", length = 200)
+    private String otpReceived;
+    
+    @Column(name="OTP_RECEIVED_DATE_TIME")
+    private Timestamp optReceivedDateTime;
+
+    @Column(name="SUCCESS_FLAG", length = 1)
+    private String successFlag;
+    
+    @Column(name="FAIL_REASON", length = 1)
+    private String failReason;
+    
+    @Column(name="CREATED_DATE")
+    private Timestamp createdDate;
+    
+    @Column(name="UPDATED_BY", length = 36)
+    private String updatedBy;
+    
+    @Column(name="UPDATED_DATE")
+    private Timestamp updatedDate;
+   
     @Column(name="DETAILS_JSON", length = 2550)
     private String detailsJson;
 
@@ -122,5 +166,117 @@ public class EventEntity {
     public void setDetailsJson(String detailsJson) {
         this.detailsJson = detailsJson;
     }
+
+	public String getBrowserType() {
+		return browserType;
+	}
+
+	public void setBrowserType(String browserType) {
+		this.browserType = browserType;
+	}
+
+	public String getBrowserInfomation() {
+		return browserInfomation;
+	}
+
+	public void setBrowserInfomation(String browserInfomation) {
+		this.browserInfomation = browserInfomation;
+	}
+
+	public Timestamp getLoginDateTimepStamp() {
+		return loginDateTimepStamp;
+	}
+
+	public void setLoginDateTimepStamp(Timestamp loginDateTimepStamp) {
+		this.loginDateTimepStamp = loginDateTimepStamp;
+	}
+
+	public Timestamp getLogoutDateTimepStamp() {
+		return logoutDateTimepStamp;
+	}
+
+	public void setLogoutDateTimepStamp(Timestamp logoutDateTimepStamp) {
+		this.logoutDateTimepStamp = logoutDateTimepStamp;
+	}
+
+	public Timestamp getOtpGenerateDateTime() {
+		return otpGenerateDateTime;
+	}
+
+	public void setOtpGenerateDateTime(Timestamp otpGenerateDateTime) {
+		this.otpGenerateDateTime = otpGenerateDateTime;
+	}
+
+	public String getOtpGenerated() {
+		return otpGenerated;
+	}
+
+	public void setOtpGenerated(String otpGenerated) {
+		this.otpGenerated = otpGenerated;
+	}
+
+	public Timestamp getOtpSendDateTime() {
+		return otpSendDateTime;
+	}
+
+	public void setOtpSendDateTime(Timestamp otpSendDateTime) {
+		this.otpSendDateTime = otpSendDateTime;
+	}
+
+	public String getOtpReceived() {
+		return otpReceived;
+	}
+
+	public void setOtpReceived(String otpReceived) {
+		this.otpReceived = otpReceived;
+	}
+
+	public Timestamp getOptReceivedDateTime() {
+		return optReceivedDateTime;
+	}
+
+	public void setOptReceivedDateTime(Timestamp optReceivedDateTime) {
+		this.optReceivedDateTime = optReceivedDateTime;
+	}
+
+	public String getSuccessFlag() {
+		return successFlag;
+	}
+
+	public void setSuccessFlag(String successFlag) {
+		this.successFlag = successFlag;
+	}
+
+	public String getFailReason() {
+		return failReason;
+	}
+
+	public void setFailReason(String failReason) {
+		this.failReason = failReason;
+	}
+
+	public Timestamp getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Timestamp createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public Timestamp getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Timestamp updatedDate) {
+		this.updatedDate = updatedDate;
+	}
 
 }

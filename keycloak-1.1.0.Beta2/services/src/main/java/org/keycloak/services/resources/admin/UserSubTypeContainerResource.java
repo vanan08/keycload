@@ -109,7 +109,8 @@ public class UserSubTypeContainerResource extends UserSubTypeResource {
         
         UserSubTypeModel userSubTypeModel = userSubTypeContainer.getUserSubType(userSubTypeName);
         if (userSubTypeModel == null || userSubTypeModel.getId() == null) {
-            throw new NotFoundException("Could not find userSubTypeName: " + userSubTypeName);
+        	System.out.println("Could not find user subtype" + userSubTypeName);
+        	 throw new NotFoundException("Could not find user sub type: "+userSubTypeName);
         }
         return getUserSubType(userSubTypeModel);
     }

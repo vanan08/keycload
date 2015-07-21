@@ -612,8 +612,9 @@ margin: 0 auto;
 .newsticker {
     list-style-type: none !important;
     padding-left: 15px !important;
-	height:30px !important;
-	margin-top:8px !important;
+	height: 34px !important;
+  	width: 420px !important;
+  	margin-top: 0px !important;
 }
 h4.news_hd {
     font-size: 14px;

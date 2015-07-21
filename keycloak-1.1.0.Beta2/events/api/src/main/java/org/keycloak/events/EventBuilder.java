@@ -6,8 +6,10 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.UserSessionModel;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
@@ -79,6 +81,85 @@ public class EventBuilder {
         event.setType(e);
         return this;
     }
+    
+
+    public EventBuilder browserType(String browserType) {
+    	event.setBrowserType(browserType);
+        return this;
+	}
+
+
+	public EventBuilder browserInfomation(String browserInfomation) {
+		event.setBrowserInfomation(browserInfomation);
+        return this;
+	}
+
+	
+	public EventBuilder loginDateTimepStamp(Timestamp loginDateTimepStamp) {
+		event.setLoginDateTimepStamp(loginDateTimepStamp);
+        return this;
+	}
+
+	
+	public EventBuilder logoutDateTimepStamp(Timestamp logoutDateTimepStamp) {
+		event.setLogoutDateTimepStamp(logoutDateTimepStamp);
+        return this;
+	}
+
+
+	public EventBuilder otpGenerateDateTime(Timestamp otpGenerateDateTime) {
+		event.setOtpGenerateDateTime(otpGenerateDateTime);
+        return this;
+	}
+
+
+	public EventBuilder otpGenerated(String otpGenerated) {
+		event.setOtpGenerated(otpGenerated);
+        return this;
+	}
+
+	
+	public EventBuilder otpSendDateTime(Timestamp otpSendDateTime) {
+		event.setOtpSendDateTime(otpSendDateTime);
+        return this;
+	}
+
+
+	public EventBuilder otpReceived(String otpReceived) {
+		event.setOtpReceived(otpReceived);
+        return this;
+	}
+
+	
+	public EventBuilder optReceivedDateTime(Timestamp optReceivedDateTime) {
+		event.setOptReceivedDateTime(optReceivedDateTime);
+        return this;
+	}
+
+	public EventBuilder successFlag(String successFlag) {
+		event.setSuccessFlag(successFlag);
+        return this;
+	}
+
+	public EventBuilder failReason(String failReason) {
+		event.setFailReason(failReason);
+        return this;
+	}
+
+	public EventBuilder createdDate(Timestamp createdDate) {
+		event.setCreatedDate(createdDate);
+        return this;
+	}
+
+	public EventBuilder updatedBy(String updatedBy) {
+		event.setUpdatedBy(updatedBy);
+        return this;
+	}
+
+	public EventBuilder updatedDate(Timestamp updatedDate) {
+		event.setUpdatedDate(updatedDate);
+        return this;
+	}
 
     public EventBuilder detail(String key, String value) {
         if (value == null || value.equals("")) {
