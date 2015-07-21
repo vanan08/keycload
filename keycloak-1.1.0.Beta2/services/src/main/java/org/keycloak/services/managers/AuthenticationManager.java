@@ -3,6 +3,7 @@ package org.keycloak.services.managers;
 import java.io.FileNotFoundException;
 
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -51,6 +52,7 @@ import org.keycloak.models.UserCredentialModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.UserSessionModel;
 import org.keycloak.models.utils.KeycloakModelUtils;
+import org.keycloak.models.UserTypeModel;
 import org.keycloak.protocol.LoginProtocol;
 import org.keycloak.protocol.oidc.TokenManager;
 import org.keycloak.representations.AccessToken;
@@ -778,7 +780,7 @@ public class AuthenticationManager {
 	}
 
 	
-	private AuthenticationStatus checkForTNCPage(UserModel user, UserModel userModel) throws Exception {
+	private AuthenticationStatus checkForTNCPage(UserModel user, UserModel userModel, KeycloakSession session, String username) throws Exception {
 		// Check TNC page
 		String acceptedTNC = "N";
 		String needTNC = "Y";
@@ -816,13 +818,13 @@ public class AuthenticationManager {
 				&& acceptedTNC.equalsIgnoreCase("N")) {
 			return AuthenticationStatus.TNC;
 		}
-		
-		return null;
+		 
+		return checkUserTypeRedirectURL(session,username);
 	}
 	
 	
 	private AuthenticationStatus checkForSpecialFlows(KeycloakSession session, ClientAPI clientAPI, String username, int domain) throws Exception {
-		boolean ret=false;
+		AuthenticationStatus ret=null;
 		/* accountStatus=1 is active / password is going expired / password is expired
 		 * accountStatus=2 is force change password
 		 * accountStatus=3 is account is suspended 
@@ -847,18 +849,30 @@ public class AuthenticationManager {
 		}
 		else if(accountStatus==2) {
 		    //call url from pse function module=CHANGEPASSWORD to redirect to SFA
-			ret=true;
 			System.out.println("Force to change passsord is detected");
 			updateTNCFlag(session,username, "N");
 			return AuthenticationStatus.FORCE_CHANGE_PASSWORD;
 		}
 		else if(accountStatus==3 || accountStatus==4) {
 			//Show error message and the flow is ended at 1FA
-			ret=true;
 			System.out.println("Account Disabled or Suspended is detected");
 			return AuthenticationStatus.ACCOUNT_DISABLED;
 		}
 		
+		return AuthenticationStatus.SPECIAL_FLOW_OK;
+	}
+	
+	
+	private AuthenticationStatus checkUserTypeRedirectURL(KeycloakSession session, String username) throws Exception {
+		AuthenticationStatus ret=null;
+		UserModel model = session.users().getUserByUsername(username);
+		UserTypeModel userTypeModel = model.getCustomUserType();
+		String redirectURL = userTypeModel.getRedirectUrl();
+		
+		if(redirectURL!=null && redirectURL.length()!=0) {
+			//return the redirected URL
+			;
+		}
 		return AuthenticationStatus.SPECIAL_FLOW_OK;
 	}
 	
@@ -874,6 +888,7 @@ public class AuthenticationManager {
 		customUserModel.updateCustomUser();
 		logger.debug("Updated acceptedTNC");
 	}
+	
 	
 	
 	private static double getPasswordDayRemaining(ClientAPI api, String userId, int dom) {
@@ -1060,7 +1075,7 @@ public class AuthenticationManager {
 					}
 
 					if (!enable2fa) {
-						AuthenticationStatus astatus = checkForTNCPage(user,userModel);
+						AuthenticationStatus astatus = checkForTNCPage(user,userModel,session,username);
 						if(astatus!=null) {
 							return astatus;
 						}
@@ -1112,7 +1127,7 @@ public class AuthenticationManager {
 						}
 						
 						
-						AuthenticationStatus astatus = checkForTNCPage(user,userModel);
+						AuthenticationStatus astatus = checkForTNCPage(user,userModel,session,username);
 						if(astatus!=null) {
 							return astatus;
 						}
