@@ -90,7 +90,8 @@ public class UserTypeContainerResource extends UserTypeResource {
     @Consumes("application/json")
     public Response createUserType(final @Context UriInfo uriInfo, final UserTypeRepresentation rep) {
         auth.requireManage();
-        System.out.println("############ createUserType :" + rep.getName() + " " + rep.getTncContent() + " " +rep.getUserTypeRole());
+        System.out.println("############ createUserType :" + rep.getName() + " " + rep.getTncContent() 
+        		+ " " +rep.getUserTypeRole()+ " " +rep.getRedirectUrl());
         System.out.println("############ : " + uriInfo.getPath());
         System.out.println("############ : " + uriInfo.getAbsolutePath());
         try {
@@ -114,10 +115,12 @@ public class UserTypeContainerResource extends UserTypeResource {
         String name = "";
         String id = "";
         String userTypeRole = "";
+        String redirectUrl = "";
         try {
         	name = uploadForm.get("userTypeName").get(0).getBodyAsString();
         	id = uploadForm.get("userTypeId").get(0).getBodyAsString();
         	userTypeRole = uploadForm.get("roleNames").get(0).getBodyAsString();
+        	redirectUrl = uploadForm.get("redirectUrl").get(0).getBodyAsString();
 	        System.out.println("*********** createUserType NEW :" + name);	     
 
 	        if(id.equals(" ")){
@@ -125,10 +128,12 @@ public class UserTypeContainerResource extends UserTypeResource {
 	            InputStream inputStream = inputParts.get(0).getBody(InputStream.class, null);
 	            userType.setTncContent(IOUtils.toByteArray(inputStream));
             	userType.setUserTypeRole(userTypeRole);
+            	userType.setRedirectUrl(redirectUrl);
 	            
 	        }else{
 	            UserTypeModel userType = userTypeContainer.getUserTypeById(id);
 	            userType.setName(name);
+	            userType.setRedirectUrl(redirectUrl);
             	InputStream inputStream = inputParts.get(0).getBody(InputStream.class, null);
             	userType.setTncContent(IOUtils.toByteArray(inputStream));
             	userType.setUserTypeRole(userTypeRole);

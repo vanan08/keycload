@@ -62,6 +62,16 @@ public class UserTypeAdapter implements UserTypeModel {
 		userType.setUserTypeRole(userTypeRole);
 		
 	}
+	
+	@Override
+	public String getRedirectUrl() {
+		return userType.getRedirectUrl();
+	}
+	
+	@Override
+	public void setRedirectUrl(String redirectUrl) {
+		userType.setRedirectUrl(redirectUrl);
+	}
 
 	@Override
 	public UserTypeContainerModel getContainer() {
@@ -91,5 +101,7 @@ public class UserTypeAdapter implements UserTypeModel {
 		}
 		return em.getReference(UserTypeEntity.class, model.getId());
 	}
+
+	
 
 }

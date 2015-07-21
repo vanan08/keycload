@@ -27,10 +27,14 @@ public class ApplicationModuleAdapter implements ModuleModel {
 	@Override
 	public String getFullpath() {
 		String slash = "/";
-		if (getBaseUrl().indexOf(slash, getBaseUrl().length() - 1) > -1) {
-			return getBaseUrl() + getUrl();
-		} else {
-			return getBaseUrl() + slash + getUrl();
+		if(!moduleEntity.isExternalUrl()){
+			if (getBaseUrl().indexOf(slash, getBaseUrl().length() - 1) > -1) {
+				return getBaseUrl() + getUrl();
+			} else {
+				return getBaseUrl() + slash + getUrl();
+			}
+		}else{
+			return getUrl();
 		}
 	}
 	

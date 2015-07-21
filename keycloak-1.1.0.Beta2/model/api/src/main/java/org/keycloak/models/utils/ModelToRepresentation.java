@@ -96,6 +96,7 @@ public class ModelToRepresentation {
            rep.setName(userType.getName());
            rep.setTncContent(userType.getTncContent());
            rep.setUserTypeRole(userType.getUserTypeRole());
+           rep.setRedirectUrl(userType.getRedirectUrl());
            return rep;
     }
     

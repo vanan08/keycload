@@ -65,6 +65,7 @@ public class JpaEventStoreProvider implements EventStoreProvider {
     public void close() {
     }
 
+    
     static EventEntity convert(Event o) {
         EventEntity e = new EventEntity();
         e.setId(UUID.randomUUID().toString());

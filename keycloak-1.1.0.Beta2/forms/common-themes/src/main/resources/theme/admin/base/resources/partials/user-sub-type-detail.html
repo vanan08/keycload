@@ -50,7 +50,7 @@
                     	<div class="select-kc">
 							<select id="userTypeName"
 								ng-model="userSubType.userType"
-								ng-options="o.id as o.name for o in userTypes" >
+								ng-options="o.id as o.name for o in userTypes | orderBy:orderByValue" >
 							</select>
 						</div>
                     </div>
