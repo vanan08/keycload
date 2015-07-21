@@ -21,6 +21,7 @@ import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserCredentialModel;
 import org.keycloak.models.UserCredentialValueModel;
 import org.keycloak.models.UserModel;
+import org.keycloak.models.UserTypeModel;
 import org.keycloak.models.jpa.entities.CredentialEntity;
 import org.keycloak.models.jpa.entities.CustomUserEntity;
 import org.keycloak.models.jpa.entities.UserAttributeEntity;
@@ -424,17 +425,6 @@ public class PublicUserAdapter implements UserModel {
 		}
 	}
 
-	@Override
-	public String getCustomUserTypeId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setCustomUserTypeId(String customUserTypeId) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public String getCustomUserSubTypeId() {
@@ -506,6 +496,18 @@ public class PublicUserAdapter implements UserModel {
 
 	@Override
 	public void setNeedTNC(String needTNC) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public UserTypeModel getCustomUserType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setCustomUserType(UserTypeModel customUserType) {
 		// TODO Auto-generated method stub
 		
 	}

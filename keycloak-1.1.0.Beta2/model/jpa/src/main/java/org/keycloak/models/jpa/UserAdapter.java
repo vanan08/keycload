@@ -532,6 +532,9 @@ public class UserAdapter implements UserModel {
 
 	@Override
 	public UserTypeModel getCustomUserType() {
+		if(user.getCustomUserType() == null){
+			return null;
+		}
 		UserTypeModel model = new UserTypeAdapter(realm, em, user.getCustomUserType());
 		return model;
 	}

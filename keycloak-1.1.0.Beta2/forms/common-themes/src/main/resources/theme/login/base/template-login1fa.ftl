@@ -8,6 +8,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<meta name="description" content="">
 	<meta name="author" content="">
+	<link href="/auth/theme/admin/keycloak/css/jquery-ui.css" rel="stylesheet" />
     <script src="/auth/theme/admin/keycloak/js/MD5_obfuscated.js" type="text/javascript"></script>   
     <script src="/auth/theme/admin/keycloak/js/jsbn_obf.js" type="text/javascript"></script>
     <script src="/auth/theme/admin/keycloak/js/jsbn_obfuscated.js" type="text/javascript"></script>
@@ -18,16 +19,26 @@
 	<script src="/auth/theme/admin/keycloak/js/jquery.js"></script>
 	<script src="/auth/theme/admin/keycloak/js/bootstrap.min.js"></script>
 	<script src="/auth/theme/admin/keycloak/js/jquery.newsTicker.js"></script>
+	<script src="/auth/theme/admin/keycloak/js/jquery-ui.js"></script>
 	
 	<style>
 		.ui-dialog-osx {
 		    -moz-border-radius: 0 0 8px 8px;
 		    -webkit-border-radius: 0 0 8px 8px;
 		    border-radius: 0 0 8px 8px; border-width: 0 8px 8px 8px;
+		    position:fixed;
+		    top: 50%;
+		    left: 50%;
+		    margin-top: -9em; /*set to a negative number 1/2 of your height*/
+		    margin-left: -15em; /*set to a negative number 1/2 of your width*/
 		}
 	</style>
    
    	<script type="text/javascript">
+		
+		<#if needRedirectUrl?has_content>
+			window.location.href = '${needRedirectUrl}';
+		</#if>
 		
 		function forgetPasswordLink(){
 			$.get('${url.forgotPasswordLink}', function(data, status){
@@ -52,6 +63,7 @@
 		  });
 		} 
 		
+	    	
 		function show(){
 			 $("#dialog-message").dialog({
 			    modal: true,
@@ -65,14 +77,14 @@
 			    buttons: {
 			        "OK": function() {
 			            $(this).dialog("close");
-			            <#if requestRedirect?has_content>
-	        				document.location.href = requestRedirect;
+			            <#if forgetPasswordUrl?has_content>
+	        				window.location.href = '${forgetPasswordUrl}';
 	    				</#if>
 			        }
 			    }
 			});   
 		}
-    
+		
 	</script>
    
     <#if properties.meta?has_content>
@@ -112,7 +124,7 @@
 			        	<ul class="newsticker" style="height: 60px; overflow: hidden;">
 				    		<li style="margin-top: 0px;"><h6>Scheduled maintenance downtime for PRUONE and SFA (12 Jul 2015, 2300hrs to 12 Jul 2015, 0700hrs).</h6></li>
 				    		<li style="margin-top: 0px;"><h6>PRUone v3.90 available now.</li>
-				    		<li style="margin-top: 0px;"><h6>Updates on Windows 10 support and compatibility.</h6>.</li>
+				    		<!--<li style="margin-top: 0px;"><h6>Updates on Windows 10 support and compatibility.</h6>.</li>-->
 			    		</ul>
 			    	</li>
 		        </ul> 
@@ -134,9 +146,9 @@
 					
 					<#nested "form">
 					<#if displayMessage && message?has_content>
-		                <div id="kc-feedback" class="feedback-${message.type} ${properties.kcFeedBackClass!}">
+		                <div id="kc-feedback">
 		                    <div id="kc-feedback-wrapper">
-		                        <span class="kc-feedback-text">${message.summary}</span>
+		                        <span>${message.summary}</span>
 		                    </div>
 		                </div>
 		            </#if>
@@ -175,16 +187,18 @@
 		$( document ).ready(function() {
 		    console.log( "ready!" );
 		    $('.newsticker').newsTicker();
+		    <#if popMessage?has_content>
+				show();
+			</#if>	
 		});
 		</script>
 		
 		
 	<div style="display:none" id="dialog-message" title="Important information">
-    	<span class="ui-state-default"><span class="ui-icon ui-icon-info" style="float:left; margin:0 7px 0 0;"></span></span>
     	<div style="margin-left: 23px;">
 	        <p>
 	            <#if popMessage?has_content>
-	        		popMessage
+	        		${popMessage}
 	    		</#if>
 	        </p>
         </div>
