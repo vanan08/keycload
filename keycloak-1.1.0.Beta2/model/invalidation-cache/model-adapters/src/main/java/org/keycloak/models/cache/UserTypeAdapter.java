@@ -52,9 +52,33 @@ public class UserTypeAdapter implements UserTypeModel {
 	}
 
 	@Override
+	public String getUserTypeRole() {
+		if (updated != null) return updated.getUserTypeRole();
+		return cached.getUserTypeRole();
+	}
+
+	@Override
 	public void setTncContent(byte[] tncContent) {
 		getDelegateForUpdate();
         updated.setTncContent(tncContent);
+	}
+
+	@Override
+	public void setUserTypeRole(String userTypeRole) {
+		getDelegateForUpdate();
+		updated.setUserTypeRole(userTypeRole);
+	}
+	
+	@Override
+	public String getRedirectUrl() {
+		if (updated != null) return updated.getRedirectUrl();
+		return cached.getRedirectUrl();
+	}
+
+	@Override
+	public void setRedirectUrl(String redirectUrl) {
+		getDelegateForUpdate();
+		updated.setRedirectUrl(redirectUrl);
 	}
 	
     @Override
@@ -81,5 +105,6 @@ public class UserTypeAdapter implements UserTypeModel {
     public int hashCode() {
         return getId().hashCode();
     }
+
 
 }

@@ -45,6 +45,12 @@ public class UserTypeEntity implements Serializable {
 	@Column(name = "TNC_CONTENT")
 	private byte[] tncContent;
 
+	@Column(name = "ROLE")
+	private String userTypeRole;
+	
+	@Column(name = "REDIRECT_URL")
+	private String redirectUrl;
+	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 
@@ -109,8 +115,16 @@ public class UserTypeEntity implements Serializable {
 		return tncContent;
 	}
 
+	public String getUserTypeRole() {
+		return userTypeRole;
+	}
+
 	public void setTncContent(byte[] tncContent) {
 		this.tncContent = tncContent;
+	}
+
+	public void setUserTypeRole(String userTypeRole) {
+		this.userTypeRole = userTypeRole;
 	}
 
 	public String getUpdatedBy() {
@@ -127,6 +141,18 @@ public class UserTypeEntity implements Serializable {
 
 	public void setUpdatedDate(Timestamp updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getRedirectUrl() {
+		return redirectUrl;
+	}
+
+	public void setRedirectUrl(String redirectUrl) {
+		this.redirectUrl = redirectUrl;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	public List<UserTypeAppRoleEntity> getCustomUserTypeAppRoles() {

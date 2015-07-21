@@ -534,6 +534,10 @@ module.controller('ModuleDetailCtrl', function($scope, Loader, realm, applicatio
 		$scope.availableModuleRoleMappings = AppliationRoleMapping.query({ realm : realm.realm, application: $scope.application.id });
 	}
 	
+	$scope.orderByValue = function (value) {
+        return value.name;
+    };
+	
 	$scope.addModuleRole = function() {
 		//TODO: add module role
 		if($scope.selectedModuleRoles.length == 0)

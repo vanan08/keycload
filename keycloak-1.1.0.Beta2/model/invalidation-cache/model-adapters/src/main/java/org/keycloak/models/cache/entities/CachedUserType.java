@@ -12,16 +12,25 @@ public class CachedUserType {
     final protected String name;
     final protected String realm;
     final protected byte[] tncContent;
+    final protected String userTypeRole;
+    final protected String redirectUrl;
+    
 
-    public CachedUserType(UserTypeModel model, RealmModel realm) {
+	public CachedUserType(UserTypeModel model, RealmModel realm) {
         id = model.getId();
         name = model.getName();
         tncContent = model.getTncContent();
+        userTypeRole = model.getUserTypeRole();
+        redirectUrl = model.getRedirectUrl();
         this.realm = realm.getId();
     }
     
     public byte[] getTncContent() {
 		return tncContent;
+	}
+    
+    public String getUserTypeRole() {
+		return userTypeRole;
 	}
 
 	public String getId() {
@@ -35,5 +44,9 @@ public class CachedUserType {
     public String getRealm() {
         return realm;
     }
+    
+    public String getRedirectUrl() {
+		return redirectUrl;
+	}
 
 }

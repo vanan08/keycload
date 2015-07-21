@@ -38,6 +38,15 @@
                     </div>
                 </div>
                 
+                
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"for="userTypeName">Redirect Url<span class="required" data-ng-show="create">*</span></label>
+                    <div class="col-sm-5">
+                        <input class="form-control" type="text" id="redirectUrl" name="redirectUrl" data-ng-model="userType.redirectUrl" autofocus
+                               required>
+                    </div>
+                </div>
+                
                 <div class="form-group">
                     <label class="col-sm-2 control-label" for="import-file">T&C Content</label>
                     <div class="col-sm-4">
@@ -56,46 +65,45 @@
             </fieldset>
 
 			<!-- <div class="form-group" ng-show="application"> -->
-			
 			<div class="form-group" ng-show="true">
-              <div class="controls changing-selectors col-sm-10">
-                  <div class="select-title">
-                      <label class="control-label" for="available-app">Available Roles <span tooltip-placement="right" tooltip="Assignable roles from this application." class="fa fa-info-circle"></span></label>
-                      <select id="available-app" class="form-control" multiple size="5"
-                              ng-multiple="true"
-                              ng-model="role"
-                              ng-options="r.name for r in roles">
-                      </select>
-                  </div>
-                  <div class="middle-buttons">
-                      <button class="btn btn-default" type="submit" ng-click="addRole()" tooltip="Assign role" tooltip-placement="right">
-                          <span class="kc-icon-arrow-right">Move right</span>
-                      </button>
-                      <button class="btn btn-default" type="submit" ng-click="deleteRole()" tooltip="Unassign role" tooltip-placement="left">
-                          <span class="kc-icon-arrow-left">Move left</span>
-                      </button>
-                  </div>
-                  <div class="select-title">
-                      <label class="control-label" for="assigned-app">Assigned Roles <span tooltip-placement="right" tooltip="Role mappings for this application." class="fa fa-info-circle"></span></label>
-                      <select id="assigned-app" class="form-control" multiple size=5
-                              ng-multiple="true"
-                              ng-model="selectedRole"
-                              ng-options="r.name for r in selectedRoles" >
-                 </select>
-             </div>
-             <div class="middle-buttons">
-                 -
-             </div>
-             <div class="select-title">
-                 <label class="control-label" for="app-composite">Effective Roles <span tooltip-placement="right" tooltip="Role mappings for this application.  Some roles here might be inherited from a mapped composite role." class="fa fa-info-circle"></span></label>
-                 <select id="app-composite" class="form-control" multiple size=5
-                         ng-disabled="true"
-                         ng-model="selectedRole"
-                         ng-options="r.name for r in selectedRoles" >
-          </select>
-      </div>
-  </div>
-</div>
+                    <div class="controls changing-selectors col-sm-10">
+                        <div class="select-title">
+                            <label class="control-label" for="available-app">Available Roles <span tooltip-placement="right" tooltip="Assignable roles from this user type." class="fa fa-info-circle"></span></label>
+                            <select id="available-app" class="form-control" multiple size="5"
+                                    ng-multiple="true"
+                                    ng-model="selectedUserTypeRoles"
+                                    ng-options="r.name for r in availableUserTypeRoleMappings | orderBy:orderByValue">
+                            </select>
+                        </div>
+                        <div class="middle-buttons">
+                            <button class="btn btn-default" type="submit" ng-click="addUserTypeRole()" tooltip="Assign role" tooltip-placement="right">
+                                <span class="kc-icon-arrow-right">Move right</span>
+                            </button>
+                            <button class="btn btn-default" type="submit" ng-click="deleteUserTypeRole()" tooltip="Unassign role" tooltip-placement="left">
+                                <span class="kc-icon-arrow-left">Move left</span>
+                            </button>
+                        </div>
+                        <div class="select-title">
+                            <label class="control-label" for="assigned-app">Assigned Roles <span tooltip-placement="right" tooltip="Role mappings for this user type." class="fa fa-info-circle"></span></label>
+                            <select id="assigned-app" class="form-control" multiple size=5
+                                    ng-multiple="true"
+                                    ng-model="selectedApplicationUserTypeRoles"
+                                    ng-options="r.name for r in applicationUserTypeRoles | orderBy:orderByValue">
+                            </select>
+                        </div>
+                        <div class="middle-buttons">
+                            -
+                        </div>
+                        <div class="select-title">
+                            <label class="control-label" for="app-composite">Effective Roles <span tooltip-placement="right" tooltip="Role mappings for this user type.  Some roles here might be inherited from a mapped composite role." class="fa fa-info-circle"></span></label>
+                            <select id="app-composite" class="form-control" multiple size=5
+                                    ng-disabled="true"
+                                    ng-model="dummymodel"
+                                    ng-options="r.name for r in applicationComposite | orderBy:orderByValue">
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
 <div class="pull-right form-actions" data-ng-show="create">
     <button kc-cancel data-ng-click="cancel()">Cancel</button>

@@ -7,6 +7,7 @@ import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserCredentialModel;
 import org.keycloak.models.UserCredentialValueModel;
 import org.keycloak.models.UserModel;
+import org.keycloak.models.UserTypeModel;
 
 import java.util.List;
 import java.util.Map;
@@ -218,15 +219,6 @@ public class UserModelDelegate implements UserModel {
 		delegate.updateCustomUser(customUserModel);
 	}
 	
-	@Override
-	public String getCustomUserTypeId() {
-		return delegate.getCustomUserTypeId();
-	}
-
-	@Override
-	public void setCustomUserTypeId(String customUserTypeId) {
-		delegate.setCustomUserTypeId(customUserTypeId);	
-	}
 
 	@Override
 	public String getCustomUserSubTypeId() {
@@ -286,5 +278,15 @@ public class UserModelDelegate implements UserModel {
 	@Override
 	public void setAgency(String agency) {
 		delegate.setAgency(agency);
+	}
+
+	@Override
+	public UserTypeModel getCustomUserType() {
+		return delegate.getCustomUserType();
+	}
+
+	@Override
+	public void setCustomUserType(UserTypeModel customUserType) {
+		delegate.setCustomUserType(customUserType);
 	}
 }

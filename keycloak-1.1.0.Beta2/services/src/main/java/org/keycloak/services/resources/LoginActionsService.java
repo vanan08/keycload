@@ -319,7 +319,11 @@ public class LoginActionsService {
             return protocol.cancelLogin(clientSession);
         }
         StringBuilder errorMessage = new StringBuilder();
-        AuthenticationManager.AuthenticationStatus status = authManager.authenticateForm(session, clientConnection, realm, formData, errorMessage);
+        StringBuilder forgetPassword = new StringBuilder();
+        StringBuilder needRedirectUrl = new StringBuilder();
+        
+        AuthenticationManager.AuthenticationStatus status = authManager.authenticateForm(session, clientConnection, realm, formData, errorMessage, forgetPassword,
+        		needRedirectUrl);
 
         if(errorMessage.length() > 0){
         	formData.add("errorMessage", errorMessage.toString());
@@ -404,6 +408,32 @@ public class LoginActionsService {
                         .setFormData(formData)
                         .setClientSessionCode(clientCode.getCode())
                         .createLogin();
+            case PASSWORD_EXPIRED:
+            	formData.add("popMessage", "Password has expired");
+            	formData.add("forgetPasswordUrl", forgetPassword.toString());
+                return Flows.forms(this.session, realm, client, uriInfo)
+                        .setFormData(formData)
+                        .setClientSessionCode(clientCode.getCode())
+                        .createLogin();
+            case FORCE_CHANGE_PASSWORD:
+              formData.add("popMessage", "Force to change passsord is detected");
+              formData.add("forgetPasswordUrl", forgetPassword.toString());
+              return Flows.forms(this.session, realm, client, uriInfo)
+                      .setFormData(formData)
+                      .setClientSessionCode(clientCode.getCode())
+                      .createLogin();
+            case ACCOUNT_DISABLED_SUSPENDED:
+            	formData.add("popMessage", "Account Disabled or Suspended is detected");
+            	 return Flows.forms(this.session, realm, client, uriInfo)
+                         .setFormData(formData)
+                         .setClientSessionCode(clientCode.getCode())
+                         .createLogin();
+            case NEED_REDIRECT_USER_URL:
+            	formData.add("needRedirectUrl", needRedirectUrl.toString());
+            	return Flows.forms(this.session, realm, client, uriInfo)
+                         .setFormData(formData)
+                         .setClientSessionCode(clientCode.getCode())
+                         .createLogin();
             default:
                 event.error(Errors.INVALID_USER_CREDENTIALS);
                 return Flows.forms(this.session, realm, client, uriInfo).setError(Messages.INVALID_USER)

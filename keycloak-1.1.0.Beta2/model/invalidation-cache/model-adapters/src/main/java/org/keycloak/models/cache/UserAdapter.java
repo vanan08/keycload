@@ -10,6 +10,7 @@ import org.keycloak.models.RoleModel;
 import org.keycloak.models.UserCredentialModel;
 import org.keycloak.models.UserCredentialValueModel;
 import org.keycloak.models.UserModel;
+import org.keycloak.models.UserTypeModel;
 import org.keycloak.models.cache.entities.CachedUser;
 
 import java.util.HashSet;
@@ -320,15 +321,6 @@ public class UserAdapter implements UserModel {
 		updated.updateCustomUser(customUserModel);
 	}
 
-	@Override
-	public String getCustomUserTypeId() {
-		return updated.getCustomUserTypeId();
-	}
-
-	@Override
-	public void setCustomUserTypeId(String customUserTypeId) {
-		updated.setCustomUserTypeId(customUserTypeId);	
-	}
 
 	@Override
 	public String getCustomUserSubTypeId() {
@@ -342,8 +334,6 @@ public class UserAdapter implements UserModel {
 
 	@Override
 	public String getNeed2FA() {
-		
-		
 		getDelegateForUpdate();
 		return updated.getNeed2FA();
 	}
@@ -394,6 +384,18 @@ public class UserAdapter implements UserModel {
 	@Override
 	public void setAgency(String agency) {
 		updated.setAgency(agency);
+	}
+
+	@Override
+	public UserTypeModel getCustomUserType() {
+		getDelegateForUpdate();
+		return updated.getCustomUserType();
+	}
+
+	@Override
+	public void setCustomUserType(UserTypeModel customUserType) {
+		getDelegateForUpdate();
+		updated.setCustomUserType(customUserType);
 	}
     
 }

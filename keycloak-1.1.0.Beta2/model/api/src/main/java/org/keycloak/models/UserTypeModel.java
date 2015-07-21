@@ -12,6 +12,13 @@ public interface UserTypeModel {
     
     void setTncContent(byte[] tncContent);
     
+    String getUserTypeRole();
+    
+    void setUserTypeRole(String userTypeRole);
+    
+    String getRedirectUrl();
+    void setRedirectUrl(String redirectUrl);
+    
 	public UserTypeContainerModel getContainer();
 
 }

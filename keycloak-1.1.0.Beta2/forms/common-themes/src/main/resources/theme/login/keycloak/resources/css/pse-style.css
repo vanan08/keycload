@@ -16,7 +16,7 @@ body.login-page {
     background-repeat: no-repeat;	
 	}
 .container-fluid{
-	padding:0px;
+	padding:0px !important;
 }
 .navbar-sec {
     background-color: #fff;
@@ -612,8 +612,9 @@ margin: 0 auto;
 .newsticker {
     list-style-type: none !important;
     padding-left: 15px !important;
-	height:30px !important;
-	margin-top:8px !important;
+	height: 34px !important;
+  	width: 420px !important;
+  	margin-top: 0px !important;
 }
 h4.news_hd {
     font-size: 14px;
@@ -665,13 +666,6 @@ h4.news_hd:after {
 }
 .link_btn > span {
     border-bottom: 1px solid #ea3f43;
-}
-p.oet-msg {
-    color: #b1b1b1;
-    font-size: 13px;
-}
-p.oet-msg a{
-	color:#ea3f43;
 }
  @media only screen and (max-width : 767px) {
  
