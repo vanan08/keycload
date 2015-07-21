@@ -81,6 +81,17 @@ public class JpaEventStoreProvider implements EventStoreProvider {
         } catch (IOException ex) {
             logger.error("Failed to write log details", ex);
         }
+        e.setFailReason(o.getFailReason());
+        e.setBrowserInfomation(o.getBrowserInfomation());
+        e.setBrowserType(o.getBrowserType());
+        e.setLoginDateTimepStamp(o.getLoginDateTimepStamp());
+        e.setLogoutDateTimepStamp(o.getLogoutDateTimepStamp());
+        e.setOtpGenerated(o.getOtpGenerated());
+        e.setOtpGenerateDateTime(o.getOtpGenerateDateTime());
+        e.setOtpReceived(o.getOtpReceived());
+        e.setOptReceivedDateTime(o.getOptReceivedDateTime());
+        e.setOtpSendDateTime(o.getOtpSendDateTime());
+        e.setSuccessFlag(o.getSuccessFlag());
         return e;
     }
 
@@ -100,6 +111,17 @@ public class JpaEventStoreProvider implements EventStoreProvider {
         } catch (IOException ex) {
             logger.error("Failed to read log details", ex);
         }
+        e.setFailReason(o.getFailReason());
+        e.setBrowserInfomation(o.getBrowserInfomation());
+        e.setBrowserType(o.getBrowserType());
+        e.setLoginDateTimepStamp(o.getLoginDateTimepStamp());
+        e.setLogoutDateTimepStamp(o.getLogoutDateTimepStamp());
+        e.setOtpGenerated(o.getOtpGenerated());
+        e.setOtpGenerateDateTime(o.getOtpGenerateDateTime());
+        e.setOtpReceived(o.getOtpReceived());
+        e.setOptReceivedDateTime(o.getOptReceivedDateTime());
+        e.setOtpSendDateTime(o.getOtpSendDateTime());
+        e.setSuccessFlag(o.getSuccessFlag());
         return e;
     }
 

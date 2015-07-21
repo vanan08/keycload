@@ -133,6 +133,7 @@ public class SamlService {
             if (documentHolder == null) {
                 event.event(EventType.LOGIN);
                 event.error(Errors.INVALID_TOKEN);
+                event.failReason("Invalid token");
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Invalid Request");
             }
             
@@ -169,22 +170,26 @@ public class SamlService {
             if (client == null) {
                 event.event(EventType.LOGIN);
                 event.error(Errors.CLIENT_NOT_FOUND);
+                event.failReason("Client cannot found");
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Unknown login requester.");
             }
 
             if (!client.isEnabled()) {
                 event.event(EventType.LOGIN);
                 event.error(Errors.CLIENT_DISABLED);
+                event.failReason("Client has been disabled.");
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Login requester not enabled.");
             }
             if ((client instanceof ApplicationModel) && ((ApplicationModel)client).isBearerOnly()) {
                 event.event(EventType.LOGIN);
                 event.error(Errors.NOT_ALLOWED);
+                event.failReason("Bearer-only applications are not allowed to initiate browser login");
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Bearer-only applications are not allowed to initiate browser login");
             }
             if (client.isDirectGrantsOnly()) {
                 event.event(EventType.LOGIN);
                 event.error(Errors.NOT_ALLOWED);
+                event.failReason("Direct-grants-only clients are not allowed to initiate browser login");
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "direct-grants-only clients are not allowed to initiate browser login");
             }
 
@@ -194,21 +199,25 @@ public class SamlService {
                 SamlService.logger.error("request validation failed", e);
                 event.event(EventType.LOGIN);
                 event.error(Errors.INVALID_SIGNATURE);
+                event.failReason("Invalid signature");
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Invalid requester.");
             }
             if (samlObject instanceof AuthnRequestType) {
                 event.event(EventType.LOGIN);
+                event.successFlag("Y");
                 // Get the SAML Request Message
                 AuthnRequestType authn = (AuthnRequestType) samlObject;
                 return loginRequest(relayState, authn, client);
             } else if (samlObject instanceof LogoutRequestType) {
                 event.event(EventType.LOGOUT);
+                event.successFlag("Y");
                 LogoutRequestType logout = (LogoutRequestType) samlObject;
                 logger.info("logout - destination = "+logout.getDestination());
                 return logoutRequest(logout, client);
             } else {
                 event.event(EventType.LOGIN);
                 event.error(Errors.INVALID_TOKEN);
+                event.failReason("Invalid tokent");
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Invalid Request");
             }
         }
@@ -223,10 +232,9 @@ public class SamlService {
             
             if (redirect == null) {
                 event.error(Errors.INVALID_REDIRECT_URI);
+                event.failReason(redirect+" - Invalid redirect_uri.");
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Invalid redirect_uri.");
             }
-            
-            logger.info("authID = "+requestAbstractType.getID());
             
             ClientSessionModel clientSession = session.sessions().createClientSession(realm, client);
             clientSession.setAuthMethod(SamlProtocol.LOGIN_PROTOCOL);
@@ -236,7 +244,7 @@ public class SamlService {
             clientSession.setNote(SamlProtocol.SAML_BINDING, getBindingType());
             clientSession.setNote(GeneralConstants.RELAY_STATE, relayState);
             clientSession.setNote(SamlProtocol.SAML_REQUEST_ID, requestAbstractType.getID());
-
+            
             // Handle NameIDPolicy from SP
             NameIDPolicyType nameIdPolicy = requestAbstractType.getNameIDPolicy();
             if(nameIdPolicy != null) {
@@ -246,6 +254,7 @@ public class SamlService {
                     clientSession.setNote(GeneralConstants.NAMEID_FORMAT, nameIdFormat);
                 } else {
                     event.error(Errors.INVALID_TOKEN);
+                    event.failReason(nameIdFormat+" - Unsupported NameIDFormat");
                     return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Unsupported NameIDFormat.");
                 }
             } else {

@@ -254,16 +254,17 @@ public class LoginActionsService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response processLogin(@QueryParam("code") String code,
                                  final MultivaluedMap<String, String> formData) {
-    	
     	System.out.println("KeyCloack: request/login ");
         event.event(EventType.LOGIN);
         if (!checkSsl()) {
             event.error(Errors.SSL_REQUIRED);
+            event.failReason("HTTPS required");
             return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "HTTPS required");
         }
 
         if (!realm.isEnabled()) {
             event.error(Errors.REALM_DISABLED);
+            event.failReason("Realm not enabled.");
             return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Realm not enabled.");
         }
         
@@ -274,12 +275,14 @@ public class LoginActionsService {
         ClientSessionCode clientCode = ClientSessionCode.parse(code, session, realm);
         if (clientCode == null) {
             event.error(Errors.INVALID_CODE);
+            event.failReason("Unknown code");
             return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Unknown code, please login again through your application.");
         }
         ClientSessionModel clientSession = clientCode.getClientSession();
         if (!(clientCode.isValid(ClientSessionModel.Action.AUTHENTICATE) || clientCode.isValid(ClientSessionModel.Action.RECOVER_PASSWORD))) {
             clientCode.setAction(ClientSessionModel.Action.AUTHENTICATE);
             event.client(clientSession.getClient()).error(Errors.INVALID_CODE);
+            event.failReason("Invalid user.");
             return Flows.forms(this.session, realm, clientSession.getClient(), uriInfo).setError(Messages.INVALID_USER)
                     .setClientSessionCode(clientCode.getCode())
                     .createLogin();
@@ -304,15 +307,18 @@ public class LoginActionsService {
         ClientModel client = clientSession.getClient();
         if (client == null) {
             event.error(Errors.CLIENT_NOT_FOUND);
+            event.failReason("Unknown login requester.");
             return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Unknown login requester.");
         }
         if (!client.isEnabled()) {
             event.error(Errors.CLIENT_NOT_FOUND);
+            event.failReason("Login requester not enabled.");
             return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Login requester not enabled.");
         }
 
         if (formData.containsKey("cancel")) {
             event.error(Errors.REJECTED_BY_USER);
+            event.failReason("Login has been rejected by user.");
             LoginProtocol protocol = session.getProvider(LoginProtocol.class, clientSession.getAuthMethod());
             protocol.setRealm(realm)
                     .setUriInfo(uriInfo);
@@ -349,6 +355,7 @@ public class LoginActionsService {
                 System.out.println("client_1="+clientSession.getClient());
                 TokenManager.attachClientSession(userSession, clientSession, request);
                 event.session(userSession);
+                event.successFlag("Y");
                 return AuthenticationManager.nextActionAfterAuthentication(session, userSession, clientSession, clientConnection, request, uriInfo, event);
                 
             case ACTIONS_REQUIRED:
@@ -358,9 +365,11 @@ public class LoginActionsService {
                 logger.info("client="+clientSession.getClient());
                 TokenManager.attachClientSession(userSession, clientSession, request);
                 event.session(userSession);
+                event.successFlag("Y");
                 return AuthenticationManager.nextActionAfterAuthentication(session, userSession, clientSession, clientConnection, request, uriInfo, event);
             case ACCOUNT_TEMPORARILY_DISABLED:
                 event.error(Errors.USER_TEMPORARILY_DISABLED);
+                event.failReason("User has been temprorarily disabled");
                 return Flows.forms(this.session, realm, client, uriInfo)
                         .setError(Messages.ACCOUNT_TEMPORARILY_DISABLED)
                         .setFormData(formData)
@@ -368,6 +377,7 @@ public class LoginActionsService {
                         .createLogin();
             case ACCOUNT_DISABLED:
                 event.error(Errors.USER_DISABLED);
+                event.failReason("User has been disabled");
                 return Flows.forms(this.session, realm, client, uriInfo)
                         .setError(Messages.ACCOUNT_DISABLED)
                         .setClientSessionCode(clientCode.getCode())
@@ -394,6 +404,7 @@ public class LoginActionsService {
                         .createTNCPage();
             case INVALID_USER:
                 event.error(Errors.USER_NOT_FOUND);
+                event.failReason("User cannot found");
                 return Flows.forms(this.session, realm, client, uriInfo).setError(Messages.INVALID_USER)
                         .setFormData(formData)
                         .setClientSessionCode(clientCode.getCode())
@@ -406,6 +417,7 @@ public class LoginActionsService {
                         .createLogin();
             default:
                 event.error(Errors.INVALID_USER_CREDENTIALS);
+                event.failReason("Invalid user credentials");
                 return Flows.forms(this.session, realm, client, uriInfo).setError(Messages.INVALID_USER)
                         .setFormData(formData)
                         .setClientSessionCode(clientCode.getCode())
