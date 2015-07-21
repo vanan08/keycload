@@ -1,26 +1,6 @@
 package org.keycloak.models.jpa;
 
-import org.keycloak.models.ApplicationModel;
-import org.keycloak.models.CustomUserModel;
-import org.keycloak.models.ModuleModel;
-import org.keycloak.models.PasswordPolicy;
-import org.keycloak.models.RealmModel;
-import org.keycloak.models.RoleContainerModel;
-import org.keycloak.models.RoleModel;
-import org.keycloak.models.UserCredentialModel;
-import org.keycloak.models.UserCredentialValueModel;
-import org.keycloak.models.UserModel;
-import org.keycloak.models.jpa.entities.CredentialEntity;
-import org.keycloak.models.jpa.entities.CustomUserEntity;
-import org.keycloak.models.jpa.entities.UserAttributeEntity;
-import org.keycloak.models.jpa.entities.UserEntity;
-import org.keycloak.models.jpa.entities.UserRequiredActionEntity;
-import org.keycloak.models.jpa.entities.UserRoleMappingEntity;
-import org.keycloak.models.utils.KeycloakModelUtils;
-import org.keycloak.models.utils.Pbkdf2PasswordEncoder;
-
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import static org.keycloak.models.utils.Pbkdf2PasswordEncoder.getSalt;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -33,7 +13,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.keycloak.models.utils.Pbkdf2PasswordEncoder.getSalt;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
+import org.keycloak.models.ApplicationModel;
+import org.keycloak.models.CustomUserModel;
+import org.keycloak.models.ModuleModel;
+import org.keycloak.models.PasswordPolicy;
+import org.keycloak.models.RealmModel;
+import org.keycloak.models.RoleContainerModel;
+import org.keycloak.models.RoleModel;
+import org.keycloak.models.UserCredentialModel;
+import org.keycloak.models.UserCredentialValueModel;
+import org.keycloak.models.UserModel;
+import org.keycloak.models.UserTypeModel;
+import org.keycloak.models.jpa.entities.CredentialEntity;
+import org.keycloak.models.jpa.entities.CustomUserEntity;
+import org.keycloak.models.jpa.entities.UserAttributeEntity;
+import org.keycloak.models.jpa.entities.UserEntity;
+import org.keycloak.models.jpa.entities.UserRequiredActionEntity;
+import org.keycloak.models.jpa.entities.UserRoleMappingEntity;
+import org.keycloak.models.jpa.entities.UserTypeEntity;
+import org.keycloak.models.utils.KeycloakModelUtils;
+import org.keycloak.models.utils.Pbkdf2PasswordEncoder;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -468,17 +470,6 @@ public class UserAdapter implements UserModel {
 		
 	}
 
-
-	@Override
-	public String getCustomUserTypeId() {
-		return user.getCustomUserTypeId();
-	}
-
-	@Override
-	public void setCustomUserTypeId(String customUserTypeId) {
-		user.setCustomUserTypeId(customUserTypeId);	
-	}
-
 	@Override
 	public String getCustomUserSubTypeId() {
 		return user.getCustomUserSubTypeId();
@@ -537,6 +528,23 @@ public class UserAdapter implements UserModel {
 	@Override
 	public void setAgency(String agency) {
 		user.setAgency(agency);
+	}
+
+	@Override
+	public UserTypeModel getCustomUserType() {
+		UserTypeModel model = new UserTypeAdapter(realm, em, user.getCustomUserType());
+		return model;
+	}
+
+	@Override
+	public void setCustomUserType(UserTypeModel customUserType) {
+		UserTypeEntity entity = new UserTypeEntity();
+		entity.setId(customUserType.getId());
+		entity.setName(customUserType.getName());
+		entity.setRedirectUrl(customUserType.getRedirectUrl());
+		entity.setTncContent(customUserType.getTncContent());
+		entity.setUserTypeRole(customUserType.getUserTypeRole());
+		user.setCustomUserType(entity);
 	}
 
 }

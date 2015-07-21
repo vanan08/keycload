@@ -6,7 +6,10 @@ import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -66,8 +69,9 @@ public class UserEntity {
 	@Column(name = "MOBILE")
 	protected String mobile;
 
-	@Column(name = "CUSTOM_USER_TYPE_ID", length = 36)
-	protected String customUserTypeId;
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CUSTOM_USER_TYPE_ID")
+    private UserTypeEntity customUserType;
 
 	@Column(name = "CUSTOM_USER_SUBTYPE_ID", length = 36)
 	protected String customUserSubTypeId;
@@ -240,12 +244,12 @@ public class UserEntity {
 		this.customUsers = customUsers;
 	}
 
-	public String getCustomUserTypeId() {
-		return customUserTypeId;
+	public UserTypeEntity getCustomUserType() {
+		return customUserType;
 	}
 
-	public void setCustomUserTypeId(String customUserTypeId) {
-		this.customUserTypeId = customUserTypeId;
+	public void setCustomUserType(UserTypeEntity customUserType) {
+		this.customUserType = customUserType;
 	}
 
 	public String getCustomUserSubTypeId() {
