@@ -838,7 +838,7 @@ public class AuthenticationManager {
 		if(accountStatus==1) {
 			double returnCode = getPasswordDayRemaining (clientAPI, username, domain);
 			if(returnCode<0) {
-				//call url from pse function module=CHANGEPASSWORD to redirect to SFA
+				//Show error message -> Your SFA Online PIN has expired. Please change PIN now. After that call url from pse function module=CHANGEPASSWORD to redirect to SFA
 				System.out.println("Password has expired");
 				updateTNCFlag(session,username, "N");
 				return AuthenticationStatus.PASSWORD_EXPIRED;
@@ -848,13 +848,13 @@ public class AuthenticationManager {
 			}  
 		}
 		else if(accountStatus==2) {
-		    //call url from pse function module=CHANGEPASSWORD to redirect to SFA
+		    //Show error message -> Your AL/FC Online PIN has expired. Please change PIN now. After that call url from pse function module=CHANGEPASSWORD to redirect to SFA
 			System.out.println("Force to change passsord is detected");
 			updateTNCFlag(session,username, "N");
 			return AuthenticationStatus.FORCE_CHANGE_PASSWORD;
 		}
 		else if(accountStatus==3 || accountStatus==4) {
-			//Show error message and the flow is ended at 1FA
+			//Show error message --> Account is disabled or inactive, please approach PRUONE Service Desk for help. The flow is ended at 1FA
 			System.out.println("Account Disabled or Suspended is detected");
 			return AuthenticationStatus.ACCOUNT_DISABLED;
 		}
