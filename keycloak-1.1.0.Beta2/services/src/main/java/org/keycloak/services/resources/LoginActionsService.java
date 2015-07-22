@@ -70,6 +70,8 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Providers;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -256,6 +258,7 @@ public class LoginActionsService {
                                  final MultivaluedMap<String, String> formData) {
     	System.out.println("KeyCloack: request/login ");
         event.event(EventType.LOGIN);
+        event.loginDateTimepStamp(new Timestamp(Calendar.getInstance().getTime().getTime()));
         if (!checkSsl()) {
             event.error(Errors.SSL_REQUIRED);
             event.failReason("HTTPS required");
