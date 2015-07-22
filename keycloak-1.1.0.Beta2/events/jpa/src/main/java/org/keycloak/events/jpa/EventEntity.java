@@ -18,6 +18,7 @@ public class EventEntity {
     @Column(name="ID", length = 36)
     private String id;
 
+    
     @Column(name="TIME")
     private long time;
 

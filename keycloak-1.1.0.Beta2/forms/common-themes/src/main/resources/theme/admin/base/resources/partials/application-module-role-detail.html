@@ -82,7 +82,7 @@
                             <select id="available-app" class="form-control" multiple size="5"
                                     ng-multiple="true"
                                     ng-model="selectedModuleRoles"
-                                    ng-options="r.name for r in availableModuleRoleMappings">
+                                    ng-options="r.name for r in availableModuleRoleMappings | orderBy:orderByValue">
                             </select>
                         </div>
                         <div class="middle-buttons">
@@ -98,7 +98,7 @@
                             <select id="assigned-app" class="form-control" multiple size=5
                                     ng-multiple="true"
                                     ng-model="selectedApplicationModuleRoles"
-                                    ng-options="r.name for r in applicationModuleRoles">
+                                    ng-options="r.name for r in applicationModuleRoles | orderBy:orderByValue">
                             </select>
                         </div>
                         <div class="middle-buttons">
@@ -109,7 +109,7 @@
                             <select id="app-composite" class="form-control" multiple size=5
                                     ng-disabled="true"
                                     ng-model="dummymodel"
-                                    ng-options="r.name for r in applicationComposite">
+                                    ng-options="r.name for r in applicationComposite | orderBy:orderByValue">
                             </select>
                         </div>
                     </div>

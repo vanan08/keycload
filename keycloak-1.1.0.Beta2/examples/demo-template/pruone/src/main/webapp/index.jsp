@@ -96,6 +96,73 @@ function showLink(link) {
     }
     window.open(link, "_blank"); 
 }
+
+function getBannerApiUrl(){
+	$.get("/auth/modules/ROTATEBANNERAPI", function(data, status){
+                //alert(data);
+		if(status == 'success'){
+			console.log(data);
+			buildBanners(data);
+		}else{
+			console.log(status);
+		}
+  	});
+		
+}
+
+function buildBanners(url){
+	$.get(url, function(data, status){
+		if(status == 'success'){
+			console.log(data);
+			if(data.message && data.message == 'Request successful'){
+				//<a class="current" href="#slide1">1</a>
+				var cList = $('ul.recentlist');
+				var cDiv = $('div.slideshow');
+				var rows = data.result;
+				$.each(rows, function(i)
+				{
+					//Build slide
+				    var li = $('<li/>')
+				        .appendTo(cList);
+				    
+				    var atag = $('<a/>');
+				    
+				    if(i=0){
+				    	atag.addClass('current');
+				    }
+				    
+				    atag.attr('href','#slide'+(i+1));
+				    atag.text(i+1)
+			        .appendTo(li);
+				   
+				    //Build indexs
+				    var slideLink = $('<a/>');
+				    cDiv.append(slideLink);
+				    slideLink.attr("onclick", "showLink('"+rows[i].link+"')");
+				    slideLink.attr('href','#');
+				    
+				    var slideImage = $('<img/>');
+				    slideLink.html(slideImage);
+				    slideImage.attr('width','576');
+				    slideImage.attr('height','291');
+				    slideImage.attr('id','slide'+(i+1));
+				    slideImage.attr('src', rows[i].imageName);
+				    
+				});
+			}else{
+				//error
+				if(data.message){
+					console.log(data.message);
+				}
+			}
+			
+		}else{
+			console.log(status);
+		}
+  	});
+		
+}
+
 </script>
 </head>
 <%

@@ -48,6 +48,9 @@ public class UserTypeEntity implements Serializable {
 	@Column(name = "ROLE")
 	private String userTypeRole;
 	
+	@Column(name = "REDIRECT_URL")
+	private String redirectUrl;
+	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 
@@ -138,6 +141,18 @@ public class UserTypeEntity implements Serializable {
 
 	public void setUpdatedDate(Timestamp updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getRedirectUrl() {
+		return redirectUrl;
+	}
+
+	public void setRedirectUrl(String redirectUrl) {
+		this.redirectUrl = redirectUrl;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	public List<UserTypeAppRoleEntity> getCustomUserTypeAppRoles() {

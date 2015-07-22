@@ -3,6 +3,7 @@ package org.keycloak.services.managers;
 import java.io.FileNotFoundException;
 
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -51,6 +52,7 @@ import org.keycloak.models.UserCredentialModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.UserSessionModel;
 import org.keycloak.models.utils.KeycloakModelUtils;
+import org.keycloak.models.UserTypeModel;
 import org.keycloak.protocol.LoginProtocol;
 import org.keycloak.protocol.oidc.TokenManager;
 import org.keycloak.representations.AccessToken;
@@ -525,7 +527,8 @@ public class AuthenticationManager {
 
 	public AuthenticationStatus authenticateForm(KeycloakSession session,
 			ClientConnection clientConnection, RealmModel realm,
-			MultivaluedMap<String, String> formData, StringBuilder errorMessage) {
+			MultivaluedMap<String, String> formData, StringBuilder errorMessage, StringBuilder forgetPassword,
+			StringBuilder redirectUrl) {
 		String username = formData.getFirst(FORM_USERNAME);
 		if (username == null) {
 			logger.debug("Username not provided");
@@ -539,7 +542,7 @@ public class AuthenticationManager {
 		}
 
 		AuthenticationStatus status = authenticateInternal(session, realm,
-				formData, username, errorMessage);
+				formData, username, errorMessage, forgetPassword, redirectUrl);
 		
 		/*AuthenticationStatus status = authenticateInternal(session, realm,
 				formData, username);*/
@@ -576,7 +579,8 @@ public class AuthenticationManager {
 	protected AuthenticationStatus authenticateInternal(
 			KeycloakSession session, RealmModel realm,
 			MultivaluedMap<String, String> formData, String username,
-			StringBuilder errorMessage) {
+			StringBuilder errorMessage, StringBuilder forgetPassword,
+			StringBuilder redirectUrl) {
 
 		AuthenticationStatus as = null;
 		String realmName = realm.getName();
@@ -589,7 +593,7 @@ public class AuthenticationManager {
 					username);
 		   } else {
 			 as = this.authenticateInternalNoneMaster(session, realm,
-					formData, username, errorMessage);
+					formData, username, errorMessage, forgetPassword, redirectUrl);
 		   }
 		}
 		catch(Exception e) {}
@@ -778,7 +782,8 @@ public class AuthenticationManager {
 	}
 
 	
-	private AuthenticationStatus checkForTNCPage(UserModel user, UserModel userModel) throws Exception {
+	private AuthenticationStatus checkForTNCPage(UserModel user, UserModel userModel, KeycloakSession session, String username,
+			StringBuilder redirectUrl) throws Exception {
 		// Check TNC page
 		String acceptedTNC = "N";
 		String needTNC = "Y";
@@ -816,13 +821,13 @@ public class AuthenticationManager {
 				&& acceptedTNC.equalsIgnoreCase("N")) {
 			return AuthenticationStatus.TNC;
 		}
-		
-		return null;
+		 
+		return checkUserTypeRedirectURL(session,username, redirectUrl);
 	}
 	
 	
-	private boolean checkForSpecialFlows(KeycloakSession session, ClientAPI clientAPI, String username, int domain) throws Exception {
-		boolean ret=false;
+	private AuthenticationStatus checkForSpecialFlows(KeycloakSession session, ClientAPI clientAPI, String username, int domain, StringBuilder sbRedirectUrl) throws Exception {
+		AuthenticationStatus ret=null;
 		/* accountStatus=1 is active / password is going expired / password is expired
 		 * accountStatus=2 is force change password
 		 * accountStatus=3 is account is suspended 
@@ -833,12 +838,17 @@ public class AuthenticationManager {
 		if(qus!=null)
 			accountStatus=qus.getStatus();	
 
+		RealmManager moduleManager = new RealmManager(session);
+		ModuleModel module = moduleManager.getModuleByName("CHANGEPASSWORD");
+		
 		if(accountStatus==1) {
 			double returnCode = getPasswordDayRemaining (clientAPI, username, domain);
 			if(returnCode<0) {
 				//call url from pse function module=CHANGEPASSWORD to redirect to SFA
 				System.out.println("Password has expired");
-				//updateTNCFlag(session,username);
+				updateTNCFlag(session,username, "N");
+				sbRedirectUrl.append(module.getFullpath());
+				return AuthenticationStatus.PASSWORD_EXPIRED;
 			}
 			else {
 			   System.out.println("Account Active is detected");
@@ -846,31 +856,49 @@ public class AuthenticationManager {
 		}
 		else if(accountStatus==2) {
 		    //call url from pse function module=CHANGEPASSWORD to redirect to SFA
-			ret=true;
+		    //Show error message -> Your AL/FC Online PIN has expired. Please change PIN now. After that call url from pse function module=CHANGEPASSWORD to redirect to SFA
 			System.out.println("Force to change passsord is detected");
-			//updateTNCFlag(session,username);
+			updateTNCFlag(session,username, "N");
+			sbRedirectUrl.append(module.getFullpath());
+			return AuthenticationStatus.FORCE_CHANGE_PASSWORD;
 		}
 		else if(accountStatus==3 || accountStatus==4) {
 			//Show error message and the flow is ended at 1FA
-			ret=true;
+			//Show error message --> Account is disabled or inactive, please approach PRUONE Service Desk for help. The flow is ended at 1FA
 			System.out.println("Account Disabled or Suspended is detected");
+			return AuthenticationStatus.ACCOUNT_DISABLED_SUSPENDED;
 		}
 		
-		return ret;
+		return AuthenticationStatus.SPECIAL_FLOW_OK;
 	}
 	
 	
-	private void updateTNCFlag(KeycloakSession session, String username) throws Exception {
+	private AuthenticationStatus checkUserTypeRedirectURL(KeycloakSession session, String username, StringBuilder redirectUrl) throws Exception {
+		AuthenticationStatus ret=null;
+		UserModel model = session.users().getUserByUsername(username);
+		UserTypeModel userTypeModel = model.getCustomUserType();
+		String redirectURL = userTypeModel.getRedirectUrl();
+		
+		if(redirectURL!=null && redirectURL.length()!=0) {
+			redirectUrl.append(redirectURL);
+			return AuthenticationStatus.NEED_REDIRECT_USER_URL;
+		}
+		return AuthenticationStatus.SPECIAL_FLOW_OK;
+	}
+	
+	
+	private void updateTNCFlag(KeycloakSession session, String username, String value) throws Exception {
 		// Update to database
 		UserModel model = session.users().getUserByUsername(username);
 		CustomUserModel customUserModel = model.getCustomUsers().get(0);
 		logger.debug("AcceptedTNC =" + customUserModel.getAcceptedTNC());
-		customUserModel.setAcceptedTNC("Y");
+		customUserModel.setAcceptedTNC(value);
 		customUserModel.setUpdateby(model.getUsername());
 		customUserModel.setUpdateddate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		customUserModel.updateCustomUser();
 		logger.debug("Updated acceptedTNC");
 	}
+	
 	
 	
 	private static double getPasswordDayRemaining(ClientAPI api, String userId, int dom) {
@@ -899,13 +927,15 @@ public class AuthenticationManager {
 	protected AuthenticationStatus authenticateInternalNoneMaster(
 			KeycloakSession session, RealmModel realm,
 			MultivaluedMap<String, String> formData, String username,
-			StringBuilder errorMessage) throws Exception {
+			StringBuilder errorMessage,
+			StringBuilder forgetPassword,
+			StringBuilder redirectUrl) throws Exception {
 
 		String need_tnc = formData.getFirst("need_tnc");
 		if (need_tnc != null) {
 			System.out.println("KeyCloack: processLogin need_tnc: " + need_tnc);
 			if (need_tnc.equalsIgnoreCase("Y")) {
-				updateTNCFlag(session,username);
+				updateTNCFlag(session,username, "Y");
 				// go to landing page
 				return AuthenticationStatus.SUCCESS;
 			} else {
@@ -1036,7 +1066,11 @@ public class AuthenticationManager {
 						return AuthenticationStatus.FAILED;
 					}
 					
-					boolean ret = checkForSpecialFlows(session, clientAPI, username, domain);
+					AuthenticationStatus specialFlowStatus = checkForSpecialFlows(session, clientAPI, username, domain, forgetPassword);
+					
+					if(specialFlowStatus != AuthenticationStatus.SPECIAL_FLOW_OK){
+						return specialFlowStatus;
+					}
 					
 					// not success
 					if (!(returnCode == 0 || returnCode == 2051)) {
@@ -1053,7 +1087,7 @@ public class AuthenticationManager {
 					}
 
 					if (!enable2fa) {
-						AuthenticationStatus astatus = checkForTNCPage(user,userModel);
+						AuthenticationStatus astatus = checkForTNCPage(user,userModel,session,username, redirectUrl);
 						if(astatus!=null) {
 							return astatus;
 						}
@@ -1098,12 +1132,15 @@ public class AuthenticationManager {
 							return AuthenticationStatus.MISSING_TOTP;
 						}
 						else {
-							boolean ret = checkForSpecialFlows(session, clientAPI, username, domain);
+							AuthenticationStatus specialFlowStatus = checkForSpecialFlows(session, clientAPI, username, domain, forgetPassword);
+							if(specialFlowStatus != AuthenticationStatus.SPECIAL_FLOW_OK){
+								return specialFlowStatus;
+							}
 						}
 						
 						
-						AuthenticationStatus astatus = checkForTNCPage(user,userModel);
-						if(astatus!=null) {
+						AuthenticationStatus astatus = checkForTNCPage(user,userModel,session,username, redirectUrl);
+						if(astatus == AuthenticationStatus.NEED_REDIRECT_USER_URL) {
 							return astatus;
 						}
 						else {
@@ -1256,7 +1293,7 @@ public class AuthenticationManager {
 
 	public enum AuthenticationStatus {
 		SUCCESS, ACCOUNT_TEMPORARILY_DISABLED, ACCOUNT_DISABLED, ACTIONS_REQUIRED, INVALID_USER, INVALID_CREDENTIALS, MISSING_PASSWORD, MISSING_TOTP, FAILED, TNC,
-		TNC_CANCEL
+		TNC_CANCEL, PASSWORD_EXPIRED, FORCE_CHANGE_PASSWORD, ACCOUNT_DISABLED_SUSPENDED, NEED_REDIRECT_USER_URL, SPECIAL_FLOW_OK
 	}
 
 	public class AuthResult {

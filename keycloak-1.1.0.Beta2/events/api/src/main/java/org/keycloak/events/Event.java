@@ -242,6 +242,7 @@ public class Event {
 		this.updatedDate = updatedDate;
 	}
 
+	
 	public Event clone() {
         Event clone = new Event();
         clone.time = time;
