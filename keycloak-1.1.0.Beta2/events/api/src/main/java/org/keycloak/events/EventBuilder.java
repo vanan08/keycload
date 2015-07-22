@@ -7,9 +7,9 @@ import org.keycloak.models.UserModel;
 import org.keycloak.models.UserSessionModel;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
@@ -215,6 +215,7 @@ public class EventBuilder {
 
     private void send() {
         event.setTime(System.currentTimeMillis());
+        event.setCreatedDate(new Timestamp(Calendar.getInstance().getTime().getTime()));
 
         if (listeners != null) {
             for (EventListenerProvider l : listeners) {
