@@ -848,7 +848,7 @@ public class AuthenticationManager {
 				System.out.println("Password has expired");
 				updateTNCFlag(session,username, "N");
 				sbRedirectUrl.append(module.getFullpath());
-				return AuthenticationStatus.PASSWORD_EXPIRED;
+//				return AuthenticationStatus.PASSWORD_EXPIRED;
 			}
 			else {
 			   System.out.println("Account Active is detected");
@@ -860,13 +860,13 @@ public class AuthenticationManager {
 			System.out.println("Force to change passsord is detected");
 			updateTNCFlag(session,username, "N");
 			sbRedirectUrl.append(module.getFullpath());
-			return AuthenticationStatus.FORCE_CHANGE_PASSWORD;
+//			return AuthenticationStatus.FORCE_CHANGE_PASSWORD;
 		}
 		else if(accountStatus==3 || accountStatus==4) {
 			//Show error message and the flow is ended at 1FA
 			//Show error message --> Account is disabled or inactive, please approach PRUONE Service Desk for help. The flow is ended at 1FA
 			System.out.println("Account Disabled or Suspended is detected");
-			return AuthenticationStatus.ACCOUNT_DISABLED_SUSPENDED;
+//			return AuthenticationStatus.ACCOUNT_DISABLED_SUSPENDED;
 		}
 		
 		return AuthenticationStatus.SPECIAL_FLOW_OK;
@@ -877,12 +877,15 @@ public class AuthenticationManager {
 		AuthenticationStatus ret=null;
 		UserModel model = session.users().getUserByUsername(username);
 		UserTypeModel userTypeModel = model.getCustomUserType();
-		String redirectURL = userTypeModel.getRedirectUrl();
-		
-		if(redirectURL!=null && redirectURL.length()!=0) {
-			redirectUrl.append(redirectURL);
-			return AuthenticationStatus.NEED_REDIRECT_USER_URL;
+		String redirectURL = "";
+		if(userTypeModel != null){
+			redirectURL = userTypeModel.getRedirectUrl();
+			if(redirectURL!=null && redirectURL.length()!=0) {
+				redirectUrl.append(redirectURL);
+//				return AuthenticationStatus.NEED_REDIRECT_USER_URL;
+			}
 		}
+		
 		return AuthenticationStatus.SPECIAL_FLOW_OK;
 	}
 	
@@ -1088,7 +1091,7 @@ public class AuthenticationManager {
 
 					if (!enable2fa) {
 						AuthenticationStatus astatus = checkForTNCPage(user,userModel,session,username, redirectUrl);
-						if(astatus!=null) {
+						if(astatus != AuthenticationStatus.SPECIAL_FLOW_OK) {
 							return astatus;
 						}
 						else {

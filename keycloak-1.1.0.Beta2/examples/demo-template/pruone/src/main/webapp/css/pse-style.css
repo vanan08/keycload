@@ -677,9 +677,17 @@ h4.news_hd:after {
 .link_btn:hover{
 	color:#000;
 }
+
+.link_btn span {
+    color:#ea3f43;
+  	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  	font-size: 14px;
+  	text-decoration: none;
+}
+/*
 .link_btn > span {
     border-bottom: 1px solid #ea3f43;
-}
+}*/
 p.oet-msg {
     color: #b1b1b1;
     font-size: 13px;
