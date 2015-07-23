@@ -166,10 +166,6 @@ public class SamlProtocol implements LoginProtocol {
         builder.attribute("blacklist", clientSession.getBlacklist() == null 
         										? "" : clientSession.getBlacklist());
         
-        if (client instanceof ApplicationModel) {
-        	builder.attribute("adminUrl", ((ApplicationModel)client).getManagementUrl());
-        }
-        
         if (clientSession.getRoles() != null) {
         	
             if (multivaluedRoles(client)) {
@@ -313,8 +309,12 @@ public class SamlProtocol implements LoginProtocol {
             request.formParameter(BACK_CHANNEL_LOGOUT, BACK_CHANNEL_LOGOUT);
             ClientResponse<String> response = null;
             try {
-                response = request.post();
+            	logger.info("url="+request.getUri());
+            	logger.info("before post");
+                response = request.post(String.class);
+                logger.info("after post");
                 response.releaseConnection();
+                logger.info("finish post");
                 // Undertow will redirect root urls not ending in "/" to root url + "/".  Test for this weird behavior
                 if (response.getStatus() == 302  && !adminUrl.endsWith("/")) {
                     String redirect = (String)response.getHeaders().getFirst(HttpHeaders.LOCATION);
@@ -323,7 +323,7 @@ public class SamlProtocol implements LoginProtocol {
                         request = executor.createRequest(withSlash);
                         request.formParameter(GeneralConstants.SAML_REQUEST_KEY, logoutRequestString);
                         request.formParameter(BACK_CHANNEL_LOGOUT, BACK_CHANNEL_LOGOUT);
-                        response = request.post();
+                        response = request.post(String.class);
                         response.releaseConnection();
                     }
                 }

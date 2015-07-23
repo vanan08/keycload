@@ -457,7 +457,7 @@ public class AuthenticationManager {
 					.setClient(client).createOAuthGrant();
 		}
 		System.out.println("redirectAfterSuccessfulFlow");
-		event.successFlag("Y").success();
+		event.success();
 		System.out.println("redirectAfterSuccessfulFlow");
 		return redirectAfterSuccessfulFlow(session, realm, userSession,
 				clientSession, request, uriInfo, clientConnection);
@@ -528,7 +528,7 @@ public class AuthenticationManager {
 	public AuthenticationStatus authenticateForm(KeycloakSession session,
 			ClientConnection clientConnection, RealmModel realm,
 			MultivaluedMap<String, String> formData, StringBuilder errorMessage, StringBuilder forgetPassword,
-			StringBuilder redirectUrl, EventBuilder event) {
+			StringBuilder redirectUrl) {
 		String username = formData.getFirst(FORM_USERNAME);
 		if (username == null) {
 			logger.debug("Username not provided");
@@ -541,11 +541,11 @@ public class AuthenticationManager {
 			}
 		}
 
-		/*AuthenticationStatus status = authenticateInternal(session, realm,
-				formData, username, errorMessage, forgetPassword, redirectUrl);*/
-		
 		AuthenticationStatus status = authenticateInternal(session, realm,
-				formData, username);
+				formData, username, errorMessage, forgetPassword, redirectUrl);
+		
+		/*AuthenticationStatus status = authenticateInternal(session, realm,
+				formData, username);*/
 
 		System.out.println("Keycloack: session =" + session);
 		System.out.println("KeyCloack: realm name=" + realm.getName());
@@ -580,7 +580,7 @@ public class AuthenticationManager {
 			KeycloakSession session, RealmModel realm,
 			MultivaluedMap<String, String> formData, String username,
 			StringBuilder errorMessage, StringBuilder forgetPassword,
-			StringBuilder redirectUrl, EventBuilder event) {
+			StringBuilder redirectUrl) {
 
 		AuthenticationStatus as = null;
 		String realmName = realm.getName();
@@ -590,10 +590,10 @@ public class AuthenticationManager {
 		try {
 		   if (realmName.equals("master")) {
 		     as = this.authenticateInternalMaster(session, realm, formData,
-					username, event);
+					username);
 		   } else {
 			 as = this.authenticateInternalNoneMaster(session, realm,
-					formData, username, errorMessage, forgetPassword, redirectUrl, event);
+					formData, username, errorMessage, forgetPassword, redirectUrl);
 		   }
 		}
 		catch(Exception e) {}
@@ -684,7 +684,7 @@ public class AuthenticationManager {
 
 	protected AuthenticationStatus authenticateInternalMaster(
 			KeycloakSession session, RealmModel realm,
-			MultivaluedMap<String, String> formData, String username, EventBuilder event) throws Exception {
+			MultivaluedMap<String, String> formData, String username) throws Exception {
 		UserModel user = KeycloakModelUtils.findUserByNameOrEmail(session,
 				realm, username);
 
@@ -848,7 +848,7 @@ public class AuthenticationManager {
 				System.out.println("Password has expired");
 				updateTNCFlag(session,username, "N");
 				sbRedirectUrl.append(module.getFullpath());
-				return AuthenticationStatus.PASSWORD_EXPIRED;
+//				return AuthenticationStatus.PASSWORD_EXPIRED;
 			}
 			else {
 			   System.out.println("Account Active is detected");
@@ -860,13 +860,13 @@ public class AuthenticationManager {
 			System.out.println("Force to change passsord is detected");
 			updateTNCFlag(session,username, "N");
 			sbRedirectUrl.append(module.getFullpath());
-			return AuthenticationStatus.FORCE_CHANGE_PASSWORD;
+//			return AuthenticationStatus.FORCE_CHANGE_PASSWORD;
 		}
 		else if(accountStatus==3 || accountStatus==4) {
 			//Show error message and the flow is ended at 1FA
 			//Show error message --> Account is disabled or inactive, please approach PRUONE Service Desk for help. The flow is ended at 1FA
 			System.out.println("Account Disabled or Suspended is detected");
-			return AuthenticationStatus.ACCOUNT_DISABLED_SUSPENDED;
+//			return AuthenticationStatus.ACCOUNT_DISABLED_SUSPENDED;
 		}
 		
 		return AuthenticationStatus.SPECIAL_FLOW_OK;
@@ -877,12 +877,15 @@ public class AuthenticationManager {
 		AuthenticationStatus ret=null;
 		UserModel model = session.users().getUserByUsername(username);
 		UserTypeModel userTypeModel = model.getCustomUserType();
-		String redirectURL = userTypeModel.getRedirectUrl();
-		
-		if(redirectURL!=null && redirectURL.length()!=0) {
-			redirectUrl.append(redirectURL);
-			return AuthenticationStatus.NEED_REDIRECT_USER_URL;
+		String redirectURL = "";
+		if(userTypeModel != null){
+			redirectURL = userTypeModel.getRedirectUrl();
+			if(redirectURL!=null && redirectURL.length()!=0) {
+				redirectUrl.append(redirectURL);
+//				return AuthenticationStatus.NEED_REDIRECT_USER_URL;
+			}
 		}
+		
 		return AuthenticationStatus.SPECIAL_FLOW_OK;
 	}
 	
@@ -929,8 +932,7 @@ public class AuthenticationManager {
 			MultivaluedMap<String, String> formData, String username,
 			StringBuilder errorMessage,
 			StringBuilder forgetPassword,
-			StringBuilder redirectUrl,
-			EventBuilder event) throws Exception {
+			StringBuilder redirectUrl) throws Exception {
 
 		String need_tnc = formData.getFirst("need_tnc");
 		if (need_tnc != null) {
@@ -1059,8 +1061,6 @@ public class AuthenticationManager {
 								+ returnCode);
 
 						// returnCode = 0;
-						event.otpReceived(String.valueOf(returnCode))
-							.optReceivedDateTime(Time.getCurrentTimestamp());
 
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -1091,7 +1091,7 @@ public class AuthenticationManager {
 
 					if (!enable2fa) {
 						AuthenticationStatus astatus = checkForTNCPage(user,userModel,session,username, redirectUrl);
-						if(astatus!=null) {
+						if(astatus != AuthenticationStatus.SPECIAL_FLOW_OK) {
 							return astatus;
 						}
 						else {
@@ -1190,8 +1190,6 @@ public class AuthenticationManager {
 						System.out.println("KeyCloack: User:" + username
 								+ " ; Mobile: " + mobileNumber);
 
-						event.otpGenerateDateTime(Time.getCurrentTimestamp());
-						
 						// generate new token
 						TokenOTIP tokenOTIP = clientAPI.getTokenOTIP(
 								EMPTY_BYTES, username, domain, SERIAL_NO,
@@ -1205,9 +1203,7 @@ public class AuthenticationManager {
 
 						String msg = "OTP: " + otips[0];
 						// send out the token to user's mobile
-						
-						event.otpGenerated(msg).otpSendDateTime(Time.getCurrentTimestamp());
-						
+
 						SMSSend smsSend = new SMSSend(propertiesPath);
 
 						System.out.println("KeyCloack protertiesPath "
