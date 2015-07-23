@@ -224,6 +224,7 @@ public class SamlService {
                 return loginRequest(relayState, authn, client);
             } else if (samlObject instanceof LogoutRequestType) {
                 event.event(EventType.LOGOUT);
+                event.logoutDateTimepStamp(Time.getCurrentTimestamp());
                 LogoutRequestType logout = (LogoutRequestType) samlObject;
                 return logoutRequest(logout, client);
             } else {
@@ -340,7 +341,7 @@ public class SamlService {
         
         private void logout(UserSessionModel userSession) {
             AuthenticationManager.logout(session, realm, userSession, uriInfo, clientConnection);
-            event.user(userSession.getUser()).session(userSession).success();
+            event.user(userSession.getUser()).session(userSession).successFlag("Y").success();
         }
 
         /*private void logout(UserSessionModel userSession, ClientModel clientId) {
