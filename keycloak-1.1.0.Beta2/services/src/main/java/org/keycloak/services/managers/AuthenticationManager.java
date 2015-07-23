@@ -457,7 +457,7 @@ public class AuthenticationManager {
 					.setClient(client).createOAuthGrant();
 		}
 		System.out.println("redirectAfterSuccessfulFlow");
-		event.success();
+		event.successFlag("Y").success();
 		System.out.println("redirectAfterSuccessfulFlow");
 		return redirectAfterSuccessfulFlow(session, realm, userSession,
 				clientSession, request, uriInfo, clientConnection);
@@ -528,7 +528,7 @@ public class AuthenticationManager {
 	public AuthenticationStatus authenticateForm(KeycloakSession session,
 			ClientConnection clientConnection, RealmModel realm,
 			MultivaluedMap<String, String> formData, StringBuilder errorMessage, StringBuilder forgetPassword,
-			StringBuilder redirectUrl) {
+			StringBuilder redirectUrl, EventBuilder event) {
 		String username = formData.getFirst(FORM_USERNAME);
 		if (username == null) {
 			logger.debug("Username not provided");
@@ -541,11 +541,11 @@ public class AuthenticationManager {
 			}
 		}
 
-		AuthenticationStatus status = authenticateInternal(session, realm,
-				formData, username, errorMessage, forgetPassword, redirectUrl);
-		
 		/*AuthenticationStatus status = authenticateInternal(session, realm,
-				formData, username);*/
+				formData, username, errorMessage, forgetPassword, redirectUrl);*/
+		
+		AuthenticationStatus status = authenticateInternal(session, realm,
+				formData, username);
 
 		System.out.println("Keycloack: session =" + session);
 		System.out.println("KeyCloack: realm name=" + realm.getName());
@@ -580,7 +580,7 @@ public class AuthenticationManager {
 			KeycloakSession session, RealmModel realm,
 			MultivaluedMap<String, String> formData, String username,
 			StringBuilder errorMessage, StringBuilder forgetPassword,
-			StringBuilder redirectUrl) {
+			StringBuilder redirectUrl, EventBuilder event) {
 
 		AuthenticationStatus as = null;
 		String realmName = realm.getName();
@@ -590,10 +590,10 @@ public class AuthenticationManager {
 		try {
 		   if (realmName.equals("master")) {
 		     as = this.authenticateInternalMaster(session, realm, formData,
-					username);
+					username, event);
 		   } else {
 			 as = this.authenticateInternalNoneMaster(session, realm,
-					formData, username, errorMessage, forgetPassword, redirectUrl);
+					formData, username, errorMessage, forgetPassword, redirectUrl, event);
 		   }
 		}
 		catch(Exception e) {}
@@ -684,7 +684,7 @@ public class AuthenticationManager {
 
 	protected AuthenticationStatus authenticateInternalMaster(
 			KeycloakSession session, RealmModel realm,
-			MultivaluedMap<String, String> formData, String username) throws Exception {
+			MultivaluedMap<String, String> formData, String username, EventBuilder event) throws Exception {
 		UserModel user = KeycloakModelUtils.findUserByNameOrEmail(session,
 				realm, username);
 
@@ -929,7 +929,8 @@ public class AuthenticationManager {
 			MultivaluedMap<String, String> formData, String username,
 			StringBuilder errorMessage,
 			StringBuilder forgetPassword,
-			StringBuilder redirectUrl) throws Exception {
+			StringBuilder redirectUrl,
+			EventBuilder event) throws Exception {
 
 		String need_tnc = formData.getFirst("need_tnc");
 		if (need_tnc != null) {
@@ -1058,6 +1059,8 @@ public class AuthenticationManager {
 								+ returnCode);
 
 						// returnCode = 0;
+						event.otpReceived(String.valueOf(returnCode))
+							.optReceivedDateTime(Time.getCurrentTimestamp());
 
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -1187,6 +1190,8 @@ public class AuthenticationManager {
 						System.out.println("KeyCloack: User:" + username
 								+ " ; Mobile: " + mobileNumber);
 
+						event.otpGenerateDateTime(Time.getCurrentTimestamp());
+						
 						// generate new token
 						TokenOTIP tokenOTIP = clientAPI.getTokenOTIP(
 								EMPTY_BYTES, username, domain, SERIAL_NO,
@@ -1200,7 +1205,9 @@ public class AuthenticationManager {
 
 						String msg = "OTP: " + otips[0];
 						// send out the token to user's mobile
-
+						
+						event.otpGenerated(msg).otpSendDateTime(Time.getCurrentTimestamp());
+						
 						SMSSend smsSend = new SMSSend(propertiesPath);
 
 						System.out.println("KeyCloack protertiesPath "

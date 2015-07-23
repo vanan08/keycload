@@ -23,6 +23,7 @@ import org.keycloak.services.managers.ResourceAdminManager;
 import org.keycloak.services.resources.RealmsResource;
 import org.keycloak.services.resources.flows.Flows;
 import org.keycloak.util.StreamUtil;
+import org.keycloak.util.Time;
 import org.picketlink.common.constants.GeneralConstants;
 import org.picketlink.common.constants.JBossSAMLURIConstants;
 import org.picketlink.identity.federation.core.saml.v2.common.SAMLDocumentHolder;
@@ -144,7 +145,7 @@ public class SamlService {
                 event.event(EventType.LOGIN);
                 event.error(Errors.INVALID_TOKEN);
                 event.failReason("Invalid token");
-                event.loginDateTimepStamp(new Timestamp(Calendar.getInstance().getTime().getTime()));
+                event.loginDateTimepStamp(Time.getCurrentTimestamp());
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Invalid Request");
             }
             
@@ -181,7 +182,7 @@ public class SamlService {
                 event.event(EventType.LOGIN);
                 event.error(Errors.CLIENT_NOT_FOUND);
                 event.failReason("Client cannot found");
-                event.loginDateTimepStamp(new Timestamp(Calendar.getInstance().getTime().getTime()));
+                event.loginDateTimepStamp(Time.getCurrentTimestamp());
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Unknown login requester.");
             }
 
@@ -189,21 +190,21 @@ public class SamlService {
                 event.event(EventType.LOGIN);
                 event.error(Errors.CLIENT_DISABLED);
                 event.failReason("Client has been disabled.");
-                event.loginDateTimepStamp(new Timestamp(Calendar.getInstance().getTime().getTime()));
+                event.loginDateTimepStamp(Time.getCurrentTimestamp());
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Login requester not enabled.");
             }
             if ((client instanceof ApplicationModel) && ((ApplicationModel)client).isBearerOnly()) {
                 event.event(EventType.LOGIN);
                 event.error(Errors.NOT_ALLOWED);
                 event.failReason("Bearer-only applications are not allowed to initiate browser login");
-                event.loginDateTimepStamp(new Timestamp(Calendar.getInstance().getTime().getTime()));
+                event.loginDateTimepStamp(Time.getCurrentTimestamp());
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Bearer-only applications are not allowed to initiate browser login");
             }
             if (client.isDirectGrantsOnly()) {
                 event.event(EventType.LOGIN);
                 event.error(Errors.NOT_ALLOWED);
                 event.failReason("Direct-grants-only clients are not allowed to initiate browser login");
-                event.loginDateTimepStamp(new Timestamp(Calendar.getInstance().getTime().getTime()));
+                event.loginDateTimepStamp(Time.getCurrentTimestamp());
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "direct-grants-only clients are not allowed to initiate browser login");
             }
 
@@ -214,27 +215,25 @@ public class SamlService {
                 event.event(EventType.LOGIN);
                 event.error(Errors.INVALID_SIGNATURE);
                 event.failReason("Invalid signature");
-                event.loginDateTimepStamp(new Timestamp(Calendar.getInstance().getTime().getTime()));
+                event.loginDateTimepStamp(Time.getCurrentTimestamp());
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Invalid requester.");
             }
             if (samlObject instanceof AuthnRequestType) {
                 event.event(EventType.LOGIN);
-                event.successFlag("Y");
-                event.loginDateTimepStamp(new Timestamp(Calendar.getInstance().getTime().getTime()));
+                event.loginDateTimepStamp(Time.getCurrentTimestamp());
                 // Get the SAML Request Message
                 AuthnRequestType authn = (AuthnRequestType) samlObject;
                 return loginRequest(relayState, authn, client);
             } else if (samlObject instanceof LogoutRequestType) {
                 event.event(EventType.LOGOUT);
-                event.successFlag("Y");
-                event.logoutDateTimepStamp(new Timestamp(Calendar.getInstance().getTime().getTime()));
+                event.logoutDateTimepStamp(Time.getCurrentTimestamp());
                 LogoutRequestType logout = (LogoutRequestType) samlObject;
                 return logoutRequest(logout, client);
             } else {
                 event.event(EventType.LOGIN);
                 event.error(Errors.INVALID_TOKEN);
                 event.failReason("Invalid tokent");
-                event.loginDateTimepStamp(new Timestamp(Calendar.getInstance().getTime().getTime()));
+                event.loginDateTimepStamp(Time.getCurrentTimestamp());
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Invalid Request");
             }
         }
@@ -249,7 +248,7 @@ public class SamlService {
             
             if (redirect == null) {
                 event.error(Errors.INVALID_REDIRECT_URI);
-                event.failReason(redirect+" - Invalid redirect_uri.");
+                event.failReason(redirect+" - Invalid redirect_uri.").successFlag("N");
                 return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Invalid redirect_uri.");
             }
             
@@ -278,7 +277,7 @@ public class SamlService {
                     clientSession.setNote(GeneralConstants.NAMEID_FORMAT, nameIdFormat);
                 } else {
                     event.error(Errors.INVALID_TOKEN);
-                    event.failReason(nameIdFormat+" - Unsupported NameIDFormat");
+                    event.failReason("Unsupported NameIDFormat").successFlag("N");
                     return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Unsupported NameIDFormat.");
                 }
             } else {
@@ -342,7 +341,7 @@ public class SamlService {
         
         private void logout(UserSessionModel userSession) {
             AuthenticationManager.logout(session, realm, userSession, uriInfo, clientConnection);
-            event.user(userSession.getUser()).session(userSession).success();
+            event.user(userSession.getUser()).session(userSession).successFlag("Y").success();
         }
 
         /*private void logout(UserSessionModel userSession, ClientModel clientId) {

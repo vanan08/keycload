@@ -64,10 +64,10 @@ public class EventEntity {
     @Column(name="OTP_SEND_DATE_TIME")
     private Timestamp otpSendDateTime;
     
-    @Column(name="OTP_RECEIVED", length = 200)
+    @Column(name="RESULT_CODE", length = 200)
     private String otpReceived;
     
-    @Column(name="OTP_RECEIVED_DATE_TIME")
+    @Column(name="RESULT_CODE_DATE_TIME")
     private Timestamp optReceivedDateTime;
 
     @Column(name="SUCCESS_FLAG", length = 1)

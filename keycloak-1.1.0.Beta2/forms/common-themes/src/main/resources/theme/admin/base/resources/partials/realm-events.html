@@ -76,7 +76,15 @@
                             <tr><td width="100px">Client</td><td>{{event.clientId}}</td></tr>
                             <tr><td>User</td><td>{{event.userId}}</td></tr>
                             <tr><td>IP Address</td><td>{{event.ipAddress}}</td></tr>
-                            <tr data-ng-show="event.error"><td>Error</td><td>{{event.error}}</td></tr>
+                            <tr><td width="100px">Browser-Type</td><td>{{event.browserType}}</td></tr>
+                        	<tr><td width="100px">Browser-Information</td><td>{{event.browserInfomation}}</td></tr>
+                            <tr data-ng-show="event.loginDateTimepStamp"><td>Login Date</td><td>{{event.loginDateTimepStamp|date:'dd-MM-yyyy HH:mm:ss'}}</td></tr>
+                            <tr data-ng-show="event.otpGenerateDateTime"><td>OTP generated time</td><td>{{event.otpGenerateDateTime|date:'dd-MM-yyyy HH:mm:ss'}}</td></tr>
+                            <tr data-ng-show="event.otpGenerated"><td>OTP generate</td><td>{{event.otpGenerated}}</td></tr>
+                            <tr data-ng-show="event.otpSendDateTime"><td>OTP send time</td><td>{{event.otpSendDateTime|date:'dd-MM-yyyy HH:mm:ss'}}</td></tr>
+                            <tr data-ng-show="event.successFlag"><td>Success</td><td>{{event.successFlag}}</td></tr>
+                        	<tr data-ng-show="event.failReason"><td>Fail Reason</td><td>{{event.failReason}}</td></tr>
+                            <!-- <tr data-ng-show="event.error"><td>Error</td><td>{{event.error}}</td></tr> -->
                             <tr>
                                 <td>Details</td>
                                 <td>

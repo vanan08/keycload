@@ -166,6 +166,10 @@ public class SamlProtocol implements LoginProtocol {
         builder.attribute("blacklist", clientSession.getBlacklist() == null 
         										? "" : clientSession.getBlacklist());
         
+        if (client instanceof ApplicationModel) {
+        	builder.attribute("adminUrl", ((ApplicationModel)client).getManagementUrl());
+        }
+        
         if (clientSession.getRoles() != null) {
         	
             if (multivaluedRoles(client)) {

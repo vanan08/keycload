@@ -54,6 +54,7 @@ import org.keycloak.services.messages.Messages;
 import org.keycloak.services.resources.flows.Flows;
 import org.keycloak.services.resources.flows.Urls;
 import org.keycloak.services.validation.Validation;
+import org.keycloak.util.Time;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -70,8 +71,6 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Providers;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -257,17 +256,19 @@ public class LoginActionsService {
     public Response processLogin(@QueryParam("code") String code,
                                  final MultivaluedMap<String, String> formData) {
     	System.out.println("KeyCloack: request/login ");
-        event.event(EventType.LOGIN);
-        event.loginDateTimepStamp(new Timestamp(Calendar.getInstance().getTime().getTime()));
+        event.event(EventType.LOGIN).loginDateTimepStamp(Time.getCurrentTimestamp())
+        	.browserType(formData.getFirst("browser_type"))
+        	.browserInfomation(formData.getFirst("browser_infomation"));
+        
         if (!checkSsl()) {
             event.error(Errors.SSL_REQUIRED);
-            event.failReason("HTTPS required");
+            event.failReason("HTTPS required").successFlag("N");
             return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "HTTPS required");
         }
 
         if (!realm.isEnabled()) {
             event.error(Errors.REALM_DISABLED);
-            event.failReason("Realm not enabled.");
+            event.failReason("Realm not enabled.").successFlag("N");
             return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Realm not enabled.");
         }
         
@@ -278,14 +279,14 @@ public class LoginActionsService {
         ClientSessionCode clientCode = ClientSessionCode.parse(code, session, realm);
         if (clientCode == null) {
             event.error(Errors.INVALID_CODE);
-            event.failReason("Unknown code");
+            event.failReason("Unknown code").successFlag("N");
             return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Unknown code, please login again through your application.");
         }
         ClientSessionModel clientSession = clientCode.getClientSession();
         if (!(clientCode.isValid(ClientSessionModel.Action.AUTHENTICATE) || clientCode.isValid(ClientSessionModel.Action.RECOVER_PASSWORD))) {
             clientCode.setAction(ClientSessionModel.Action.AUTHENTICATE);
             event.client(clientSession.getClient()).error(Errors.INVALID_CODE);
-            event.failReason("Invalid user.");
+            event.failReason("Invalid user.").successFlag("N");
             return Flows.forms(this.session, realm, clientSession.getClient(), uriInfo).setError(Messages.INVALID_USER)
                     .setClientSessionCode(clientCode.getCode())
                     .createLogin();
@@ -310,18 +311,18 @@ public class LoginActionsService {
         ClientModel client = clientSession.getClient();
         if (client == null) {
             event.error(Errors.CLIENT_NOT_FOUND);
-            event.failReason("Unknown login requester.");
+            event.failReason("Unknown login requester.").successFlag("N");
             return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Unknown login requester.");
         }
         if (!client.isEnabled()) {
             event.error(Errors.CLIENT_NOT_FOUND);
-            event.failReason("Login requester not enabled.");
+            event.failReason("Login requester not enabled.").successFlag("N");
             return Flows.forwardToSecurityFailurePage(session, realm, uriInfo, "Login requester not enabled.");
         }
 
         if (formData.containsKey("cancel")) {
             event.error(Errors.REJECTED_BY_USER);
-            event.failReason("Login has been rejected by user.");
+            event.failReason("Login has been rejected by user.").successFlag("N");
             LoginProtocol protocol = session.getProvider(LoginProtocol.class, clientSession.getAuthMethod());
             protocol.setRealm(realm)
                     .setUriInfo(uriInfo);
@@ -332,7 +333,7 @@ public class LoginActionsService {
         StringBuilder needRedirectUrl = new StringBuilder();
         
         AuthenticationManager.AuthenticationStatus status = authManager.authenticateForm(session, clientConnection, realm, formData, errorMessage, forgetPassword,
-        		needRedirectUrl);
+        		needRedirectUrl, event);
 
         if(errorMessage.length() > 0){
         	formData.add("errorMessage", errorMessage.toString());
@@ -362,7 +363,6 @@ public class LoginActionsService {
                 System.out.println("client_1="+clientSession.getClient());
                 TokenManager.attachClientSession(userSession, clientSession, request);
                 event.session(userSession);
-                event.successFlag("Y");
                 return AuthenticationManager.nextActionAfterAuthentication(session, userSession, clientSession, clientConnection, request, uriInfo, event);
                 
             case ACTIONS_REQUIRED:
@@ -372,11 +372,10 @@ public class LoginActionsService {
                 logger.info("client="+clientSession.getClient());
                 TokenManager.attachClientSession(userSession, clientSession, request);
                 event.session(userSession);
-                event.successFlag("Y");
                 return AuthenticationManager.nextActionAfterAuthentication(session, userSession, clientSession, clientConnection, request, uriInfo, event);
             case ACCOUNT_TEMPORARILY_DISABLED:
                 event.error(Errors.USER_TEMPORARILY_DISABLED);
-                event.failReason("User has been temprorarily disabled");
+                event.failReason("User has been temprorarily disabled").successFlag("N");
                 return Flows.forms(this.session, realm, client, uriInfo)
                         .setError(Messages.ACCOUNT_TEMPORARILY_DISABLED)
                         .setFormData(formData)
@@ -384,7 +383,7 @@ public class LoginActionsService {
                         .createLogin();
             case ACCOUNT_DISABLED:
                 event.error(Errors.USER_DISABLED);
-                event.failReason("User has been disabled");
+                event.failReason("User has been disabled").successFlag("N");
                 return Flows.forms(this.session, realm, client, uriInfo)
                         .setError(Messages.ACCOUNT_DISABLED)
                         .setClientSessionCode(clientCode.getCode())
@@ -411,7 +410,7 @@ public class LoginActionsService {
                         .createTNCPage();
             case INVALID_USER:
                 event.error(Errors.USER_NOT_FOUND);
-                event.failReason("User cannot found");
+                event.failReason("User cannot found").successFlag("N");
                 return Flows.forms(this.session, realm, client, uriInfo).setError(Messages.INVALID_USER)
                         .setFormData(formData)
                         .setClientSessionCode(clientCode.getCode())
@@ -450,7 +449,7 @@ public class LoginActionsService {
                          .createLogin();
             default:
                 event.error(Errors.INVALID_USER_CREDENTIALS);
-                event.failReason("Invalid user credentials");
+                event.failReason("Invalid user credentials").successFlag("N");
                 return Flows.forms(this.session, realm, client, uriInfo).setError(Messages.INVALID_USER)
                         .setFormData(formData)
                         .setClientSessionCode(clientCode.getCode())
