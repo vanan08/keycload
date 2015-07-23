@@ -457,7 +457,7 @@ public class AuthenticationManager {
 					.setClient(client).createOAuthGrant();
 		}
 		System.out.println("redirectAfterSuccessfulFlow");
-		event.success();
+		event.successFlag("Y").success();
 		System.out.println("redirectAfterSuccessfulFlow");
 		return redirectAfterSuccessfulFlow(session, realm, userSession,
 				clientSession, request, uriInfo, clientConnection);
@@ -528,7 +528,7 @@ public class AuthenticationManager {
 	public AuthenticationStatus authenticateForm(KeycloakSession session,
 			ClientConnection clientConnection, RealmModel realm,
 			MultivaluedMap<String, String> formData, StringBuilder errorMessage, StringBuilder forgetPassword,
-			StringBuilder redirectUrl) {
+			StringBuilder redirectUrl, EventBuilder event) {
 		String username = formData.getFirst(FORM_USERNAME);
 		if (username == null) {
 			logger.debug("Username not provided");
@@ -542,7 +542,7 @@ public class AuthenticationManager {
 		}
 
 		AuthenticationStatus status = authenticateInternal(session, realm,
-				formData, username, errorMessage, forgetPassword, redirectUrl);
+				formData, username, errorMessage, forgetPassword, redirectUrl, event);
 		
 		/*AuthenticationStatus status = authenticateInternal(session, realm,
 				formData, username);*/
@@ -580,7 +580,7 @@ public class AuthenticationManager {
 			KeycloakSession session, RealmModel realm,
 			MultivaluedMap<String, String> formData, String username,
 			StringBuilder errorMessage, StringBuilder forgetPassword,
-			StringBuilder redirectUrl) {
+			StringBuilder redirectUrl, EventBuilder event) {
 
 		AuthenticationStatus as = null;
 		String realmName = realm.getName();
@@ -593,7 +593,7 @@ public class AuthenticationManager {
 					username);
 		   } else {
 			 as = this.authenticateInternalNoneMaster(session, realm,
-					formData, username, errorMessage, forgetPassword, redirectUrl);
+					formData, username, errorMessage, forgetPassword, redirectUrl, event);
 		   }
 		}
 		catch(Exception e) {}
@@ -932,8 +932,8 @@ public class AuthenticationManager {
 			MultivaluedMap<String, String> formData, String username,
 			StringBuilder errorMessage,
 			StringBuilder forgetPassword,
-			StringBuilder redirectUrl) throws Exception {
-
+			StringBuilder redirectUrl,
+			EventBuilder event) throws Exception {
 		String need_tnc = formData.getFirst("need_tnc");
 		if (need_tnc != null) {
 			System.out.println("KeyCloack: processLogin need_tnc: " + need_tnc);
@@ -1125,6 +1125,9 @@ public class AuthenticationManager {
 						System.out
 								.println("KeyCloack: verifyClearOTIP2 resultCode: "
 										+ resultCode);
+						
+						event.otpReceived(String.valueOf(resultCode))
+							.optReceivedDateTime(Time.getCurrentTimestamp());
 
 						if (!(resultCode == 0 || resultCode == 2051)) {
 							errorMessage.delete(0, errorMessage.length());
@@ -1203,6 +1206,8 @@ public class AuthenticationManager {
 
 						String msg = "OTP: " + otips[0];
 						// send out the token to user's mobile
+						
+						event.otpGenerated(msg).otpSendDateTime(Time.getCurrentTimestamp());
 
 						SMSSend smsSend = new SMSSend(propertiesPath);
 

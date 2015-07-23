@@ -273,7 +273,9 @@ public class OpenIDConnectService {
         }
 
         event.event(EventType.LOGIN).detail(Details.AUTH_METHOD, "oauth_credentials").detail(Details.RESPONSE_TYPE, "token");
-        event.loginDateTimepStamp(Time.getCurrentTimestamp());
+        event.loginDateTimepStamp(Time.getCurrentTimestamp())
+		        .browserType(form.getFirst("browser_type"))
+		    	.browserInfomation(form.getFirst("browser_infomation"));
         String username = form.getFirst(AuthenticationManager.FORM_USERNAME);
         if (username == null) {
             event.error(Errors.USERNAME_MISSING);
@@ -926,7 +928,6 @@ public class OpenIDConnectService {
     @NoCache
     public Response logout(final @QueryParam(OpenIDConnect.REDIRECT_URI_PARAM) String redirectUri) {
         event.event(EventType.LOGOUT);
-        event.logoutDateTimepStamp(Time.getCurrentTimestamp());
         if (redirectUri != null) {
             event.detail(Details.REDIRECT_URI, redirectUri);
         }
@@ -972,9 +973,7 @@ public class OpenIDConnectService {
             throw new NotAcceptableException("HTTPS required");
         }
 
-        event.event(EventType.LOGOUT).logoutDateTimepStamp(Time.getCurrentTimestamp())
-        	.browserInfomation(form.getFirst("browser_infomation"))
-        	.browserType(form.getFirst("browser_infomation"));
+        event.event(EventType.LOGOUT);
 
         ClientModel client = authorizeClient(authorizationHeader, form, event);
         String refreshToken = form.getFirst(OAuth2Constants.REFRESH_TOKEN);
@@ -983,7 +982,6 @@ public class OpenIDConnectService {
             error.put(OAuth2Constants.ERROR, OAuthErrorException.INVALID_REQUEST);
             error.put(OAuth2Constants.ERROR_DESCRIPTION, "No refresh token");
             event.error(Errors.INVALID_TOKEN);
-            event.failReason("No refresh token").successFlag("N");
             return Response.status(Response.Status.BAD_REQUEST).entity(error).type("application/json").build();
         }
         try {
@@ -997,7 +995,6 @@ public class OpenIDConnectService {
             error.put(OAuth2Constants.ERROR, e.getError());
             if (e.getDescription() != null) error.put(OAuth2Constants.ERROR_DESCRIPTION, e.getDescription());
             event.error(Errors.INVALID_TOKEN);
-            event.failReason("Invalid token").successFlag("N");
             return Response.status(Response.Status.BAD_REQUEST).entity(error).type("application/json").build();
         }
         
@@ -1006,7 +1003,7 @@ public class OpenIDConnectService {
 
     private void logout(UserSessionModel userSession) {
         authManager.logout(session, realm, userSession, uriInfo, clientConnection);
-        event.user(userSession.getUser()).session(userSession).successFlag("Y").success();
+        event.user(userSession.getUser()).session(userSession).success();
     }
 
     @Path("oauth/oob")
