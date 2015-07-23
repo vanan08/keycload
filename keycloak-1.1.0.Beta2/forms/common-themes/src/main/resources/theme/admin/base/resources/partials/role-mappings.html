@@ -27,7 +27,7 @@
                             <select id="available" class="form-control" multiple size="5"
                                     ng-multiple="true"
                                     ng-model="selectedRealmRoles"
-                                    ng-options="r.name for r in realmRoles">
+                                    ng-options="r.name for r in realmRoles | orderBy:orderByValue">
                             </select>
                         </div>
                         <div class="middle-buttons">
@@ -44,7 +44,7 @@
                             <select id="assigned" class="form-control" multiple size=5
                                     ng-multiple="true"
                                     ng-model="selectedRealmMappings"
-                                    ng-options="r.name for r in realmMappings">
+                                    ng-options="r.name for r in realmMappings | orderBy:orderByValue">
                             </select>
                         </div>
                         <div class="middle-buttons">
@@ -56,7 +56,7 @@
                             <select id="realm-composite" class="form-control" multiple size=5
                                     ng-disabled="true"
                                     ng-model="dummymodel"
-                                    ng-options="r.name for r in realmComposite">
+                                    ng-options="r.name for r in realmComposite | orderBy:orderByValue">
                             </select>
                         </div>
                     </div>

@@ -22,6 +22,10 @@ module.controller('UserRoleMappingCtrl', function($scope, $http, realm, user, ap
     $scope.moduleMappings = [];
     $scope.selectedModuleRoles = [];
     $scope.selectedModuleMappings = [];
+    
+    $scope.orderByValue = function (value) {
+        return value.name;
+    };
 
     $scope.realmMappings = RealmRoleMapping.query({realm : realm.realm, userId : user.username});
     $scope.realmRoles = AvailableRealmRoleMapping.query({realm : realm.realm, userId : user.username});
@@ -837,7 +841,7 @@ module.controller('UserTypeDetailCtrl', function($scope, $upload, realm, userTyp
     $scope.fileName = 'TnC-' + userType.name + '.txt';
 	
     $scope.orderByValue = function (value) {
-        return valuer.name;
+        return value.name;
     };
 	
 	if (!$scope.create  &&  $scope.userType.userTypeRole) {

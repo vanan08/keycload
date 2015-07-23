@@ -481,6 +481,9 @@ module.controller('ModuleDetailCtrl', function($scope, Loader, realm, applicatio
 	$scope.applicationComposite=[];
 	$scope.module = angular.copy(module);
 	
+	$scope.orderByValue = function (value) {
+        return value.name;
+    };
 	
 	$scope.create = !module.name;
 	$scope.changed = $scope.create;
@@ -805,6 +808,10 @@ module.controller('ApplicationDetailCtrl', function($scope, realm, application, 
         "RSA_SHA512",
         "DSA_SHA1"
     ];
+    
+    $scope.orderByValue = function (value) {
+        return value;
+    };
     
     $scope.selectedModels = "";
     $scope.realm = realm;

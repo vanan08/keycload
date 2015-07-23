@@ -204,7 +204,7 @@
 	                     <select id="modlue_listing" name="modlue_listing" class="form-control"  
 	                      size=5 
 	                     data-ng-model="selectedModels"
-                         data-ng-options="module as module for module in application.modules"
+                         data-ng-options="module as module for module in application.modules | orderBy:orderByValue"
 	                     >
 	                     </select>
 	                     
