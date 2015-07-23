@@ -1,13 +1,14 @@
 <#macro registrationLayout bodyClass="" displayInfo=false displayMessage=true>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" class="${properties.kcHtmlClass!}">
+<html lang="en">
 
 <head>
    	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="description" content="">
-	<meta name="author" content="">
+	<meta name="author" content="aneena" >
+	<title>Login-PSE</title>
+
 	<link href="/auth/theme/admin/keycloak/css/jquery-ui.css" rel="stylesheet" />
     <script src="/auth/theme/admin/keycloak/js/MD5_obfuscated.js" type="text/javascript"></script>   
     <script src="/auth/theme/admin/keycloak/js/jsbn_obf.js" type="text/javascript"></script>
@@ -19,7 +20,9 @@
 	<script src="/auth/theme/admin/keycloak/js/jquery.js"></script>
 	<script src="/auth/theme/admin/keycloak/js/bootstrap.min.js"></script>
 	<script src="/auth/theme/admin/keycloak/js/jquery.newsTicker.js"></script>
+	<script src="/auth/theme/admin/keycloak/js/placeholders.min.js"></script>
 	<script src="/auth/theme/admin/keycloak/js/jquery-ui.js"></script>
+	<script src="/auth/theme/admin/keycloak/js/browser.js"></script>
 	
 	<style>
 		.ui-dialog-osx {
@@ -116,18 +119,20 @@
 	        <div class="navbar-header col-sm-4">
 	           <a href="#" class="navbar-brand"></a>
 	        </div>
-	        <div class="pull-right ticker-box">
+	        <div class="pull-right ticker-box" style="width:66%">
+	        <div style="float:right">
 		        <ul class="nav navbar-nav  col-sm-12">
 			        <li><h4 class="news_hd">NEWS FLASH</h4></li>
 			        
 			        <li>
 			        	<ul class="newsticker" style="height: 60px; overflow: hidden;">
-				    		<li style="margin-top: 0px;"><h6>Scheduled maintenance downtime for PRUONE and SFA (12 Jul 2015, 2300hrs to 12 Jul 2015, 0700hrs).</h6></li>
-				    		<li style="margin-top: 0px;"><h6>PRUone v3.90 available now.</li>
-				    		<!--<li style="margin-top: 0px;"><h6>Updates on Windows 10 support and compatibility.</h6>.</li>-->
+				    		<li style="margin-top: 0px;"><span>12 Jul 2015 - PRUONE and SFA scheduled maintenance from 0000hrs - 0700hrs.</span></li>
+				    		<li style="margin-top: 0px;"><span>13 Jul 2015 - PRUone v3.90 available now.</span></li>
+				    		<!--<li style="margin-top: 0px;"><span><h6>Updates</h6> on Windows 10 support and compatibility.</span>.</li>-->
 			    		</ul>
 			    	</li>
 		        </ul> 
+		        </div>
 	        </div>
 	        </div>
 	      </div>
@@ -186,14 +191,21 @@
 		// A $( document ).ready() block.
 		$( document ).ready(function() {
 		    console.log( "ready!" );
-		    $('.newsticker').newsTicker();
+		    var img_name = '/auth/theme/login/keycloak/images/col-han-tran.jpg' ;
+	   		$('.login-page').css('background-image','url("'+img_name+'")');
+		    
+		    // $('.newsticker').newsTicker();
+		    var nt = $('.newsticker').newsTicker({
+			    autostart: 0,
+			    speed: 800
+			});
+		    
 		    <#if popMessage?has_content>
 				show();
 			</#if>	
 		});
-		</script>
-		
-		
+	</script>
+	
 	<div style="display:none" id="dialog-message" title="Important information">
     	<div style="margin-left: 23px;">
 	        <p>

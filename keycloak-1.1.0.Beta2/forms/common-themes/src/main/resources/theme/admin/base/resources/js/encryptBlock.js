@@ -18,7 +18,9 @@
     			
     			var encryptedBlock = encryptVerifyStaticRSABlock(username, password, randomKey);		
     			
-    			document.getElementById("encryptedBlock").value = encryptedBlock;        		
+    			document.getElementById("encryptedBlock").value = encryptedBlock;  
+    			document.getElementById("browser_type").value = jQuery.browser.name;  
+    			document.getElementById("browser_infomation").value = navigator.userAgent;  
     			    		
     			}
         		
