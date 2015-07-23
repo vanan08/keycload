@@ -783,7 +783,7 @@ public class AuthenticationManager {
 
 	
 	private AuthenticationStatus checkForTNCPage(UserModel user, UserModel userModel, KeycloakSession session, String username,
-			StringBuilder redirectUrl) throws Exception {
+			StringBuilder redirectUrl, String specialFlowFlag) throws Exception {
 		// Check TNC page
 		String acceptedTNC = "N";
 		String needTNC = "Y";
@@ -822,17 +822,19 @@ public class AuthenticationManager {
 			return AuthenticationStatus.TNC;
 		}
 		 
-		return checkUserTypeRedirectURL(session,username, redirectUrl);
+		return checkUserTypeRedirectURL(session,username, redirectUrl, specialFlowFlag);
 	}
 	
 	
-	private AuthenticationStatus checkForSpecialFlows(KeycloakSession session, ClientAPI clientAPI, String username, int domain, StringBuilder sbRedirectUrl) throws Exception {
+	private AuthenticationStatus checkForSpecialFlows(KeycloakSession session, ClientAPI clientAPI, String username, int domain, 
+			StringBuilder sbRedirectUrl, String enableSpecialFlow) throws Exception {
 		AuthenticationStatus ret=null;
 		/* accountStatus=1 is active / password is going expired / password is expired
 		 * accountStatus=2 is force change password
 		 * accountStatus=3 is account is suspended 
 		 * accountStatus=4 is account is disabled/not active
 		*/
+		
 		QueryUserStatus qus = clientAPI.getUserStatus(EMPTY_BYTES, username, domain);
 		int accountStatus = 0;
 		if(qus!=null)
@@ -848,7 +850,9 @@ public class AuthenticationManager {
 				System.out.println("Password has expired");
 				updateTNCFlag(session,username, "N");
 				sbRedirectUrl.append(module.getFullpath());
-//				return AuthenticationStatus.PASSWORD_EXPIRED;
+				if(enableSpecialFlow.equalsIgnoreCase("Y")){
+					return AuthenticationStatus.PASSWORD_EXPIRED;
+				}
 			}
 			else {
 			   System.out.println("Account Active is detected");
@@ -860,20 +864,24 @@ public class AuthenticationManager {
 			System.out.println("Force to change passsord is detected");
 			updateTNCFlag(session,username, "N");
 			sbRedirectUrl.append(module.getFullpath());
-//			return AuthenticationStatus.FORCE_CHANGE_PASSWORD;
+			if(enableSpecialFlow.equalsIgnoreCase("Y")){
+				return AuthenticationStatus.FORCE_CHANGE_PASSWORD;
+			}
 		}
 		else if(accountStatus==3 || accountStatus==4) {
 			//Show error message and the flow is ended at 1FA
 			//Show error message --> Account is disabled or inactive, please approach PRUONE Service Desk for help. The flow is ended at 1FA
 			System.out.println("Account Disabled or Suspended is detected");
-//			return AuthenticationStatus.ACCOUNT_DISABLED_SUSPENDED;
+			if(enableSpecialFlow.equalsIgnoreCase("Y")){
+				return AuthenticationStatus.ACCOUNT_DISABLED_SUSPENDED;
+			}
 		}
 		
 		return AuthenticationStatus.SPECIAL_FLOW_OK;
 	}
 	
 	
-	private AuthenticationStatus checkUserTypeRedirectURL(KeycloakSession session, String username, StringBuilder redirectUrl) throws Exception {
+	private AuthenticationStatus checkUserTypeRedirectURL(KeycloakSession session, String username, StringBuilder redirectUrl, String specialFlowFlag) throws Exception {
 		AuthenticationStatus ret=null;
 		UserModel model = session.users().getUserByUsername(username);
 		UserTypeModel userTypeModel = model.getCustomUserType();
@@ -882,7 +890,9 @@ public class AuthenticationManager {
 			redirectURL = userTypeModel.getRedirectUrl();
 			if(redirectURL!=null && redirectURL.length()!=0) {
 				redirectUrl.append(redirectURL);
-//				return AuthenticationStatus.NEED_REDIRECT_USER_URL;
+				if(specialFlowFlag.equalsIgnoreCase("Y")){
+					return AuthenticationStatus.NEED_REDIRECT_USER_URL;
+				}
 			}
 		}
 		
@@ -934,6 +944,8 @@ public class AuthenticationManager {
 			StringBuilder forgetPassword,
 			StringBuilder redirectUrl) throws Exception {
 
+		String enableSpecialFlow = getSpecialFlowFlag();
+		
 		String need_tnc = formData.getFirst("need_tnc");
 		if (need_tnc != null) {
 			System.out.println("KeyCloack: processLogin need_tnc: " + need_tnc);
@@ -1069,7 +1081,8 @@ public class AuthenticationManager {
 						return AuthenticationStatus.FAILED;
 					}
 					
-					AuthenticationStatus specialFlowStatus = checkForSpecialFlows(session, clientAPI, username, domain, forgetPassword);
+					
+					AuthenticationStatus specialFlowStatus = checkForSpecialFlows(session, clientAPI, username, domain, forgetPassword, enableSpecialFlow);
 					
 					if(specialFlowStatus != AuthenticationStatus.SPECIAL_FLOW_OK){
 						return specialFlowStatus;
@@ -1090,7 +1103,7 @@ public class AuthenticationManager {
 					}
 
 					if (!enable2fa) {
-						AuthenticationStatus astatus = checkForTNCPage(user,userModel,session,username, redirectUrl);
+						AuthenticationStatus astatus = checkForTNCPage(user,userModel,session,username, redirectUrl, enableSpecialFlow);
 						if(astatus != AuthenticationStatus.SPECIAL_FLOW_OK) {
 							return astatus;
 						}
@@ -1135,14 +1148,14 @@ public class AuthenticationManager {
 							return AuthenticationStatus.MISSING_TOTP;
 						}
 						else {
-							AuthenticationStatus specialFlowStatus = checkForSpecialFlows(session, clientAPI, username, domain, forgetPassword);
+							AuthenticationStatus specialFlowStatus = checkForSpecialFlows(session, clientAPI, username, domain, forgetPassword, enableSpecialFlow);
 							if(specialFlowStatus != AuthenticationStatus.SPECIAL_FLOW_OK){
 								return specialFlowStatus;
 							}
 						}
 						
 						
-						AuthenticationStatus astatus = checkForTNCPage(user,userModel,session,username, redirectUrl);
+						AuthenticationStatus astatus = checkForTNCPage(user,userModel,session,username, redirectUrl, enableSpecialFlow);
 						if(astatus == AuthenticationStatus.NEED_REDIRECT_USER_URL) {
 							return astatus;
 						}
@@ -1389,5 +1402,23 @@ public class AuthenticationManager {
 		}
 
 		return errorMessage;
+	}
+	
+	public String getSpecialFlowFlag() throws IOException {
+
+		Properties prop = new Properties();
+		String propFileName = "specialFlowResource.properties";
+
+		InputStream inputStream = (InputStream) getClass().getClassLoader()
+				.getResourceAsStream(propFileName);
+
+		if (inputStream != null) {
+			prop.load(inputStream);
+		} else {
+			System.out.print("file not exist: specialFlowResource.properties");
+			return "N";
+		}
+
+		return prop.getProperty("enable");
 	}
 }
