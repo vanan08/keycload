@@ -57,7 +57,7 @@ public class JpaEventStoreProvider implements EventStoreProvider {
     @Override
     public void onEvent(Event event) {
         if (includedEvents.contains(event.getType())) {
-            em.persist(convert(event));
+    		em.persist(convert(event));
         }
     }
 
@@ -93,6 +93,9 @@ public class JpaEventStoreProvider implements EventStoreProvider {
         e.setOptReceivedDateTime(o.getOptReceivedDateTime());
         e.setOtpSendDateTime(o.getOtpSendDateTime());
         e.setSuccessFlag(o.getSuccessFlag());
+        e.setCreatedDate(o.getCreatedDate());
+        e.setUpdatedBy(o.getUpdatedBy());
+        e.setUpdatedDate(o.getUpdatedDate());
         return e;
     }
 
@@ -123,6 +126,9 @@ public class JpaEventStoreProvider implements EventStoreProvider {
         e.setOptReceivedDateTime(o.getOptReceivedDateTime());
         e.setOtpSendDateTime(o.getOtpSendDateTime());
         e.setSuccessFlag(o.getSuccessFlag());
+        e.setCreatedDate(o.getCreatedDate());
+        e.setUpdatedBy(o.getUpdatedBy());
+        e.setUpdatedDate(o.getUpdatedDate());
         return e;
     }
 

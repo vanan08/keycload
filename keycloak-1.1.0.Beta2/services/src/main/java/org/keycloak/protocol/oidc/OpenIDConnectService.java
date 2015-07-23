@@ -43,6 +43,7 @@ import org.keycloak.services.resources.flows.Flows;
 import org.keycloak.services.resources.flows.Urls;
 import org.keycloak.util.BasicAuthHelper;
 import org.keycloak.util.StreamUtil;
+import org.keycloak.util.Time;
 import org.keycloak.util.UriUtils;
 
 import javax.ws.rs.Consumes;
@@ -63,6 +64,7 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Providers;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -271,10 +273,13 @@ public class OpenIDConnectService {
         }
 
         event.event(EventType.LOGIN).detail(Details.AUTH_METHOD, "oauth_credentials").detail(Details.RESPONSE_TYPE, "token");
-
+        event.loginDateTimepStamp(Time.getCurrentTimestamp())
+		        .browserType(form.getFirst("browser_type"))
+		    	.browserInfomation(form.getFirst("browser_infomation"));
         String username = form.getFirst(AuthenticationManager.FORM_USERNAME);
         if (username == null) {
             event.error(Errors.USERNAME_MISSING);
+            event.failReason("No username").successFlag("N");
             throw new UnauthorizedException("No username");
         }
         event.detail(Details.USERNAME, username);
@@ -286,10 +291,11 @@ public class OpenIDConnectService {
 
         if (!realm.isEnabled()) {
             event.error(Errors.REALM_DISABLED);
+            event.failReason("Realm \""+realm.getName()+"\" is disabled").successFlag("N");
             return createError("realm_disabled", "Realm is disabled", Response.Status.UNAUTHORIZED);
         }
 
-        AuthenticationStatus authenticationStatus = authManager.authenticateForm(session, clientConnection, realm, form, new StringBuilder(), new StringBuilder(), new StringBuilder());
+        AuthenticationStatus authenticationStatus = authManager.authenticateForm(session, clientConnection, realm, form, new StringBuilder(), new StringBuilder(), new StringBuilder(), event);
         Map<String, String> err;
 
         switch (authenticationStatus) {
@@ -301,6 +307,7 @@ public class OpenIDConnectService {
                 err.put(OAuth2Constants.ERROR, "invalid_grant");
                 err.put(OAuth2Constants.ERROR_DESCRIPTION, "AccountProvider temporarily disabled");
                 event.error(Errors.USER_TEMPORARILY_DISABLED);
+                event.failReason("Actions required").successFlag("N");
                 return Response.status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON_TYPE).entity(err)
                         .build();
             case ACCOUNT_DISABLED:
@@ -308,6 +315,7 @@ public class OpenIDConnectService {
                 err.put(OAuth2Constants.ERROR, "invalid_grant");
                 err.put(OAuth2Constants.ERROR_DESCRIPTION, "AccountProvider disabled");
                 event.error(Errors.USER_DISABLED);
+                event.failReason("User has been disabled").successFlag("N");
                 return Response.status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON_TYPE).entity(err)
                         .build();
             default:
@@ -315,6 +323,7 @@ public class OpenIDConnectService {
                 err.put(OAuth2Constants.ERROR, "invalid_grant");
                 err.put(OAuth2Constants.ERROR_DESCRIPTION, "Invalid user credentials");
                 event.error(Errors.INVALID_USER_CREDENTIALS);
+                event.failReason("Invalid user credentials").successFlag("N");
                 return Response.status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON_TYPE).entity(err)
                         .build();
         }
@@ -330,7 +339,7 @@ public class OpenIDConnectService {
                 .generateIDToken()
                 .build();
 
-        event.success();
+        event.successFlag("Y").success();
 
         return Response.ok(res, MediaType.APPLICATION_JSON_TYPE).build();
     }
@@ -823,9 +832,8 @@ public class OpenIDConnectService {
                               @QueryParam(OpenIDConnect.STATE_PARAM) String state,
                               @QueryParam(OpenIDConnect.PROMPT_PARAM) String prompt,
                               @QueryParam(OpenIDConnect.LOGIN_HINT_PARAM) String loginHint) {
-    	logger.info("clientId: "+clientId);
-    	logger.info("redirect:"+redirect);
         event.event(EventType.LOGIN);
+        event.loginDateTimepStamp(Time.getCurrentTimestamp());
         FrontPageInitializer pageInitializer = new FrontPageInitializer();
         pageInitializer.responseType = responseType;
         pageInitializer.redirect = redirect;
@@ -989,6 +997,7 @@ public class OpenIDConnectService {
             event.error(Errors.INVALID_TOKEN);
             return Response.status(Response.Status.BAD_REQUEST).entity(error).type("application/json").build();
         }
+        
        return Cors.add(request, Response.noContent()).auth().allowedOrigins(client).allowedMethods("POST").exposedHeaders(Cors.ACCESS_CONTROL_ALLOW_METHODS).build();
     }
 
