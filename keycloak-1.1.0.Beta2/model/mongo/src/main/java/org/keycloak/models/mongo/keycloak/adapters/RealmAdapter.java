@@ -1087,5 +1087,19 @@ public class RealmAdapter extends AbstractMongoAdapter<MongoRealmEntity> impleme
 		
 	}
 
+	@Override
+	public List<UserSubTypeModel> getUserSubTypes(RealmModel realm, String search,
+			int firstResult, int maxResults) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<UserTypeModel> getUserTypes(RealmModel realm, String search, int firstResult,
+			int maxResults) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

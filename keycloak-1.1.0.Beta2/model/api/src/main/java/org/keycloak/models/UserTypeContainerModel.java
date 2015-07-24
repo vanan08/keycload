@@ -1,5 +1,6 @@
 package org.keycloak.models;
 
+import java.util.List;
 import java.util.Set;
 
 public interface UserTypeContainerModel {
@@ -18,4 +19,7 @@ public interface UserTypeContainerModel {
 	boolean removeUserTypeById(String id);
 
 	void refreshRealmUserTypesCache(String id, String name);
+
+	List<UserTypeModel> getUserTypes(RealmModel realm, String search, int firstResult,
+			int maxResults);
 }

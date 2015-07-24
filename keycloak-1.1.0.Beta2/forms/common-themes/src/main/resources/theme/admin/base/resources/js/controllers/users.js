@@ -1121,9 +1121,19 @@ module.controller('UserTypeDetailCtrl', function($scope, $upload, realm, userTyp
                 userType : $scope.userType.id
             }, function() {
                 $location.url("/realms/" + realm.realm + "/user-types");
-                Notifications.success("The user has been deleted.");
-            }, function() {
-                Notifications.error("User couldn't be deleted");
+                Notifications.success("The user type has been deleted.");
+            }, function(response) {
+                if(response.data.indexOf('ConstraintViolationException') > 0){
+                    if(response.data.indexOf('user_entity') > 0){
+                        Notifications.error("Could not delete because of user type assigned to user");
+                    }else if(response.data.indexOf('custom_user_subtype') > 0){
+                        Notifications.error("Please clean user subtype before delete");
+                    }else{
+                        Notifications.error("User type couldn't be deleted");
+                    }
+                }else{
+                    Notifications.error("User type couldn't be deleted!");
+                }
             });
         });
     };
@@ -1228,8 +1238,12 @@ module.controller('UserSubTypeDetailCtrl', function($scope, realm, userSubType, 
             }, function() {
                 $location.url("/realms/" + realm.realm + "/user-sub-types");
                 Notifications.success("The user sub type has been deleted.");
-            }, function() {
-                Notifications.error("User sub type couldn't be deleted");
+            }, function(response) {
+                if(response.data.indexOf('ConstraintViolationException') > 0){
+                    Notifications.error("Could not delete because of user sub type assigned to user");
+                }else{
+                    Notifications.error("User sub type couldn't be deleted");
+                }
             });
         });
     };

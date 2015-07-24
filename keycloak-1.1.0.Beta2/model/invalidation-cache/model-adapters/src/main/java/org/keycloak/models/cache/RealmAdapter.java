@@ -841,20 +841,15 @@ public class RealmAdapter implements RealmModel {
     @Override
     public Set<UserTypeModel> getUserTypes() {
     	getDelegateForUpdate();
-    	System.out.println("############ RealmAdapter getUserTypes");
         if (updated != null) return updated.getUserTypes();
 
-        System.out.println("############ RealmAdapter getUserTypes from cached");
         Set<UserTypeModel> UserTypes = new HashSet<UserTypeModel>();
         for (String id : cached.getRealmUserTypes().values()) {
-        	System.out.println("############ RealmAdapter id: "+id);
-            UserTypeModel roleById = cacheSession.getUserTypeById(id, this);
-            if (roleById == null) {
-            	System.out.println("############ roleById is null");
+            UserTypeModel userType = cacheSession.getUserTypeById(id, this);
+            if (userType == null) {
             	continue;
             }
-            System.out.println("############ roleById is "+roleById);
-            UserTypes.add(roleById);
+            UserTypes.add(userType);
         }
         return UserTypes;
     }
@@ -904,6 +899,14 @@ public class RealmAdapter implements RealmModel {
 	    return updated.removeUserTypeById(id);
 	}
     
+	@Override
+	public List<UserTypeModel> getUserTypes(RealmModel realm, String search, int firstResult,
+			int maxResults) {
+		List<UserTypeModel> userTypes = cacheSession.getUserTypes(realm, search, firstResult, maxResults);
+		//TODO: add to cache
+		return userTypes;
+	}
+	
 	public void refreshRealmUserTypesCache(String id, String name) {
 		System.out.println("###### prefreshRealmUserTypesCache" + id  + ", " + name);
 		if(cached.getRealmUserTypes().containsValue(id)){
@@ -930,11 +933,11 @@ public class RealmAdapter implements RealmModel {
 
 		Set<UserSubTypeModel> userSubTypes = new HashSet<UserSubTypeModel>();
 		for (String id : cached.getRealmUserSubTypes().values()) {
-			UserSubTypeModel roleById = cacheSession.getUserSubTypeById(id,
+			UserSubTypeModel userSubType = cacheSession.getUserSubTypeById(id,
 					this);
-			if (roleById == null)
+			if (userSubType == null)
 				continue;
-			userSubTypes.add(roleById);
+			userSubTypes.add(userSubType);
 		}
 		return userSubTypes;
 	}
@@ -1005,6 +1008,13 @@ public class RealmAdapter implements RealmModel {
 		cached.getRealmUserSubTypes().put(name, id);
 		System.out.println("###### put succesfully: " + cached.getRealmUserSubTypes().containsKey(name));
 	}	
+	
+	@Override
+	public List<UserSubTypeModel> getUserSubTypes(RealmModel realm, String search,
+			int firstResult, int maxResults) {
+		//TODO: add to cache
+		return cacheSession.getUserSubTypes(realm, search, firstResult, maxResults);
+	}
     // KIEN END 
     
     @Override
@@ -1027,4 +1037,6 @@ public class RealmAdapter implements RealmModel {
     public int hashCode() {
         return getId().hashCode();
     }
+
+	
 }

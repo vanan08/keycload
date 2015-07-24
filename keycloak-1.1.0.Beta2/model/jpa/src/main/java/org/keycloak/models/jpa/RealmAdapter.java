@@ -1102,7 +1102,6 @@ public class RealmAdapter implements RealmModel {
      
 	@Override
 	public void refreshRealmUserTypesCache(String id, String name) {
-		// TODO Auto-generated method stub
 		System.out.println("##### JPA refreshRealmUserTypesCache ");
 	}
     
@@ -1176,7 +1175,6 @@ public class RealmAdapter implements RealmModel {
 
 	@Override
 	public void refreshRealmUserSubTypesCache(String id, String name) {
-		// TODO Auto-generated method stub		
 		System.out.println("##### JPA refreshRealmUserSubTypesCache ");
 	}
 	// KIEN END implement adaper function
@@ -1298,5 +1296,17 @@ public class RealmAdapter implements RealmModel {
         realm.setMasterAdminApp(appEntity);
         em.flush();
     }
+
+	@Override
+	public List<UserSubTypeModel> getUserSubTypes(RealmModel realm, String search,
+			int firstResult, int maxResults) {
+		return null;
+	}
+
+	@Override
+	public List<UserTypeModel> getUserTypes(RealmModel realm, String search, int firstResult,
+			int maxResults) {
+		return null;
+	}
 
 }

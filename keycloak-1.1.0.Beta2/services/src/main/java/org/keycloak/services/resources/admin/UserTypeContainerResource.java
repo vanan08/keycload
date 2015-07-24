@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -15,6 +14,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -60,22 +60,26 @@ public class UserTypeContainerResource extends UserTypeResource {
     @GET
     @NoCache
     @Produces("application/json")
-    public List<UserTypeRepresentation> getUserType() {
-        auth.requireAny();
+    public List<UserTypeRepresentation> getUserType(@QueryParam("search") String search,
+													@QueryParam("first") Integer firstResult,
+													@QueryParam("max") Integer maxResults) {
+        //auth.requireAny();
         
         List<UserTypeRepresentation> userTypes = new ArrayList<UserTypeRepresentation>();
         
-        System.out.println("############ getUserType all ");
-        Set<UserTypeModel> userTypeModels = userTypeContainer.getUserTypes();
-        if(userTypeModels == null){
-        	System.out.println("############ getUserType all: null ");
-        	return userTypes;
-        }
-        System.out.println("############ getUserType all size: " + userTypeModels.size());
-       
+        logger.info("############ getUserType");
+        logger.info("############ search key:" + search);
+        logger.info("############ first" + firstResult);
+        logger.info("############ max" + maxResults);
+        //Set<UserTypeModel> userTypeModels = userTypeContainer.getUserTypes();
+        if(firstResult == null) firstResult = -1;
+        if(maxResults == null) maxResults = -1;
+        List<UserTypeModel> userTypeModels = userTypeContainer.getUserTypes(realm, search, firstResult, maxResults);
+        
         for (UserTypeModel userTypeModel : userTypeModels) {
         	userTypes.add(ModelToRepresentation.toRepresentation(userTypeModel));
         }
+        
         return userTypes;
     }
 
@@ -90,10 +94,10 @@ public class UserTypeContainerResource extends UserTypeResource {
     @Consumes("application/json")
     public Response createUserType(final @Context UriInfo uriInfo, final UserTypeRepresentation rep) {
         auth.requireManage();
-        System.out.println("############ createUserType :" + rep.getName() + " " + rep.getTncContent() 
+        logger.info("############ createUserType :" + rep.getName() + " " + rep.getTncContent() 
         		+ " " +rep.getUserTypeRole()+ " " +rep.getRedirectUrl());
-        System.out.println("############ : " + uriInfo.getPath());
-        System.out.println("############ : " + uriInfo.getAbsolutePath());
+        logger.info("############ : " + uriInfo.getPath());
+        logger.info("############ : " + uriInfo.getAbsolutePath());
         try {
             UserTypeModel userType = userTypeContainer.addUserType(rep.getName());
             userType.setTncContent(rep.getTncContent());
@@ -121,7 +125,7 @@ public class UserTypeContainerResource extends UserTypeResource {
         	id = uploadForm.get("userTypeId").get(0).getBodyAsString();
         	userTypeRole = uploadForm.get("roleNames").get(0).getBodyAsString();
         	redirectUrl = uploadForm.get("redirectUrl").get(0).getBodyAsString();
-	        System.out.println("*********** createUserType NEW :" + name);	     
+	        logger.info("*********** createUserType NEW :" + name);	     
 
 	        if(id.equals(" ")){
 	            UserTypeModel userType = userTypeContainer.addUserType(name);
@@ -143,7 +147,6 @@ public class UserTypeContainerResource extends UserTypeResource {
         } catch (ModelDuplicateException e) {
         	return Flows.errors().exists("UserType with name " + name + " already exists");
         } catch (IOException e1) {
-        	// TODO Auto-generated catch block
         	e1.printStackTrace();
         	return Flows.errors().exists("Can not creat user type");
         }
@@ -160,14 +163,14 @@ public class UserTypeContainerResource extends UserTypeResource {
     @NoCache
     @Produces("application/json")
     public UserTypeRepresentation getUserType(final @PathParam("userType-name") String userTypeName) {
-        auth.requireView();
-        
-        System.out.println("############ getUserType " + userTypeName);
-        
+        auth.requireView();        
+        logger.info("############ getUserType " + userTypeName);        
         UserTypeModel userTypeModel = userTypeContainer.getUserType(userTypeName);
+        
         if (userTypeModel == null || userTypeModel.getId() == null) {
             throw new NotFoundException("Could not find userTypeName: " + userTypeName);
         }
+        
         return getUserType(userTypeModel);
     }
 
@@ -181,14 +184,15 @@ public class UserTypeContainerResource extends UserTypeResource {
     @NoCache
     public void deleteUserType(final @PathParam("userType-id") String userTypeId) {
         auth.requireManage();
-
-        System.out.println("############ deleteUserType " + userTypeId);
+        logger.info("############ deleteUserType " + userTypeId);
         UserTypeModel userType = userTypeContainer.getUserTypeById(userTypeId);
+        
         if (userType == null) {
             throw new NotFoundException("Could not find userTypeId: " + userTypeId);
         }
+        
         deleteUserType(userType);
-        System.out.println("############ DONE deleteUserType " + userTypeId);
+        logger.info("############ DONE deleteUserType " + userTypeId);
     }
 
     /**
@@ -203,18 +207,20 @@ public class UserTypeContainerResource extends UserTypeResource {
     @Consumes("application/json")
     public Response updateUserType(final @PathParam("userType-id") String userTypeId, final UserTypeRepresentation rep) {
         auth.requireManage();
-        System.out.println("############ DONE updateUserType " + userTypeId);
+        logger.info("############ DONE updateUserType " + userTypeId);
         UserTypeModel userType = userTypeContainer.getUserTypeById(userTypeId);
+        
         if (userType == null) {
             throw new NotFoundException("Could not find userTypeName: " + userTypeId);
         }
+        
         try {
         	userType.setName(rep.getName());
         	userType.setUserTypeRole(rep.getUserTypeRole());
-            System.out.println("####******* DONE updateUserTypeName " + userTypeId);
+            logger.info("####******* DONE updateUserTypeName " + userTypeId);
             return Response.noContent().build();
-        } catch (ModelDuplicateException e) {
-            return Flows.errors().exists("UserType with name " + rep.getName() + " already exists");
+        } catch (Exception e) {
+        	 return Flows.errors().exists("UserType " + rep.getName() + " could not updated");
         }
         
     }

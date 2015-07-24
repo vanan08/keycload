@@ -19,18 +19,19 @@ import javax.persistence.Table;
  * 
  */
 @Entity
-@Table(name = "custom_user_type", schema="public")
+@Table(name = "custom_user_type", schema = "public")
 @NamedQueries({
-	@NamedQuery(name = "getAllUserType", query = "SELECT c FROM UserTypeEntity c"),
-	@NamedQuery(name = "getUserTypeById", query = "SELECT c FROM UserTypeEntity c WHERE c.id = :id "),
-	@NamedQuery(name = "getUserTypeByName", query = "SELECT c FROM UserTypeEntity c WHERE c.name = :name ") })
+		@NamedQuery(name = "getAllUserType", query = "SELECT c FROM UserTypeEntity c ORDER BY c.name"),
+		@NamedQuery(name = "searchUserTypesByName", query = "SELECT c FROM UserTypeEntity c WHERE LOWER(c.name) LIKE :search ORDER BY c.name"),
+		@NamedQuery(name = "getUserTypeById", query = "SELECT c FROM UserTypeEntity c WHERE c.id = :id "),
+		@NamedQuery(name = "getUserTypeByName", query = "SELECT c FROM UserTypeEntity c WHERE c.name = :name ") })
 public class UserTypeEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "id")
 	private String id;
- 
+
 	@Column(name = "ACCEPTED_TNC")
 	private String acceptedTnc;
 
@@ -40,17 +41,18 @@ public class UserTypeEntity implements Serializable {
 	@Column(name = "CREATED_DATE")
 	private Timestamp createdDate;
 
-	/*@Column(name = "TNC_CONTENT")
-	private byte[] tncContent;*/
+	/*
+	 * @Column(name = "TNC_CONTENT") private byte[] tncContent;
+	 */
 	@Column(name = "TNC_CONTENT")
 	private byte[] tncContent;
 
 	@Column(name = "ROLE")
 	private String userTypeRole;
-	
+
 	@Column(name = "REDIRECT_URL")
 	private String redirectUrl;
-	
+
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 
@@ -65,11 +67,10 @@ public class UserTypeEntity implements Serializable {
 
 	public UserTypeEntity() {
 	}
-	
+
 	public UserTypeEntity(String id) {
 		this.id = id;
 	}
-
 
 	public String getId() {
 		return id;

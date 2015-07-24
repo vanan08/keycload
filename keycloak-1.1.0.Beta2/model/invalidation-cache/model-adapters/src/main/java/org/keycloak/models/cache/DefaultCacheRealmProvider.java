@@ -352,12 +352,9 @@ public class DefaultCacheRealmProvider implements CacheRealmProvider {
 	// Kien Start default cached for user sub type, user type
 	@Override
 	public UserTypeModel getUserTypeById(String id, RealmModel realm) {
-		System.out.println("############ getUserTypeById");
 		if (!cache.isEnabled()) return getDelegate().getUserTypeById(id, realm);
-		System.out.println("############ getUserTypeById: "+id);
         CachedUserType cached = cache.getUserType(id);
         if (cached != null && !cached.getRealm().equals(realm.getId())) {
-        	System.out.println("############ getUserTypeById cached is null ");
             cached = null;
         }
 
@@ -365,34 +362,37 @@ public class DefaultCacheRealmProvider implements CacheRealmProvider {
             UserTypeModel model = getDelegate().getUserTypeById(id, realm);
            
             if (model == null) {
-            	System.out.println("############ getUserTypeById cached model is null ");
             	return null;
-            }
-            
+            }            
             
             if (userTypeInvalidations.contains(id)) {
-            	System.out.println("############ getUserTypeById cached return model ");
             	return model;
             }
-            System.out.println("############ getUserTypeById CachedRealmUserType");
             cached = new CachedRealmUserType(model, realm);
             cache.addCachedUserType(cached);
 
         } else if (userTypeInvalidations.contains(id)) {
-        	System.out.println("############ getDelegate().getUserTypeById(id, realm)");
             return getDelegate().getUserTypeById(id, realm);
         } else if (managedUserTypes.containsKey(id)) {
-        	System.out.println("############ managedUserTypes.get(id)");
             return managedUserTypes.get(id);
         }
         
-        System.out.println("############ UserTypeAdapter");
         UserTypeAdapter adapter = new UserTypeAdapter(cached, cache, this, realm);
         managedUserTypes.put(id, adapter);
-        System.out.println("############ return user type adapter");
         return adapter;
 	}
 
+	@Override
+	public List<UserTypeModel> getUserTypes(RealmModel realm, String search, int firstResult,
+			int maxResults) {
+		return getDelegate().getUserTypes(realm, search, firstResult, maxResults);	}
+
+	@Override
+	public List<UserSubTypeModel> getUserSubTypes(RealmModel realm, String search,
+			int firstResult, int maxResults) {
+		 return getDelegate().getUserSubTypes(realm, search, firstResult, maxResults);
+	}
+	
 	@Override
 	public UserSubTypeModel getUserSubTypeById(String id, RealmModel realm) {
 		if (!cache.isEnabled()) return getDelegate().getUserSubTypeById(id, realm);

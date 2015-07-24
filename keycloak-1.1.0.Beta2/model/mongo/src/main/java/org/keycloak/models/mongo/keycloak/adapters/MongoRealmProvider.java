@@ -150,4 +150,18 @@ public class MongoRealmProvider implements RealmProvider {
 		return null;
 	}
 
+	@Override
+	public List<UserTypeModel> getUserTypes(RealmModel realm, String search, int firstResult,
+			int maxResults) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<UserSubTypeModel> getUserSubTypes(RealmModel realm, String search,
+			int firstResult, int maxResults) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

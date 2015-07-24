@@ -172,6 +172,30 @@ public class JpaRealmProvider implements RealmProvider {
 		return new UserSubTypeAdapter(realm, em, entity);
 	}
 
+    @Override
+    public List<UserTypeModel> getUserTypes(RealmModel realm, String search, int firstResult, int maxResults) {
+        TypedQuery<UserTypeEntity> query;
+        
+        if(null != search && !search.trim().isEmpty()){
+        	query = em.createNamedQuery("searchUserTypesByName", UserTypeEntity.class);
+        	query.setParameter("search", "%" + search.trim().toLowerCase() + "%");
+        }else{
+        	query = em.createNamedQuery("getAllUserType", UserTypeEntity.class);
+        }
+        
+        if (firstResult != -1) {
+            query.setFirstResult(firstResult);
+        }
+        if (maxResults != -1) {
+            query.setMaxResults(maxResults);
+        }
+        
+        List<UserTypeEntity> results = query.getResultList();
+        List<UserTypeModel> userTypes = new ArrayList<UserTypeModel>();
+        for (UserTypeEntity entity : results) userTypes.add(new UserTypeAdapter(realm, em, entity));
+        return userTypes;
+    }
+
 	@Override
 	public UserTypeModel getUserTypeById(String id, RealmModel realm) {
 		UserTypeEntity entity = em.find(UserTypeEntity.class, id);
@@ -179,5 +203,29 @@ public class JpaRealmProvider implements RealmProvider {
 			return null;
 		return new UserTypeAdapter(realm, em, entity);
 	}
+	
+    @Override
+    public List<UserSubTypeModel> getUserSubTypes(RealmModel realm, String search, int firstResult, int maxResults) {
+        TypedQuery<UserSubTypeEntity> query;
+        
+        if(null != search && !search.trim().isEmpty()){
+        	query = em.createNamedQuery("searchUserSubTypesByName", UserSubTypeEntity.class);
+        	query.setParameter("search", "%" + search.trim().toLowerCase() + "%");
+        }else{
+        	query = em.createNamedQuery("getAllUserSubType", UserSubTypeEntity.class);
+        }
+        
+        if (firstResult != -1) {
+            query.setFirstResult(firstResult);
+        }
+        if (maxResults != -1) {
+            query.setMaxResults(maxResults);
+        }
+        
+        List<UserSubTypeEntity> results = query.getResultList();
+        List<UserSubTypeModel> userSubTypes = new ArrayList<UserSubTypeModel>();
+        for (UserSubTypeEntity entity : results) userSubTypes.add(new UserSubTypeAdapter(realm, em, entity));
+        return userSubTypes;
+    }
 
 }

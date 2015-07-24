@@ -126,6 +126,7 @@ public class NoCacheRealmProvider implements CacheRealmProvider {
 		return getDelegate().getModuleByName(name);
 	}
 
+	// Start Kien add for usertype and usersubtype
 	@Override
 	public UserSubTypeModel getUserSubTypeById(String id, RealmModel realm) {
 		return getDelegate().getUserSubTypeById(id, realm);
@@ -135,4 +136,18 @@ public class NoCacheRealmProvider implements CacheRealmProvider {
 	public UserTypeModel getUserTypeById(String id, RealmModel realm) {
 		return getDelegate().getUserTypeById(id, realm);
 	}
+
+	@Override
+	public List<UserTypeModel> getUserTypes(RealmModel realm, String search, int firstResult,
+			int maxResults) {
+		return getDelegate().getUserTypes(realm, search, firstResult, maxResults);
+	}
+
+	@Override
+	public List<UserSubTypeModel> getUserSubTypes(RealmModel realm, String search,
+			int firstResult, int maxResults) {
+		return getDelegate().getUserSubTypes(realm, search, firstResult, maxResults);
+	}
+	
+	// End Kien add for usertype and usersubtype
 }

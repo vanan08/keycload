@@ -21,7 +21,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "custom_user_subtype", schema="public")
 @NamedQueries({
-		@NamedQuery(name = "getAllUserSubType", query = "SELECT c FROM UserSubTypeEntity c"),
+		@NamedQuery(name = "getAllUserSubType", query = "SELECT c FROM UserSubTypeEntity c ORDER BY c.name"),
+		@NamedQuery(name = "searchUserSubTypesByName", query = "SELECT c FROM UserSubTypeEntity c WHERE LOWER(c.name) LIKE :search ORDER BY c.name"),
 		@NamedQuery(name = "getUserSubTypeById", query = "SELECT c FROM UserSubTypeEntity c WHERE c.id = :id "),
 		@NamedQuery(name = "getUserSubTypeByName", query = "SELECT c FROM UserSubTypeEntity c WHERE c.name = :name ") })
 public class UserSubTypeEntity implements Serializable {
