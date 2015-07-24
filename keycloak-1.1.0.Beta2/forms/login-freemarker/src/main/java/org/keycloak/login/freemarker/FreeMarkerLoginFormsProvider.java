@@ -293,6 +293,13 @@ public class FreeMarkerLoginFormsProvider implements LoginFormsProvider {
         if(formData != null){
         	attributes.put("errorMessage", formData.getFirst("errorMessage"));
         	attributes.put("mobile", formData.getFirst("mobile"));
+        	if(formData.getFirst("popMessage") != null){
+        		attributes.put("popMessage", formData.getFirst("popMessage"));
+        		attributes.put("forgetPasswordUrl", formData.getFirst("forgetPasswordUrl"));
+        	}
+        	if(formData.getFirst("needRedirectUrl") != null){
+        		attributes.put("needRedirectUrl", formData.getFirst("needRedirectUrl"));
+        	}
         }
         
         switch (page) {

@@ -32,10 +32,8 @@ import org.keycloak.util.Time;
 import javax.ws.rs.core.UriInfo;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -143,77 +141,82 @@ public class TokenManager {
         clientSession.setUserSession(session);
         ClientModel client = clientSession.getClient();
         Set<String> roles = new HashSet<String>();
+        Set<String> currentRolesOfUser = new HashSet<String>();
         
         for (RoleModel r : TokenManager.getAccess(null, client, user)) {
     		roles.add(r.getName());
     	}
-    	clientSession.setRoles(roles);
+    	//clientSession.setRoles(roles);
     	
     	if (client instanceof ApplicationModel) {
-    		URL url = null;
-    		StringBuilder sb = new StringBuilder();
+    		//StringBuilder sb = new StringBuilder();
+    		//boolean flag = false;
+    		String urlDirect = clientSession.getRedirectUri();
     		ApplicationModel applicationModel = (ApplicationModel) client;
     		String baseUrl = applicationModel.getBaseUrl();
     		if (!baseUrl.endsWith("/")) {
     			baseUrl = baseUrl + "/";
     		}
     		
-    		//logger.info("baseurl="+baseUrl);
-    		
-    		List<ModuleModel> moduleModels = applicationModel.getModules();
-    		boolean flag = false;
-			for (String rolename : roles) {
-				RoleModel role = applicationModel.getRole(rolename);
-				if (role != null) {
-					flag = true;
-					break;
-				}
-			}
-			
-			if (!flag) {
-				sb.append(baseUrl);
-			}
-    		
-			for (ModuleModel moduleModel : moduleModels) {
-    			flag = false;
+    		if (urlDirect.equals(baseUrl) || urlDirect.equals(applicationModel.getName())) {
+    			/*for (String rolename : roles) {
+    				RoleModel role = applicationModel.getRole(rolename);
+    				if (role != null) {
+    					flag = true;
+    					currentRolesOfUser.add(rolename);
+    					break;
+    				}
+    			}
     			
-    			for (String rolename : roles) {
-    				RoleModel roleModel = applicationModel.getRole(rolename);
-    				if (roleModel != null) {
-    					if (moduleModel.hasRole(roleModel.getId())) {
-    						flag = true;
-    						break;
-    					}
-    				}
-    			}
-    		 
     			if (!flag) {
-    				if (sb.length() > 0) {
-    					sb.append(",");
-    				}
-    				
+					try {
+						sb.append(new URL(applicationModel.getName()).getPath());
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+					}
+				}*/
+    			clientSession.setRoles(roles);
+    			
+    		} else {
+    			List<ModuleModel> moduleModels = applicationModel.getModules();
+    			for (ModuleModel moduleModel : moduleModels) {
+    				String moduleUrl;
     				if (moduleModel.isExternalUrl()) {
-    					try {
-							url = new URL(moduleModel.getUrl());
-							sb.append(url.getPath());
-						} catch (MalformedURLException e) {
-							logger.warn(e.getMessage());
-						}
+    					moduleUrl = moduleModel.getUrl();
     				} else {
-    					try {
-							url = new URL(baseUrl + moduleModel.getUrl());
-							sb.append(url.getPath());
-						} catch (MalformedURLException e) {
-							logger.warn(e.getMessage());
-						}
+    					moduleUrl = baseUrl + moduleModel.getUrl();
+    				}
+        			
+    				if (moduleUrl.indexOf(urlDirect) > -1 || urlDirect.indexOf(moduleUrl) > -1) {
+    					for (String rolename : roles) {
+            				RoleModel roleModel = applicationModel.getRole(rolename);
+            				if (roleModel != null) {
+            					if (moduleModel.hasRole(roleModel.getId())) {
+            						//flag = true;
+            						currentRolesOfUser.add(rolename);
+            						//break;
+            					}
+            				}
+            			}
+    					
+    					/*if (!flag) {
+    						try {
+								sb.append(new URL(moduleUrl).getPath());
+							} catch (MalformedURLException e) {
+								e.printStackTrace();
+							}
+    					}*/
+    					
+    					break;
     				}
     			}
-			}
+    			
+    			clientSession.setRoles(currentRolesOfUser);
+    		}
     		
     		//logger.info("blacklist="+sb.toString());
     		
-    		clientSession.setBlacklist(sb.toString());
-    		
+    		//clientSession.setBlacklist(sb.toString());
     	}
     }
 

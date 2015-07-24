@@ -22,6 +22,10 @@ module.controller('UserRoleMappingCtrl', function($scope, $http, realm, user, ap
     $scope.moduleMappings = [];
     $scope.selectedModuleRoles = [];
     $scope.selectedModuleMappings = [];
+    
+    $scope.orderByValue = function (value) {
+        return value.name;
+    };
 
     $scope.realmMappings = RealmRoleMapping.query({realm : realm.realm, userId : user.username});
     $scope.realmRoles = AvailableRealmRoleMapping.query({realm : realm.realm, userId : user.username});
@@ -836,6 +840,9 @@ module.controller('UserTypeDetailCtrl', function($scope, $upload, realm, userTyp
     $scope.changed = false; // $scope.create;
     $scope.fileName = 'TnC-' + userType.name + '.txt';
 	
+    $scope.orderByValue = function (value) {
+        return value.name;
+    };
 	
 	if (!$scope.create  &&  $scope.userType.userTypeRole) {
 		// TODO: Get all roles tag for module
@@ -942,7 +949,8 @@ module.controller('UserTypeDetailCtrl', function($scope, $upload, realm, userTyp
                 url: authUrl + '/admin/realms/' + realm.realm + '/user-types/',
                 data: {userTypeName: $scope.userType.name,
                     userTypeId: " ",
-                    roleNames: roleNames
+                    roleNames: roleNames,
+                    redirectUrl: $scope.userType.redirectUrl
                 },
                 file: $file
             }).progress(function(evt) {
@@ -962,7 +970,8 @@ module.controller('UserTypeDetailCtrl', function($scope, $upload, realm, userTyp
                 data: {
                     userTypeId: $scope.userType.id,
                     userTypeName: $scope.userType.name,
-                    roleNames: roleNames
+                    roleNames: roleNames,
+                    redirectUrl: $scope.userType.redirectUrl
                 },
                 file: $file
             }).progress(function(evt) {
@@ -1167,6 +1176,10 @@ module.controller('UserSubTypeDetailCtrl', function($scope, realm, userSubType, 
 
     $scope.changed = false; // $scope.create;
 
+    $scope.orderByValue = function (value) {
+        return value.name;
+    };
+    
     $scope.$watch('userSubType', function() {
         if (!angular.equals($scope.userSubType, userSubType)) {
             $scope.changed = true;

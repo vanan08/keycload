@@ -18,6 +18,7 @@ public class UserEntity extends AbstractIdentifiableEntity {
     private boolean emailVerified;
     private boolean totp;
     private boolean enabled;
+    private String redirectUrl;
 
     private String realmId;
 
@@ -140,5 +141,15 @@ public class UserEntity extends AbstractIdentifiableEntity {
     public void setFederationLink(String federationLink) {
         this.federationLink = federationLink;
     }
+
+	public String getRedirectUrl() {
+		return redirectUrl;
+	}
+
+	public void setRedirectUrl(String redirectUrl) {
+		this.redirectUrl = redirectUrl;
+	}
+    
+    
 }
 

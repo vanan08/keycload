@@ -69,6 +69,18 @@ public class UserTypeAdapter implements UserTypeModel {
 		updated.setUserTypeRole(userTypeRole);
 	}
 	
+	@Override
+	public String getRedirectUrl() {
+		if (updated != null) return updated.getRedirectUrl();
+		return cached.getRedirectUrl();
+	}
+
+	@Override
+	public void setRedirectUrl(String redirectUrl) {
+		getDelegateForUpdate();
+		updated.setRedirectUrl(redirectUrl);
+	}
+	
     @Override
     public String getId() {
         if (updated != null) return updated.getId();
@@ -93,5 +105,6 @@ public class UserTypeAdapter implements UserTypeModel {
     public int hashCode() {
         return getId().hashCode();
     }
+
 
 }

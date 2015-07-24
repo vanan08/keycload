@@ -57,8 +57,9 @@ public class ModelToRepresentation {
         rep.setEmailVerified(user.isEmailVerified());
         rep.setTotp(user.isTotp());
         rep.setFederationLink(user.getFederationLink());
-
-    	rep.setCustomUserTypeId(user.getCustomUserTypeId());
+        if(user.getCustomUserType() != null){
+        	rep.setCustomUserTypeId(user.getCustomUserType().getId());
+        }
     	rep.setCustomUserSubTypeId(user.getCustomUserSubTypeId());
     	rep.setNeed2FA("y".equalsIgnoreCase(user.getNeed2FA()) ? true : false);
     	rep.setNeedTNC("y".equalsIgnoreCase(user.getNeedTNC()) ? true: false);
@@ -96,6 +97,7 @@ public class ModelToRepresentation {
            rep.setName(userType.getName());
            rep.setTncContent(userType.getTncContent());
            rep.setUserTypeRole(userType.getUserTypeRole());
+           rep.setRedirectUrl(userType.getRedirectUrl());
            return rep;
     }
     

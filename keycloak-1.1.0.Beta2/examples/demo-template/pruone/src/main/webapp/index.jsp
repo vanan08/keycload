@@ -33,8 +33,9 @@
 var stopTimeArray = new Array();
 stopTimeArray = [15000, 15000, 15000, 15000];
 var stopTime = -1;
-$(function() {
-	var $autoFun;
+
+function runSlide(){
+var $autoFun;
 	var currentImg = 0;
 	autoSlide(0);
  	var imgWrapper = $('.slideshow a img');
@@ -89,13 +90,136 @@ $(function() {
 	function clearAuto(){
 		clearTimeout($autoFun);
 	}
-    });
+
+}
+
 function showLink(link) {
     if(link == '' || link == 'null') {
         return;
     }
     window.open(link, "_blank"); 
 }
+
+function getBottomModules(){
+	$.get("/auth/modules/GETMODULESAPI", function(data, status){
+                //alert(data);
+		if(status == 'success'){
+			console.log(data);
+			buildBottomModule(data);
+		}else{
+			console.log(status);
+		}
+  	});
+		
+}
+
+function buildBottomModule(data){
+   var bottomMydiv = $('div.bottomMydiv');
+	var rows = data.result;
+	$.each(rows, function(i)
+	{
+		//Build slide
+	    var index = i+1;
+		console.log(index);
+		//Build slide
+		var div = $('</div>')
+			.appendTo(bottomMydiv);
+		
+		div.addClass('col-md-3 col-sm-3 col-xs-6');
+
+		var atag = $('<a/>');
+		atag.addClass('btn-footer qualitybuisness');
+		
+		var myHref = "javascript:getModuleByName('"+rows[i].moduleName+"');";
+		atag.attr('href',''+myHref);
+		
+		var iText = rows[i].moduleName.substring(0, 3);
+		var bText = rows[i].moduleName.substring(3, rows[i].moduleName.length);
+		
+		if(rows[i].moduleName.indexOf(" ") > 0 && 
+				rows[i].moduleName.indexOf(" ") < rows[i].moduleName.length){
+			iText = rows[i].moduleName.substring(0, rows[i].moduleName.indexOf(" "));
+			bText = " "+rows[i].moduleName.substring(rows[i].moduleName.indexOf(" "), rows[i].moduleName.length);
+		}
+		
+		atag.html(iText+"<span>"+bText+"</span>")
+			.appendTo(div);
+	    
+	});
+}
+
+function getBannerApiUrl(){
+	$.get("/auth/modules/ROTATEBANNERAPI", function(data, status){
+                //alert(data);
+		if(status == 'success'){
+			console.log(data);
+			buildBanners(data);
+		}else{
+			console.log(status);
+		}
+  	});
+		
+}
+
+function buildBanners(url){
+
+	$.get(url, function(data, status){
+		if(status == 'success'){
+			console.log(data);
+			if(data.message && data.message == 'Request successful'){
+				//<a class="current" href="#slide1">1</a>
+				var cList = $('ul.recentlist');
+				var cDiv = $('div.slideshow');
+				var rows = data.result;
+				$.each(rows, function(i)
+				{
+					//Build slide
+				    var index = i+1;
+					console.log(index);
+					//Build slide
+					var li = $('<li/>')
+						.appendTo(cList);
+
+					var atag = $('<a/>');
+
+					if(i=0){
+						atag.addClass('current');
+					}
+
+					atag.attr('href','#slide'+(index));
+					atag.text(index)
+						.appendTo(li);
+
+					//Build indexs
+					var slideLink = $('<a/>');
+					cDiv.append(slideLink);
+					slideLink.attr("onclick", "showLink('"+rows[i].link+"')");
+					slideLink.attr('href','#');
+
+					var slideImage = $('<img/>');
+					slideLink.html(slideImage);
+					slideImage.attr('width','576');
+					slideImage.attr('height','260');
+					slideImage.attr('id','slide'+(index));
+					slideImage.attr('src', rows[i].imageName);
+				    
+				});
+			}else{
+				//error
+				if(data.message){
+					console.log(data.message);
+				}
+			}
+
+			runSlide();
+			
+		}else{
+			console.log(status);
+		}
+  	});
+		
+}
+
 </script>
 </head>
 <%
@@ -196,13 +320,13 @@ System.out.println("asdasdasdadasdasd");
       <div class=" clearfix">
       <div class="btn-sec-banner">
    <div id="REPMODE" class="col-md-4 col-sm-4 col-xs-4">
-   <a id="REPMODE-LINK" class="btn btn-default btn-banner" href="javascript:getModuleByName('REPMODE');" >REP <span>MODE</span></a>
+   <a id="REPMODE-LINK" class="btn btn-default btn-banner" style="cursor:pointer;" href="javascript:getModuleByName('REPMODE');" >REP <span>MODE</span></a>
    </div>
     <div id="SALESMODE" class="col-md-4 col-sm-4 col-xs-4">
-   <a id="SALESMODE-LINK" class="btn btn-default btn-banner" href="javascript:getModuleByName('SALESMODE');">SALES <span>MODE</span></a>
+   <a id="SALESMODE-LINK" class="btn btn-default btn-banner" style="cursor:pointer;" href="javascript:getModuleByName('SALESMODE');">SALES <span>MODE</span></a>
    </div> 
     <div id="SGSMODE" class="col-md-4 col-sm-4 col-xs-4">
-   <a id="SGSMODE-LINK" class="btn btn-default btn-banner" href="javascript:getModuleByName('SGSMODE');">SQS <span>MODE</span></a>
+   <a id="SGSMODE-LINK" class="btn btn-default btn-banner" style="cursor:pointer;" href="javascript:getModuleByName('SGSMODE');">SQS <span>MODE</span></a>
    </div>
    </div>
    </div>
@@ -214,6 +338,7 @@ System.out.println("asdasdasdadasdasd");
 <div class="slideshow">
 		<div>
 		    <ul class="recentlist">
+<!--
 		    	<li><a class="current" href="#slide1">1</a></li>
 		    
 		        <li><a href="#slide2">2</a></li>
@@ -221,18 +346,21 @@ System.out.println("asdasdasdadasdasd");
 		        <li><a href="#slide3">3</a></li>
 		    
 		        <li><a href="#slide4">4</a></li>
+			<li><a href="#slide5">5</a></li>
+-->
 		    
 		    </ul>
 		</div>
+		<!--
+		<a onclick="showLink('https://sfa-uact.prudential.com.sg/prusales/sfa/RedirectServlet?path=14\/PRUSelect Vantage Newsltr_Sept.pdf')" href="#"><img width="576" height="260"  id="slide1" src="https://sfa-uact.prudential.com.sg/prusales/sfa/common/jsp/pseimage.jsp?imageName=PSV Newsletter.jpg"/></a>
 		
-		<a onclick="showLink('https://sfa-uact.prudential.com.sg/prusales/sfa/RedirectServlet?path=14\/PRUSelect Vantage Newsltr_Sept.pdf')" href="#"><img width="576" height="291"  id="slide1" src="https://sfa-uact.prudential.com.sg/prusales/sfa/common/jsp/pseimage.jsp?imageName=PSV Newsletter.jpg"/></a>
+		<a onclick="showLink('http://s3.amazonaws.com/content.whispir.com/public/pacs/index.html')" href="#"><img width="576" height="260"  id="slide2" src="https://sfa-uact.prudential.com.sg/prusales/sfa/common/jsp/pseimage.jsp?imageName=PRUMessage v1.1.0.jpg"/></a>
 		
-		<a onclick="showLink('http://s3.amazonaws.com/content.whispir.com/public/pacs/index.html')" href="#"><img width="576" height="291"  id="slide2" src="https://sfa-uact.prudential.com.sg/prusales/sfa/common/jsp/pseimage.jsp?imageName=PRUMessage v1.1.0.gif"/></a>
+		<a onclick="showLink('http://www.prudential.com.sg/corp/prudential_en_sg/solutions/invest/PRUSelect.html')" href="#"><img width="576" height="260"  id="slide3" src="https://sfa-uact.prudential.com.sg/prusales/sfa/common/jsp/pseimage.jsp?imageName=PruSelect Videos.jpg"/></a>
 		
-		<a onclick="showLink('http://www.prudential.com.sg/corp/prudential_en_sg/solutions/invest/PRUSelect.html')" href="#"><img width="576" height="291"  id="slide3" src="https://sfa-uact.prudential.com.sg/prusales/sfa/common/jsp/pseimage.jsp?imageName=PruSelect Videos.jpg"/></a>
-		
-		<a onclick="showLink('https://vsglifewurep02.pru.intranet.asia/ipa/sfa/index.html')" href="#"><img width="576" height="291"  id="slide4" src="https://sfa-uact.prudential.com.sg/prusales/sfa/common/jsp/pseimage.jsp?imageName=Laptop.JPG"/></a>
-		
+		<a onclick="showLink('https://vsglifewurep02.pru.intranet.asia/ipa/sfa/index.html')" href="#"><img width="576" height="260"  id="slide4" src="https://sfa-uact.prudential.com.sg/prusales/sfa/common/jsp/pseimage.jsp?imageName=Laptop.jpg"/></a>
+		<a onclick="showLink('https://vsglifewurep02.pru.intranet.asia/ipa/sfa/index.html')" href="#"><img width="576" height="260"  id="slide5" src="https://sfa-uact.prudential.com.sg/prusales/sfa/common/jsp/pseimage.jsp?imageName=win10.jpg"/></a>
+	-->
 	</div>
 
   </div>
@@ -240,7 +368,7 @@ System.out.println("asdasdasdadasdasd");
   <div class="row">
     <div id="PRURAISE" class="col-md-6 col-sm-6 banner-portion">
     <div class="panel big-ico-list">
-    <div id="PRURAISE-LINK" class="ico-por pruraise" onClick="getModuleByName('PRURAISE');">
+    <div style="cursor:pointer;" id="PRURAISE-LINK" class="ico-por pruraise" onClick="getModuleByName('PRURAISE');">
       
     </div>
     <div class="ico-details"><a class="" href="#">
@@ -251,10 +379,10 @@ System.out.println("asdasdasdadasdasd");
     </div>
       <div id="EAPPROVAL"  class="col-md-6 col-sm-6">
       <div class="panel big-ico-list">
-       <div id="EAPPROVAL-LINK" class="ico-por eapproval">
+       <div style="cursor:pointer;" id="EAPPROVAL-LINK" class="ico-por eapproval" onClick="getModuleByName('EAPPROVAL');">
     </div>
     <div class="ico-details">
-    <a class="" href="https://ssopoc.prudential.com.sg/sfa/"><h4 class="ico-hd">e<span>Approval</span></h4></a>
+    <a class="" href="#"><h4 class="ico-hd">e<span>Approval</span></h4></a>
     <p>Find all your Outstanding<br/>  Approvals</p>
     </div>
     </div>
@@ -266,7 +394,7 @@ System.out.println("asdasdasdadasdasd");
     <label class="label_name"><span>i</span>Suite</label>
     <div class="clearfix">
     <div class="isuite-listing">
-    <div id="IFILECLAIMS-LINK" class="isuite-img ifileclaims" onclick="getModuleByName('IFILECLAIMS');">
+    <div style="cursor:pointer;" id="IFILECLAIMS-LINK" class="isuite-img ifileclaims" onclick="getModuleByName('IFILECLAIMS');">
     </div>
     <div class="isuite-details">
       <a class="" href="#" ><h4 class="ico-hd-suite">i<span>FileClaims</span></h4></a>
@@ -276,7 +404,7 @@ System.out.println("asdasdasdadasdasd");
     </div>
     <div id="IDOC" class="clearfix">
        <div class="isuite-listing">
-    <div id="IDOC-LINK" class="isuite-img idocs" onclick="getModuleByName('IDOC');">
+    <div style="cursor:pointer;" id="IDOC-LINK" class="isuite-img idocs" onclick="getModuleByName('IDOC');">
     </div>
     <div class="isuite-details">
     <a class="" href="#" ><h4 class="ico-hd-suite">i<span>Doc</span></h4></a>
@@ -287,7 +415,7 @@ System.out.println("asdasdasdadasdasd");
     </div>
     <div id="IACT" class="clearfix">
     <div class="isuite-listing">
-    <div id="IACT-LINK" class="isuite-img iacts" onclick="getModuleByName('IACT');">
+    <div style="cursor:pointer;" id="IACT-LINK" class="isuite-img iacts" onclick="getModuleByName('IACT');">
     </div>
     <div class="isuite-details">
      <a class="iact-img" href="#" > <img src="images/iact-texts.png"/></a>
@@ -302,16 +430,16 @@ System.out.println("asdasdasdadasdasd");
      <label class="label_name"><span>Useful</span>Links</label>
      <div class="clearfix usefullinks-area">
     <ul class="useful_links">
-    <li><a href="">View Outstanding Proposal and Outstanding Mid-Term Addition</a></li>
-    <li><a href="">Update My PIN</a></li>
-    <li><a href="">Prudential Applications Downloads</a></li>
-    <!--
-    <li><a href="">Training - Courses, Registration and CPD > Courses available for Registration > Register Now</a></li>
-    <li><a href="">Online Forms Cabinet (For Bankers only)</a></li>
-    <li><a href="">PRUONE Service Desk</a></li>
+    <!--<li><a href="javascript:window.open("#", "_blank");">View Outstanding Proposal and Outstanding Mid-Term Addition</a></li>
+    <li><a href="javascript:window.open("#", "_blank");">Update My PIN</a></li>
+    <li><a href="javascript:window.open("#", "_blank");">Prudential Applications Downloads</a></li>
     -->
-    <li><a href="">PruLink Funds and Prudential Unit Trusts > PruLink Fund Prices and Performance Charts</a></li>
-    <li><a href="">Prudential Corporate Website</a></li>
+    <li><a href="javascript:window.open('https://sfa-uact.prudential.com.sg/prusales/ssoaccess.do?url=trainingregister', '_blank');">Training - Courses, Registration and CPD > Courses available for Registration > Register Now</a></li>
+    <!--<li><a href="">Online Forms Cabinet (For Bankers only)</a></li>-->
+    <li><a href='javascript:window.open("https://sfa-uact.prudential.com.sg/prusales/getHelp.do?page=/help/contact_us.jsp", "_blank");'>PRUONE Service Desk</a></li>
+    
+    <li><a href='javascript:window.open("http://pruaccess.prudential.com.sg/prulinkfund/viewFundPricing.do", "_blank");'>PruLink Funds and Prudential Unit Trusts > PruLink Fund Prices and Performance Charts</a></li>
+    <li><a href='javascript:window.open("https://www.prudential.com.sg", "_blank");'>Prudential Corporate Website</a></li>
     </ul>
     <div class="clearfix">
     <div class="pull-right">
@@ -337,19 +465,20 @@ System.out.println("asdasdasdadasdasd");
     
     <a href="javascript:void(0);" class="btn double" id="view-more">View More</a>
     <div class="buttons-area clearfix">
-    <div class="col-lg-8 col-md-10 col-sm-12 col-xs-12 col-centered">
-     <div class="col-md-3 col-sm-3 col-xs-6">
-     <a class="btn-footer pruinfo" href="javascript:getModuleByName('PRUINFO');">PRU<span>INFO</span></a>
-    </div>
-      <div class="col-md-3 col-sm-3 col-xs-6">
-     <a class="btn-footer qualitybuisness" href="javascript:getModuleByName('QUALITYBUSINESS');">QUALITY<span>BUSINESS</span></a>
-    </div>
-      <div class="col-md-3 col-sm-3 col-xs-6">
-     <a class="btn-footer prugrade" href="javascript:getModuleByName('PRUGRADE');">PRU<span>GRADE</span></a>
-    </div>
-      <div class="col-md-3 col-sm-3 col-xs-6">
-     <a class="btn-footer prucoach" href="javascript:getModuleByName('PRUCOACH');">PRU<span>COACH</span></a>
-    </div>
+    <div class="col-lg-8 col-md-10 col-sm-12 col-xs-12 col-centered bottomMydiv">
+	   <div class="col-md-3 col-sm-3 col-xs-6">
+	     <a class="btn-footer qualitybuisness" href="javascript:getModuleByName('MYREWARDS');">MY<span> REWARDS</span></a>
+	    </div>
+	     <div class="col-md-3 col-sm-3 col-xs-6">
+		<a class="btn-footer prugrade" href="javascript:getModuleByName('PRUGRADE');">PRU<span>GRADE</span></a>
+	     
+	    </div>
+	    <div class="col-md-3 col-sm-3 col-xs-6">
+	     	<a class="btn-footer prucoach" href="javascript:getModuleByName('PRUCOACH');">PRU<span>COACH</span></a>
+	    </div>
+	    <div class="col-md-3 col-sm-3 col-xs-6">
+	     	<a class="btn-footer pruinfo" href="javascript:getModuleByName('PRUINFO');">PRU<span>INFO</span></a>
+	    </div>
     </div>
     </div>
     
@@ -441,6 +570,9 @@ $( document ).ready(function() {
     $.each(modules, function( index, value ) {
     	disableModule(value);
     });
+
+    getBannerApiUrl();
+    runSlide();
    
 });
 

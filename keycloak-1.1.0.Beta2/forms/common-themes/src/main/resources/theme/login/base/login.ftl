@@ -16,6 +16,9 @@
 	             <input type="hidden" name="randomKey" id="publicKey" value="${publicKey}"/>
 	             <input type="hidden" name="exponent" id="exponent" value="${exponent}"/>
 	             <input type="hidden" name="encryptedBlock" id="encryptedBlock" value=""/>
+	             <input type="hidden" name="encryptedBlock" id="encryptedBlock" value=""/>
+	             <input type="hidden" name="browser_type" id="browser_type" value=""/>
+	             <input type="hidden" name="browser_infomation" id="browser_infomation" value=""/>
 	        	<div class="form-group">
 					<div class="input-group">
 						<input id="username" name="username" value="${login.username!''}" type="text" autofocus placeholder="USERNAME" class="form-control">

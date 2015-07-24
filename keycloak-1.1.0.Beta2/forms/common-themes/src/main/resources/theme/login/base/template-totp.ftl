@@ -115,7 +115,7 @@
 				<div class="panel-body">
 					<#nested "form">
                     <div class="links_sec clearfix">
-                    <p class="oet-msg">If you did not receive OTP via SMS or your SMS-OTP has expired, please click <a href="javascript:sendSMS();">here</a> to get new OTP to your mobile phone via SMS.</p>
+                    <p class="oet-msg">If you did not receive OTP via SMS or your SMS-OTP has expired, please click <a class="link_btn" style="text-decoration: none; display: inline !important;" href="javascript:sendSMS();"><span>here</span></a> to get new OTP to your mobile phone via SMS.</p>
                     </div>
                    
                        

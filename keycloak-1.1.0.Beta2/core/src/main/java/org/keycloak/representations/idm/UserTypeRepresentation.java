@@ -6,6 +6,7 @@ public class UserTypeRepresentation {
     protected String name;
     protected byte[] tncContent;
     protected String userTypeRole;
+    protected String redirectUrl;
     
     public UserTypeRepresentation() {
     }
@@ -40,6 +41,14 @@ public class UserTypeRepresentation {
 
 	public void setUserTypeRole(String userTypeRole) {
 		this.userTypeRole = userTypeRole;
+	}
+
+	public String getRedirectUrl() {
+		return redirectUrl;
+	}
+
+	public void setRedirectUrl(String redirectUrl) {
+		this.redirectUrl = redirectUrl;
 	}
 
 	@Override

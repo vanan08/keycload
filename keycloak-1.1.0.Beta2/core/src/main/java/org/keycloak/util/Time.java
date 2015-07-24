@@ -1,5 +1,7 @@
 package org.keycloak.util;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -19,6 +21,13 @@ public class Time {
 
     public static void setOffset(int offset) {
         Time.offset = offset;
+    }
+    
+    public static Timestamp getCurrentTimestamp() {
+    	SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	Date now = new Date();
+        String strDate = sdfDate.format(now);
+        return Timestamp.valueOf(strDate);
     }
 
 }

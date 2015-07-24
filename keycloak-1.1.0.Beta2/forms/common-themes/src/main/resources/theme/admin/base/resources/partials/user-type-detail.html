@@ -38,6 +38,15 @@
                     </div>
                 </div>
                 
+                
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"for="userTypeName">Redirect Url<span class="required" data-ng-show="create">*</span></label>
+                    <div class="col-sm-5">
+                        <input class="form-control" type="text" id="redirectUrl" name="redirectUrl" data-ng-model="userType.redirectUrl" autofocus
+                               required>
+                    </div>
+                </div>
+                
                 <div class="form-group">
                     <label class="col-sm-2 control-label" for="import-file">T&C Content</label>
                     <div class="col-sm-4">
@@ -63,7 +72,7 @@
                             <select id="available-app" class="form-control" multiple size="5"
                                     ng-multiple="true"
                                     ng-model="selectedUserTypeRoles"
-                                    ng-options="r.name for r in availableUserTypeRoleMappings">
+                                    ng-options="r.name for r in availableUserTypeRoleMappings | orderBy:orderByValue">
                             </select>
                         </div>
                         <div class="middle-buttons">
@@ -79,7 +88,7 @@
                             <select id="assigned-app" class="form-control" multiple size=5
                                     ng-multiple="true"
                                     ng-model="selectedApplicationUserTypeRoles"
-                                    ng-options="r.name for r in applicationUserTypeRoles">
+                                    ng-options="r.name for r in applicationUserTypeRoles | orderBy:orderByValue">
                             </select>
                         </div>
                         <div class="middle-buttons">
@@ -90,7 +99,7 @@
                             <select id="app-composite" class="form-control" multiple size=5
                                     ng-disabled="true"
                                     ng-model="dummymodel"
-                                    ng-options="r.name for r in applicationComposite">
+                                    ng-options="r.name for r in applicationComposite | orderBy:orderByValue">
                             </select>
                         </div>
                     </div>

@@ -860,6 +860,7 @@ public class RealmAdapter implements RealmModel {
     }
     @Override
     public UserTypeModel getUserTypeById(String id) {
+    	getDelegateForUpdate();
         if (updated != null) return updated.getUserTypeById(id);
         return cacheSession.getUserTypeById(id, this);
     }
@@ -947,6 +948,7 @@ public class RealmAdapter implements RealmModel {
 
 	@Override
 	public UserSubTypeModel getUserSubType(String name) {
+		getDelegateForUpdate();
 		if (updated != null)
 			return updated.getUserSubType(name);
 		String id = cached.getRealmUserSubTypes().get(name);

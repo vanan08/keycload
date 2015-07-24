@@ -83,8 +83,9 @@ public interface UserModel {
     String getFederationLink();
     void setFederationLink(String link);
 
-    String getCustomUserTypeId();
-	void setCustomUserTypeId(String customUserTypeId);
+    UserTypeModel getCustomUserType();
+	void setCustomUserType(UserTypeModel customUserType);
+	
 	String getCustomUserSubTypeId();
 	void setCustomUserSubTypeId(String customUserSubTypeId);
 	String getNeed2FA();

@@ -57,7 +57,7 @@ public class JpaEventStoreProvider implements EventStoreProvider {
     @Override
     public void onEvent(Event event) {
         if (includedEvents.contains(event.getType())) {
-            em.persist(convert(event));
+    		em.persist(convert(event));
         }
     }
 
@@ -65,6 +65,7 @@ public class JpaEventStoreProvider implements EventStoreProvider {
     public void close() {
     }
 
+    
     static EventEntity convert(Event o) {
         EventEntity e = new EventEntity();
         e.setId(UUID.randomUUID().toString());
@@ -81,6 +82,20 @@ public class JpaEventStoreProvider implements EventStoreProvider {
         } catch (IOException ex) {
             logger.error("Failed to write log details", ex);
         }
+        e.setFailReason(o.getFailReason());
+        e.setBrowserInfomation(o.getBrowserInfomation());
+        e.setBrowserType(o.getBrowserType());
+        e.setLoginDateTimepStamp(o.getLoginDateTimepStamp());
+        e.setLogoutDateTimepStamp(o.getLogoutDateTimepStamp());
+        e.setOtpGenerated(o.getOtpGenerated());
+        e.setOtpGenerateDateTime(o.getOtpGenerateDateTime());
+        e.setOtpReceived(o.getOtpReceived());
+        e.setOptReceivedDateTime(o.getOptReceivedDateTime());
+        e.setOtpSendDateTime(o.getOtpSendDateTime());
+        e.setSuccessFlag(o.getSuccessFlag());
+        e.setCreatedDate(o.getCreatedDate());
+        e.setUpdatedBy(o.getUpdatedBy());
+        e.setUpdatedDate(o.getUpdatedDate());
         return e;
     }
 
@@ -100,6 +115,20 @@ public class JpaEventStoreProvider implements EventStoreProvider {
         } catch (IOException ex) {
             logger.error("Failed to read log details", ex);
         }
+        e.setFailReason(o.getFailReason());
+        e.setBrowserInfomation(o.getBrowserInfomation());
+        e.setBrowserType(o.getBrowserType());
+        e.setLoginDateTimepStamp(o.getLoginDateTimepStamp());
+        e.setLogoutDateTimepStamp(o.getLogoutDateTimepStamp());
+        e.setOtpGenerated(o.getOtpGenerated());
+        e.setOtpGenerateDateTime(o.getOtpGenerateDateTime());
+        e.setOtpReceived(o.getOtpReceived());
+        e.setOptReceivedDateTime(o.getOptReceivedDateTime());
+        e.setOtpSendDateTime(o.getOtpSendDateTime());
+        e.setSuccessFlag(o.getSuccessFlag());
+        e.setCreatedDate(o.getCreatedDate());
+        e.setUpdatedBy(o.getUpdatedBy());
+        e.setUpdatedDate(o.getUpdatedDate());
         return e;
     }
 

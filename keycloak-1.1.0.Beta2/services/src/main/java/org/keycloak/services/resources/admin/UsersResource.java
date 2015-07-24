@@ -170,8 +170,9 @@ public class UsersResource {
         user.setEnabled(rep.isEnabled());
         user.setTotp(rep.isTotp());
         user.setEmailVerified(rep.isEmailVerified());
-        
-    	user.setCustomUserTypeId(rep.getCustomUserTypeId());
+        if(rep.getCustomUserTypeId() != null){
+        	user.setCustomUserType(realm.getUserTypeById(rep.getCustomUserTypeId()));
+        }
     	user.setCustomUserSubTypeId(rep.getCustomUserSubTypeId());
     	user.setNeed2FA(rep.isNeed2FA() == true ? "Y":"N");
     	user.setNeedTNC(rep.isNeedTNC() == true ? "Y":"N");
