@@ -8,7 +8,6 @@ import org.keycloak.models.UserSessionModel;
 import org.keycloak.util.Time;
 
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
